@@ -1,0 +1,30 @@
+{
+  "env": {
+    "es6": true,
+    "node": true
+  },
+  "extends": ["prettier", "airbnb-base"],
+  "plugins": [
+    "prettier",
+    "import",
+    "jsx-a11y",
+    "@babel/plugin-proposal-class-properties"
+  ],
+  "parser": "@babel/eslint-parser",
+  "parserOptions": {
+    "ecmaVersion": 12,
+    "sourceType": "module",
+    "requireConfigFile": false
+  },
+  "rules": {
+    "prettier/prettier": "error",
+    "no-unused-vars": "warn",
+    "import/no-extraneous-dependencies": "off",
+    "import/prefer-default-export": "off",
+    "no-console": "off",
+    "semi": "off",
+    "operator-linebreak": "off",
+    "object-curly-newline": "off",
+    "max-len": "warn"
+  }
+}

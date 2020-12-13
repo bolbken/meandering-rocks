@@ -1,0 +1,107 @@
+service: meandering-rocks-api-photos-service
+frameworkVersion: '2'
+
+package:
+  excludeDevDependencies: true
+  individually: true
+
+plugins:
+  - serverless-bundle
+  - serverless-offline
+  - serverless-dotenv-plugin
+  - serverless-express
+
+custom:
+  bundle:
+    stats: false
+    linting: false
+    packager: yarn
+    externals:
+      - sharp
+    forceExclude:
+      - sharp
+    fixPackages:
+      - 'formidable@1.x'
+  serverless-offline:
+    httpPort: 5000
+  enablePrivate:
+    prod: true
+    review: true
+    other: false
+  allowedOrigin:
+    prod: 'https://meandering.rocks'
+    review: 'https://dev.meandering.rocks'
+    other: '*'
+  limits:
+    prod:
+      limit: 1000
+      burstLimit: 40
+      rateLimit: 20
+    review:
+      limit: 100
+      burstLimit: 20
+      rateLimit: 10
+    other:
+      limit: 50
+      burstLimit: 5
+      rateLimit: 3
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  stage: ${opt:stage, 'dev'}
+  region: ${opt:region, 'us-east-1'}
+  timeout: 10
+  logs:
+    restApi: true
+  apiGateway:
+    restApiId:
+      'Fn::ImportValue': MeanderingRocksApiGW-restApiId-${opt:stage}
+    restApiRootResourceId:
+      'Fn::ImportValue': MeanderingRocksApiGW-rootResourceId-${opt:stage}
+    metrics: false
+  apiKeys:
+    - ${env:BROWSER_API_KEY_NAME}-${opt:stage}
+    - ${env:AUX_API_KEY_NAME}-${opt:stage}
+  usagePlan:
+    quota:
+      limit: ${self:custom.limits.${opt:stage}.limit, self:custom.limits.other.limit}
+      offset: 2
+      period: MONTH
+    throttle:
+      burstLimit: ${self:custom.limits.${opt:stage}.burstLimit, self:custom.limits.other.burstLimit}
+      rateLimit: ${self:custom.limits.${opt:stage}.rateLimit, self:custom.limits.other.rateLimit}
+
+functions:
+  photos:
+    handler: handler.api
+    layers:
+      - arn:aws:lambda:us-east-1:310674449483:layer:PhotosApi:6
+    events:
+      - http:
+          path: /album
+          method: GET
+          private: ${self:custom.enablePrivate.${opt:stage}, false}
+          cors:
+            origin: ${self:custom.allowedOrigin.${opt:stage}, '*'}
+            headers:
+              - Content-Type
+              - X-Amz-Date
+              - X-Api-Key
+              - X-Amz-Security-Token
+              - X-Amz-User-Agent
+      - http:
+          path: /album/{param}
+          method: GET
+          private: ${self:custom.enablePrivate.${opt:stage}, false}
+          cors:
+            origin: ${self:custom.allowedOrigin.${opt:stage}, '*'}
+            headers:
+              - Content-Type
+              - X-Amz-Date
+              - X-Api-Key
+              - X-Amz-Security-Token
+              - X-Amz-User-Agent
+      - http:
+          path: /callback
+          method: GET

@@ -1,0 +1,129 @@
+service: meandering-rocks-api-newsletter-service
+frameworkVersion: '2'
+
+package:
+  excludeDevDependencies: true
+  individually: true
+
+plugins:
+  - serverless-dotenv-plugin
+  - serverless-bundle
+  - serverless-dynamodb-local
+  - serverless-offline
+
+custom:
+  serverless-offline:
+    httpPort: 5010
+  dynamodb:
+    stages:
+      - ${self:provider.stage}
+    start:
+      port: ${env:AWS_DYNAMODB_LOCAL_PORT, 5015}
+      migrate: true
+    seed:
+      dev:
+        sources:
+          - table: ${env:AWS_DYNAMODB_NEWSLETTER_SUBSCRIPTION_TABLE_NAME}-${opt:stage, 'dev'}
+            sources: [./utils/seed.json]
+  enablePrivate:
+    prod: true
+    review: true
+    other: false
+  allowedOrigin:
+    prod: 'https://meandering.rocks'
+    review: 'https://dev.meandering.rocks'
+    other: '*'
+  limits:
+    prod:
+      limit: 100
+      burstLimit: 20
+      rateLimit: 10
+    review:
+      limit: 10
+      burstLimit: 2
+      rateLimit: 1
+    other:
+      limit: 5
+      burstLimit: 2
+      rateLimit: 1
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  stage: ${opt:stage, 'dev'}
+  region: ${opt:region, 'us-east-1'}
+  timeout: 10
+  apiGateway:
+    restApiId:
+      'Fn::ImportValue': MeanderingRocksApiGW-restApiId-${opt:stage, 'dev'}
+    restApiRootResourceId:
+      'Fn::ImportValue': MeanderingRocksApiGW-rootResourceId-${opt:stage, 'dev'}
+    metrics: false
+  apiKeys:
+    - ${env:BROWSER_API_KEY_NAME}-${opt:stage, 'dev'}
+    - ${env:AUX_API_KEY_NAME}-${opt:stage, 'dev'}
+  usagePlan:
+    quota:
+      limit: ${self:custom.limits.${opt:stage, 'dev'}.limit, self:custom.limits.other.limit}
+      offset: 2
+      period: MONTH
+    throttle:
+      burstLimit: ${self:custom.limits.${opt:stage, 'dev'}.burstLimit, self:custom.limits.other.burstLimit}
+      rateLimit: ${self:custom.limits.${opt:stage, 'dev'}.rateLimit, self:custom.limits.other.rateLimit}
+
+resources:
+  Resources:
+    subscriptionsTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${env:AWS_DYNAMODB_NEWSLETTER_SUBSCRIPTION_TABLE_NAME}-${opt:stage, 'dev'}
+        AttributeDefinitions:
+          - AttributeName: email
+            AttributeType: S
+        KeySchema:
+          - AttributeName: email
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+
+functions:
+  verify:
+    handler: verify.handler
+    events:
+      - http:
+          path: /newsletter/verify
+          method: POST
+  #         private: ${self:custom.enablePrivate.${opt:stage, 'other'}, false}
+  #         cors:
+  #           origin: ${self:custom.allowedOrigin.${opt:stage, 'other'}, '*'}
+  #           headers:
+  #             - Content-Type
+  #             - X-Amz-Date
+  #             - X-Api-Key
+  #             - X-Amz-Security-Token
+  #             - X-Amz-User-Agent
+
+  subscribe:
+    handler: subscribe.handler
+    events:
+      - http:
+          path: /newsletter/subscribe
+          method: POST
+          private: false
+
+  unsubscribe:
+    handler: unsubscribe.handler
+    events:
+      - http:
+          path: /newsletter/unsubscribe
+          method: POST
+          private: false
+
+  subscribers:
+    handler: subscribers.handler
+    events:
+      - http:
+          path: /newsletter/subscribers
+          method: GET
+          private: false

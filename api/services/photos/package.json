@@ -1,0 +1,33 @@
+{
+  "name": "photos",
+  "version": "1.0.0",
+  "description": "Serverless api for retrieving photos from the Google Photos API.",
+  "workspaces": {
+    "nohoist": [
+      "**"
+    ]
+  },
+  "main": "handler.js",
+  "private": true,
+  "scripts": {
+    "offline": "export SLS_DEBUG=* && serverless offline -s dev",
+    "test": "echo \"WARNING: no tests specified\"",
+    "deploy": "serverless deploy --stage $(../../utils/sls-deploy-git-stage.sh ../../config.json)"
+  },
+  "author": "Ben Kolb (@bolbken)",
+  "license": "MIT",
+  "devDependencies": {
+    "aws-sdk": "^2.803.0",
+    "serverless": "^2.15.0",
+    "serverless-bundle": "^4.1.0",
+    "serverless-dotenv-plugin": "^3.1.0",
+    "serverless-offline": "^6.8.0",
+    "sharp": "^0.26.3"
+  },
+  "dependencies": {
+    "axios": "^0.21.0",
+    "body-parser": "^1.19.0",
+    "serverless-express": "^2.0.11",
+    "serverless-headless-google-oauth": "^0.1.0"
+  }
+}

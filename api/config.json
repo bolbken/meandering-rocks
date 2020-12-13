@@ -1,0 +1,7 @@
+{
+  "git_branch_stage": {
+    "master": "prod",
+    "review": "review",
+    "dev": "dev"
+  }
+}

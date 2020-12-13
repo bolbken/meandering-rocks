@@ -1,0 +1,14 @@
+{
+  "body": null,
+  "httpMethod": "GET",
+  "isBase64Encoded": false,
+  "path": "/album/<album name>",
+  "pathParameters": {
+    "param": "<album name>"
+  },
+  "queryStringParameters": {
+    "maxHeightPx": "100",
+    "maxWidthPx": "200"
+  },
+  "resource": "/dev/album/{param}"
+}
