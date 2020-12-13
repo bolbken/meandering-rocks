@@ -1,0 +1,23 @@
+.Footer {
+  align-content: center;
+  display: flex;
+  justify-content: space-between;
+
+  .Footer__left {
+    align-content: center;
+    display: flex;
+    justify-content: flex-start;
+  }
+
+  .Footer__right {
+    align-content: center;
+    display: flex;
+    justify-content: flex-end;
+  }
+}
+
+.Footer__LinkedImage-socialIcon {
+  align-self: center;
+  box-shadow: none;
+  margin: 0 0.2rem;
+}

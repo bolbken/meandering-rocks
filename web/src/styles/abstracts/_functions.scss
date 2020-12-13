@@ -1,0 +1,344 @@
+/*
+Words of the Wise:
+  > While it’s technically possible for functions to have side-effects 
+  like setting global variables, this is strongly discouraged. 
+  Use mixins for side-effects, and use functions just to compute values.
+
+Wisdom: https://sass-lang.com/documentation/at-rules/function
+*/
+
+@use 'abstracts/variables';
+
+/// Get a z-index value from a layer name
+/// @access public
+/// @param {String} $layer - Layer's name
+/// @return {Number}
+/// @require $z-indexes
+@function z($layer) {
+  @if not map-has-key($z-indexes, $layer) {
+    @error 'There is no layer named `#{$layer}` in $z-indexes. '
+         + 'Layer should be one of #{map-keys($z-indexes)}.';
+  }
+
+  @return map-get($z-indexes, $layer);
+}
+
+/// Remove the unit of a length
+/// @param {Number} $number - Number to remove unit from
+/// @return {Number} - Unitless number
+@function strip-unit($number) {
+  @if type-of($number) == 'number' and not unitless($number) {
+    @return $number / ($number * 0 + 1);
+  }
+
+  @return $number;
+}
+
+// ---- TYPOGRAPHY ----
+
+/// Convert any CSS <length> or <percentage> value to any another.
+///
+/// @param $length
+///   A css <length> or <percentage> value
+///
+/// @param $to-unit
+///   String matching a css unit keyword, e.g. 'em', '%', etc.
+///
+/// @param $from-context
+///   When converting from relative units, the absolute length (in px) to
+///   which $length refers (e.g. for $lengths in em units, would normally be the
+///   font-size of the current element).
+///
+/// @param $to-context
+///   For converting to relative units, the absolute length in px to which the
+///   output value will refer. Defaults to the same as $from-context, since it is
+///   rarely needed.
+@function convert-length(
+  $length,
+  $to-unit,
+  $from-context: $base-font-size,
+  $to-context: $from-context
+) {
+  $from-unit: unit($length);
+
+  // Optimize for cases where `from` and `to` units are accidentally the same.
+  @if $from-unit == $to-unit {
+    @return $length;
+  }
+
+  // Context values must be in px so we can determine a conversion ratio for
+  // relative units.
+  @if unit($from-context) != "px" {
+    @warn "Paremeter $from-context must resolve to a value in pixel units.";
+  }
+  @if unit($to-context) != "px" {
+    @warn "Parameter $to-context must resolve to a value in pixel units.";
+  }
+
+  // Convert input length to pixels
+  $px-length: $length;
+
+  @if $from-unit != "px" {
+    // Convert relative units using the from-context parameter.
+    @if $from-unit == "em" {
+      $px-length: $length * $from-context / 1em;
+    } @else if $from-unit == "rem" {
+      $px-length: $length * $base-font-size / 1rem;
+    } @else if $from-unit == "%" {
+      $px-length: $length * $from-context / 100%;
+    } @else if $from-unit == "ex" {
+      $px-length: $length * $from-context / 2ex;
+    }
+    // Convert absolute units using Sass' conversion table.
+    @else if
+      $from-unit ==
+      "in" or
+      $from-unit ==
+      "mm" or
+      $from-unit ==
+      "cm" or
+      $from-unit ==
+      "pt" or
+      $from-unit ==
+      "pc"
+    {
+      $px-length: 0 + $length;
+    }
+    // Certain units can't be converted.
+    @else if
+      $from-unit ==
+      "ch" or
+      $from-unit ==
+      "vw" or
+      $from-unit ==
+      "vh" or
+      $from-unit ==
+      "vmin"
+    {
+      @warn "#{$from-unit} units can't be reliably converted; Returning original value.";
+      @return $length;
+    } @else {
+      @warn "#{$from-unit} is an unknown length unit. Returning original value.";
+      @return $length;
+    }
+  }
+
+  // Convert length in pixels to the output unit
+  $output-length: $px-length;
+  @if $to-unit != "px" {
+    // Relative units
+    @if $to-unit == "em" {
+      $output-length: $px-length * 1em / $to-context;
+    } @else if $to-unit == "rem" {
+      $output-length: $px-length * 1rem / $base-font-size;
+    } @else if $to-unit == "%" {
+      $output-length: $px-length * 100% / $to-context;
+    } @else if $to-unit == "ex" {
+      $output-length: $px-length * 2ex / $to-context;
+    }
+    // Absolute units
+    @else if $to-unit == "in" {
+      $output-length: 0 + $px-length;
+    } @else if $to-unit == "mm" {
+      $output-length: 0 + $px-length;
+    } @else if $to-unit == "cm" {
+      $output-length: 0 + $px-length;
+    } @else if $to-unit == "pt" {
+      $output-length: 0 + $px-length;
+    } @else if $to-unit == "pc" {
+      $output-length: 0 + $px-length;
+    }
+    // Non-convertible units
+    @else if
+      $to-unit ==
+      "ch" or
+      $to-unit ==
+      "vw" or
+      $to-unit ==
+      "vh" or
+      $to-unit ==
+      "vmin"
+    {
+      @warn "#{$to-unit} units can't be reliably converted; Returning original value.";
+      @return $length;
+    } @else {
+      @warn "#{$to-unit} is an unknown length unit. Returning original value.";
+      @return $length;
+    }
+  }
+
+  @return $output-length;
+}
+
+// Calculate rhythm units.
+@function rhythm($lines: 1, $font-size: $base-font-size, $offset: 0) {
+  $rhythm: convert-length(
+    $lines * $base-line-height - $offset,
+    $rhythm-unit,
+    $font-size
+  );
+
+  @if unit($rhythm) == px {
+    $rhythm: floor($rhythm);
+  }
+
+  @return $rhythm;
+}
+
+// @private Get the px/rem versions of a value.
+@function rem-fallback-values($value) {
+  $_return: (
+    px: $value,
+    rem: $value,
+  );
+
+  @if type-of($value) == number and not unitless($value) {
+    @if unit($value) == rem {
+      $_return: map-merge(
+        $_return,
+        (
+          px: round(convert-length($value, px)),
+        )
+      );
+    } @else if unit($value) == px {
+      $_return: map-merge(
+        $_return,
+        (
+          px: round($value),
+          rem: convert-length($value, rem),
+        )
+      );
+    }
+  }
+
+  @return $_return;
+}
+
+// @private Get the px/rem versions of a list (or nested lists).
+@function list-convert-rems($value) {
+  $_empty: (
+    px: (),
+    rem: (),
+  );
+  $_return: $_empty;
+  $_sep: null;
+
+  @if type-of($value) == list {
+    $_sep: list-separator($value);
+    @each $sub in $value {
+      $_this: list-convert-rems($sub);
+      $_return: (
+        px: append(map-get($_return, px), map-get($_this, px), $_sep),
+        rem: append(map-get($_return, rem), map-get($_this, rem), $_sep),
+      );
+    }
+  } @else {
+    $_this: rem-fallback-values($value);
+    $_return: map-merge($_return, $_this);
+  }
+
+  @return $_return;
+}
+
+@function pow($number, $exponent) {
+  @if (round($exponent) != $exponent) {
+    @return exp($exponent * ln($number));
+  }
+
+  $value: 1;
+
+  @if $exponent > 0 {
+    @for $i from 1 through $exponent {
+      $value: $value * $number;
+    }
+  } @else if $exponent < 0 {
+    @for $i from 1 through -$exponent {
+      $value: $value / $number;
+    }
+  }
+
+  @return $value;
+}
+
+@function factorial($value) {
+  $result: 1;
+
+  @if $value == 0 {
+    @return $result;
+  }
+
+  @for $index from 1 through $value {
+    $result: $result * $index;
+  }
+
+  @return $result;
+}
+
+@function summation($iteratee, $input, $initial: 0, $limit: 100) {
+  $sum: 0;
+
+  @for $index from $initial to $limit {
+    $sum: $sum + call($iteratee, $input, $index);
+  }
+
+  @return $sum;
+}
+
+@function exp-maclaurin($x, $n) {
+  @return (pow($x, $n) / factorial($n));
+}
+
+@function exp($value) {
+  @return summation("exp-maclaurin", $value, 0, 100);
+}
+
+@function ln-maclaurin($x, $n) {
+  @return (pow(-1, $n + 1) / $n) * (pow($x - 1, $n));
+}
+
+@function ln($value) {
+  $ten-exp: 1;
+  $ln-ten: 2.30258509;
+
+  @while ($value > pow(10, $ten-exp)) {
+    $ten-exp: $ten-exp + 1;
+  }
+
+  @return summation(ln-maclaurin, $value / pow(10, $ten-exp), 1, 100) + $ten-exp *
+    $ln-ten;
+}
+
+@function modular-scale($value) {
+  @return pow($base-font-scale, $value);
+}
+
+
+// Layout Functions
+@function header-title-and-nav-height-for-media($breakpoint) {
+  @return header-title-height-for-media($breakpoint) + header-dock-nav-height();
+}
+
+// Header Functions
+//    --Header Title
+@function header-title-height-for-media($breakpoint) {
+  $logo-height: rhythm(map-get($header-logo-height-media-map-rhythm, $breakpoint));
+  $logo-padding-height: $header-logo-link-vert-padding / $base-font-size;
+  @return rhythm($header-title-padding-top-rhythm) + $logo-padding-height + $logo-height;
+}
+
+//    --Header Dock
+@function header-dock-transform-offset-for-media($breakpoint) {
+  // #HACK fudge-offset... I know its a #MagicNumber
+  // but the arrangement is by my eye's opinion rather than some messed up math
+  // positive fudge moves nav up and vice versa
+  $fudge-offset: rhythm(1 / 2);
+  @return rhythm($header-dock-menu-height-rhythm) + $fudge-offset;
+}
+
+@function header-dock-nav-height() {
+  @if rhythm($header-dock-menu-button-size-rhythm) > $header-dock-nav-font-height {
+    @return rhythm($header-dock-menu-button-size-rhythm);
+  } @else {
+    @return $header-dock-nav-font-height;
+  }
+}

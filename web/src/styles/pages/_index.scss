@@ -1,0 +1,26 @@
+@use '../abstracts/functions';
+
+
+.Layout-index__article {
+  display: flex;
+  flex-direction: column;
+  
+  header {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: rhythm(1 / 4);
+  }
+}
+
+.Layout-index__article__header {
+  h3 {
+    margin: rhythm(1 / 2) 0 0;
+  }
+  small {
+    line-height: rhythm(1 / 2);
+  }
+}
+
+.Layout-index__article__header__Link {
+  box-shadow: none;
+}

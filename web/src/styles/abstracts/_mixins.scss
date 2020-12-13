@@ -1,0 +1,262 @@
+// Wisdom: https://sass-lang.com/documentation/at-rules/mixin
+
+@use 'abstracts/variables';
+@use 'abstracts/functions';
+
+/// Responsive breakpoint manager
+/// @access public
+/// @param {String} $breakpoint - Breakpoint
+/// @requires $breakpoints
+@mixin respond-to($breakpoint) {
+  $raw-query: map-get($breakpoints, $breakpoint);
+
+  @if $raw-query {
+    $query: if(
+      type-of($raw-query) == "string",
+      unquote($raw-query),
+      inspect($raw-query)
+    );
+
+    @media #{$query} {
+      @content;
+    }
+  } @else {
+    @error 'No value found for `#{$breakpoint}`. '
+          + 'Please make sure it is defined in `$breakpoints` map.';
+  }
+}
+
+/// Helper to clear inner floats
+/// @author Nicolas Gallagher
+/// @link http://nicolasgallagher.com/micro-clearfix-hack/ Micro Clearfix
+@mixin clearfix {
+  &::after {
+    clear: both;
+    content: "";
+    display: table;
+  }
+}
+
+/// Helper to size an element
+/// @author Hugo Giraudel
+/// @param {Length} $width
+/// @param {Length} $height
+@mixin size($width, $height: $width) {
+  height: $height;
+  width: $width;
+}
+
+// ----TYPOGRAPHY----
+
+// Output a given style rule containing rem values along with an (optional)
+// fallback rule for older browsers (with rem values converted to px).
+//
+// @param $property
+//   The css property name.
+//
+// @param $values
+//   The value or list of values for the property.
+//
+// @param $use-px-fallback
+//   [ true | false ]
+//
+@mixin rem($property, $values, $use-px-fallback: $rem-with-px-fallback) {
+  // get converted values.
+  $values: list-convert-rems($values);
+  $px-values: map-get($values, px);
+  $values: map-get($values, rem);
+
+  // Use pixel fallback for browsers that don't understand rem units.
+  @if $use-px-fallback and $px-values != $values {
+    #{$property}: $px-values;
+  }
+
+  // Use rem values for everyone else (overrides pixel values).
+  #{$property}: $values;
+}
+
+// @private Outputs rhythm values. For rem units, outputs pixel fallbacks
+// by default.
+@mixin output-rhythm($property, $values) {
+  @if $rhythm-unit == rem and $rem-with-px-fallback {
+    @include rem($property, $values);
+  } @else {
+    $output: ();
+    @each $value in $values {
+      @if unit($value) == px {
+        // Ensure all pixel values are rounded to the nearest pixel.
+        $output: join($output, round($value));
+      } @else {
+        $output: join($output, $value);
+      }
+    }
+    #{$property}: $output;
+  }
+}
+
+// Apply leading whitespace as padding.
+@mixin padding-leader($lines: 1, $font-size: $base-font-size) {
+  @include output-rhythm(padding-top, rhythm($lines, $font-size));
+}
+
+// Apply leading whitespace. The $property can be margin or padding.
+@mixin leader($lines: 1, $font-size: $base-font-size, $property: margin) {
+  @include output-rhythm(#{$property}-top, rhythm($lines, $font-size));
+}
+
+// Apply trailing whitespace as padding.
+@mixin padding-trailer($lines: 1, $font-size: $base-font-size) {
+  @include output-rhythm(padding-bottom, rhythm($lines, $font-size));
+}
+
+// Apply trailing whitespace. The $property can be margin or padding.
+@mixin trailer($lines: 1, $font-size: $base-font-size, $property: margin) {
+  @include output-rhythm(#{$property}-bottom, rhythm($lines, $font-size));
+}
+
+// Shorthand mixin to apply whitespace for top and bottom margins and padding.
+@mixin rhythm(
+  $leader: 1,
+  $padding-leader: 0,
+  $padding-trailer: $padding-leader,
+  $trailer: $leader,
+  $font-size: $base-font-size
+) {
+  @include leader($leader, $font-size);
+  @include padding-leader($padding-leader, $font-size);
+  @include padding-trailer($padding-trailer, $font-size);
+  @include trailer($trailer, $font-size);
+}
+
+@mixin scale($value) {
+  $font-size: modular-scale($value) * 1rem;
+  $font-size-px: convert-length($font-size, "px");
+  $lines: ceil(2 * $font-size-px / $base-line-height) / 2;
+
+  @if $lines * $base-line-height - $font-size-px < 4px {
+    // Add a base line height to un-cramp the line height
+    // for the calculated font size
+    $lines: $lines + 0.5;
+  }
+
+  font-size: $font-size;
+  line-height: rhythm($lines);
+}
+
+
+// Layout Mixins
+@mixin main-margin-top() {
+  @each $breakpoint, $logo-height in $header-logo-height-media-map-rhythm {
+
+    @if $breakpoint == 'small' {
+      margin-top: header-title-and-nav-height-for-media($breakpoint);
+    } @else {
+
+      @include respond-to($breakpoint) {
+        margin-top: header-title-and-nav-height-for-media($breakpoint);
+      }
+    }
+  }
+
+}
+
+
+// Header Mixins
+@mixin header-title-and-dock-top {
+  padding-top: $header-title-padding-top-rhythm;
+}
+
+//    -Header Title
+@mixin header-logo-height-respond-to($breakpoint) {
+  @include respond-to($breakpoint) {
+    min-width: rhythm(map-get($header-logo-height-media-map-rhythm, $breakpoint));
+  }
+}
+
+//    -Header Dock
+@mixin header-dock-offset-transforms {
+  @each $breakpoint, $logo-height in $header-logo-height-media-map-rhythm {
+
+    @if $breakpoint == 'small' {
+      transform: translateY(-1 * header-dock-transform-offset-for-media($breakpoint));
+    } @else {
+
+      @include respond-to($breakpoint) {
+        transform: translateY(-1 * header-dock-transform-offset-for-media($breakpoint));
+      }
+    }
+  }
+}
+
+@mixin header-dock-menu-margin-top {
+  @each $breakpoint, $logo-height in $header-logo-height-media-map-rhythm {
+
+    @if $breakpoint == 'small' {
+      margin-top: header-title-height-for-media($breakpoint);
+    } @else {
+
+      @include respond-to($breakpoint) {
+        margin-top: header-title-height-for-media($breakpoint);
+      }
+    }
+  }
+}
+
+
+// Header Mixins
+//    --Header Title
+@mixin header-logo-height-respond-to($breakpoint) {
+  @include respond-to($breakpoint) {
+    min-width: rhythm(map-get($header-logo-height-media-map-rhythm, $breakpoint));
+  }
+}
+
+//    --Header Dock
+@mixin header-dock-offset-transforms {
+  @each $breakpoint, $logo-height in $header-logo-height-media-map-rhythm {
+
+    @if $breakpoint == 'small' {
+      transform: translateY(-1 * header-dock-transform-offset-for-media($breakpoint));
+    } @else {
+
+      @include respond-to($breakpoint) {
+        transform: translateY(-1 * header-dock-transform-offset-for-media($breakpoint));
+      }
+    }
+  }
+}
+
+@mixin header-dock-menu-margin-top {
+  @each $breakpoint, $logo-height in $header-logo-height-media-map-rhythm {
+
+    @if $breakpoint == 'small' {
+      margin-top: header-title-height-for-media($breakpoint);
+    } @else {
+
+      @include respond-to($breakpoint) {
+        margin-top: header-title-height-for-media($breakpoint);
+      }
+    }
+  }
+}
+
+@mixin header-title-and-dock-top {
+  padding-top: rhythm($header-title-padding-top-rhythm);
+}
+
+
+// About Page Mixins
+
+@mixin before-image-height-offset-of-header($extra-offset-rem: 0) {
+  @each $breakpoint, $logo-height in $header-logo-height-media-map-rhythm {
+
+    @if $breakpoint == 'small' {
+      height: header-title-and-nav-height-for-media($breakpoint) + $extra-offset-rem;
+    } @else {
+
+      @include respond-to($breakpoint) {
+        height: header-title-and-nav-height-for-media($breakpoint) + $extra-offset-rem;
+      }
+    }
+  }
+}

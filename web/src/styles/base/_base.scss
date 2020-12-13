@@ -1,0 +1,18 @@
+@use 'abstracts/variables';
+
+html {
+  background-color: $base-light;
+}
+
+h1,
+h3 {
+  color: $primary;
+}
+
+p {
+  color: $base-dark;
+}
+
+a {
+  color: $action;
+}

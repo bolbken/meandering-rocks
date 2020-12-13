@@ -1,0 +1,148 @@
+// ---- GENERAL ----
+$page-width: 38.4rem;
+$layout-padding-sides: 1.2rem;
+
+
+// ---- COLORS ----
+
+$rich-black: #042a2b;
+$max-blue: #5eb1bf;
+$light-cyan: #cdedf6;
+$mandarin-ong: #ef7b45;
+$vermillion-ong: #d84727;
+$light-grey: #f2f2f2;
+
+// New Colors... Need more work to implement
+// $primary-extradark: #0C191F;
+// $primary-dark: #2D5E73;
+// $primary: #5EA2BF;
+// $primary-light: #96E0FF;
+// $complement-dark: #995200;
+// $complement: #E07800;
+// $complement-light: #F0AB5D;
+// $lightGrey: #F2F2F2;
+
+// Theme
+$base-dark: $rich-black;
+$base-light: $light-grey;
+
+$primary-dark: $rich-black;
+$primary: $max-blue;
+$primary-light: $light-cyan;
+
+$secondary-dark: $vermillion-ong;
+$secondary: $mandarin-ong;
+
+// Design
+$background-light: $primary-light;
+$background-dark: $primary-dark;
+$background-medium: $primary;
+
+$highlight: $primary-light;
+
+$action: $mandarin-ong;
+$alert: $vermillion-ong;
+
+// $menu-active: $white;
+// $menu-inactive: $american-silver;
+
+$body-light: $base-light;
+$body-dark: $base-dark;
+
+// ---- TYPOGRAPHY ----
+$browser-base-font-size: 16px;
+
+// Base font size in pixels, if not already defined.
+// Should be the same as the font-size of the html element.
+$base-font-size: 16px;
+$base-font-size-percent-of-browser-font: percentage(
+  $base-font-size / $browser-base-font-size
+);
+
+// The distance between text baselines (vertical rhythm) in pixels.
+$base-line-height-ratio: 1.5;
+$base-line-height: $base-font-size * $base-line-height-ratio;
+
+// The exponential base scale number ex. "perfect fourth" is 1.333
+// The scale number is the base of the equation to calculate header font sizes
+// Example font heights:   h4 ->  scale^0  and h3 -> scale^1
+$base-font-scale: 1.333;
+$base-font-scale-name: "perfect fourth";
+
+// The length unit in which to output rhythm values.
+// Supported values: px, em, rem. Percent units can't be used since they
+// make calculating padding and margins impractical, and percentage borders are
+// not valid or supported in css.
+$rhythm-unit: "rem";
+
+// Whether to output fallback values in px when using rem as the rhythm-unit.
+$rem-with-px-fallback: true;
+
+// Font family names.
+$base-font-family-title: "Oswald", sans-serif;
+$base-font-family-body: "PT Sans", sans-serif;
+
+
+
+// ---- MEDIA ----
+
+// Breakpoint width
+$breakpoint-min-widths: (
+  "medium": 800px,
+  "large": 1000px,
+  "huge": 1200px
+);
+
+/// Breakpoints map, giving names to the different media query breakpoints
+/// @access private
+/// @type Map
+/// @prop {String} key - Media Query's name
+/// @prop {Number} value - The 'min-width' css property associated
+$breakpoints: (
+  "medium": (
+    min-width: map-get($breakpoint-min-widths, "medium"),
+  ),
+  "large": (
+    min-width: map-get($breakpoint-min-widths, "large"),
+  ),
+  "huge": (
+    min-width: map-get($breakpoint-min-widths, "huge"),
+  ),
+);
+
+/// Z-indexes map, gathering all Z layers of the application
+/// @access private
+/// @type Map
+/// @prop {String} key - Layer’s name
+/// @prop {Number} value - Z value mapped to the key
+$z-indexes: (
+  "modal": 50,
+  "title": 40,
+  "dock": 20,
+  "default": 1,
+  "below": -1,
+);
+
+
+// Variables
+//    -Header Title
+$header-title-padding-top-rhythm: 1 / 2;
+$header-logo-link-padding-top: 8px;
+$header-logo-link-padding-bottom: 3px;
+$header-logo-link-vert-padding: $header-logo-link-padding-top + $header-logo-link-padding-bottom;
+$header-logo-height-media-map-rhythm: (
+  "small": 2,
+  "medium": 3,
+  "large": 4,
+  "huge": 5
+);
+//    -Header Dock
+$header-dock-menu-button-size-rhythm: 1;
+$header-dock-nav-font-height: 1rem;
+$header-dock-menu-height-rhythm: 14;
+//    -MasonryGallery
+$masonry-gallery-loading-animation-repeat-count: 6;
+$masonry-gallery-loading-animation-repeat-period: 1s;
+$masonry-gallery-rendering-animation-count: 10;
+$masonry-gallery-rendering-animation-time: 0.6s;
+$masonry-gallery-rendering-animation-inter-delay: 0.04s;

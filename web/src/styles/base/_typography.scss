@@ -1,0 +1,248 @@
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@400;700&family=PT+Sans:ital,wght@0,400;0,700;1,400&family=Roboto:ital,wght@1,700&display=swap');
+
+@use '../abstracts/variables';
+@use '../abstracts/mixins';
+
+html {
+  font-size: $base-font-size-percent-of-browser-font;
+}
+
+body {
+  color: $base-dark;
+  font-family: $base-font-family-body;
+  font-weight: 400;
+  line-height: $base-line-height-ratio;
+}
+
+b, strong, dt, th {
+  font-weight: 700;
+}
+
+img, h1, h2, h3, h4, h5, h6, hgroup, ul, 
+ol, dl, dd, p, figure, pre, table, 
+fieldset, blockquote, form, noscript, 
+iframe, hr, address {
+  margin-bottom: rhythm(1);
+  margin-left: 0;
+  margin-right: 0;
+  margin-top: 0;
+  padding-bottom: 0;
+  padding-left: 0;
+  padding-right: 0;
+  padding-top: 0;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: $primary;
+  font-family: "Oswald", sans-serif;
+  font-weight: 700;
+  margin-bottom: rhythm(1);
+  margin-top: rhythm(2);
+}
+
+h1 {
+  @include scale(3);
+  margin-top: 0;
+}
+
+h2 {
+  @include scale(2);
+}
+
+h3 {
+  @include scale(1);
+}
+
+h4 {
+  @include scale(0);
+}
+
+h5 {
+  @include scale(-1);
+}
+
+small,
+.text-small {
+  @include scale(-2);
+}
+
+hr {
+  background: $base-dark;
+  border: "none";
+  height: 1px;
+  margin-bottom: calc(rhythm(1) - 1px);
+}
+
+a {
+  background-image: none;
+  text-decoration: none;
+  text-shadow: none;
+}
+
+li {
+  margin-bottom: rhythm(1 / 2);
+}
+
+ol li {
+  padding-left: 0;
+}
+
+ul li {
+  padding-left: 0;
+}
+
+li > ol {
+  margin-bottom: rhythm(1) / 2;
+  margin-left: 1.6rem;
+  margin-top: rhythm(1) / 2;
+}
+
+li > ul {
+  margin-bottom: rhythm(1) / 2;
+  margin-left: 1.6rem;
+  margin-top: rhythm(1) / 2;
+}
+
+blockquote {
+  @include scale(1);
+  border-left: rhythm(6 / 16) solid $secondary;
+  color: $base-light;
+  font-style: "italic";
+  margin-left: 0;
+  margin-right: 0;
+  padding-left: rhythm(10 / 16);
+}
+
+blockquote *:last-child {
+  margin-bottom: 0;
+}
+
+blockquote cite {
+  @include scale(0);
+  color: $base-dark;
+  font-style: "normal";
+  font-weight: 400,
+}
+
+blockquote cite::before {
+  content: '"— "',
+}
+
+li *:last-child {
+  margin-bottom: 0;
+}
+
+p *:last-child {
+  margin-bottom: 0;
+}
+
+li > p {
+  margin-bottom: rhythm(1) / 2;
+}
+
+code, kbd, samp {
+  font-size: rhythm(1 / 2);
+  line-height: rhythm(1);
+}
+
+abbr {
+  border-bottom: 1px dotted hsla(0, 0%, 0%, 0.5);
+  cursor: help;
+}
+
+acronym {
+  border-bottom: 1px dotted hsla(0, 0%, 0%, 0.5);
+  cursor: help;
+}
+
+thead {
+  text-align: left;
+}
+
+thead {
+  text-align: left;
+}
+td,
+th {
+  border-bottom: 1px solid hsla(0, 0%, 0%, 0.12);
+  font-feature-settings: "tnum";
+  padding-bottom: calc(rhythm(1 / 2) - 1px);
+  padding-left: rhythm(2 / 3);
+  padding-right: rhythm(2 / 3);
+  padding-top: rhythm(1 / 2);
+  text-align: left;
+}
+th:first-child,
+td:first-child {
+  padding-left: 0;
+}
+th:last-child,
+td:last-child {
+  padding-right: 0;
+}
+
+/*
+
+headerWeight: "700",
+bodyWeight: 400,
+boldWeight: 700,
+overrideStyles: ({ adjustFontSizeTo, scale, rhythm }, options) => {
+    const linkColor = "#292d35"
+    const vr = verticalRhythm({
+    baseFontSize: "17px",
+    baseLineHeight: "24.65px",
+    })
+    return {
+    a: {
+        color: linkColor,
+        textDecoration: "none",
+        textShadow:
+        ".03em 0 #fff,-.03em 0 #fff,0 .03em #fff,0 -.03em #fff,.06em 0 #fff,-.06em 0 #fff,.09em 0 #fff,-.09em 0 #fff,.12em 0 #fff,-.12em 0 #fff,.15em 0 #fff,-.15em 0 #fff", // eslint-disable-line
+        backgroundImage: `linear-gradient(to top, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0) 1px, ${linkColor} 1px, ${linkColor} 2px, rgba(0, 0, 0, 0) 2px)`, // eslint-disable-line
+    },
+    "a:hover,a:active": {
+        textShadow: "none",
+        backgroundImage: "none",
+    },
+    "h1,h2,h3,h4,h5,h6": {
+        marginTop: rhythm(2),
+    },
+    // Blockquote styles.
+    blockquote: {
+        ...scale(1 / 5),
+        borderLeft: `${rhythm(6 / 16)} solid ${linkColor}`,
+        color: gray(35),
+        paddingLeft: rhythm(10 / 16),
+        fontStyle: "italic",
+        marginLeft: 0,
+        marginRight: 0,
+    },
+    "blockquote > :last-child": {
+        marginBottom: 0,
+    },
+    "blockquote cite": {
+        ...adjustFontSizeTo(options.baseFontSize),
+        color: options.bodyColor,
+        fontStyle: "normal",
+        fontWeight: options.bodyWeight,
+    },
+    "blockquote cite:before": {
+        content: '"— "',
+    },
+    [MOBILE_MEDIA_QUERY]: {
+        html: {
+        ...vr.establishBaseline(),
+        },
+        blockquote: {
+        borderLeft: `${rhythm(3 / 16)} solid ${linkColor}`,
+        color: gray(41),
+        paddingLeft: rhythm(9 / 16),
+        fontStyle: "italic",
+        marginLeft: rhythm(-3 / 4),
+        marginRight: 0,
+        },
+    },
+    }
+},
+}
+*/

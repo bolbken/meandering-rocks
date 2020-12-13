@@ -1,0 +1,18 @@
+@use '../abstracts/functions';
+
+.Bio {
+    display: flex;
+    margin-bottom: rhythm(1 / 2);
+
+    .Bio__Image {
+        align-self: center;
+        border-radius: 100%;
+        flex: 0 0 72px;
+        margin-bottom: 0;
+        margin-right: 1rem;
+    }
+
+    p {
+        margin-bottom: 0;
+    }
+}

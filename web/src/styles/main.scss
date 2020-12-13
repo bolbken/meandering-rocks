@@ -1,0 +1,47 @@
+@charset "UTF-8";
+
+//Import Order: abstracts, vendors, base, layout, components, pages, themes
+
+// 1) Abstracts
+@import "abstracts/variables";
+@import "abstracts/functions";
+@import "abstracts/mixins";
+@import "abstracts/placeholders";
+
+// 2) Vendors
+// N/A
+
+// 3) Base
+@import "base/reset";
+@import "base/normalize";
+@import "base/base";
+@import "base/typography";
+@import "base/animations";
+
+// 4) Layout
+@import "layout/layout";
+@import "layout/header";
+@import "layout/footer";
+
+// 5) Components
+@import "components/bio";
+@import "components/masonry-gallery";
+@import "components/hover-tilt-image";
+
+
+// 6) Pages
+@import "pages/index";
+@import "pages/blog-post";
+@import "pages/about";
+
+// 7) Themes
+// N/A
+
+
+// Exported variables for javascript
+:export {
+    breakpointMinWidthPxHuge: strip-unit(map-get($breakpoint-min-widths, 'huge'));
+    breakpointMinWidthPxLarge: strip-unit(map-get($breakpoint-min-widths, 'large'));
+    breakpointMinWidthPxMedium: strip-unit(map-get($breakpoint-min-widths, 'medium'));
+    masonryGalleryLoadingAnimationRepeatCount: $masonry-gallery-loading-animation-repeat-count;
+  }

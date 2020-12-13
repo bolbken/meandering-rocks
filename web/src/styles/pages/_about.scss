@@ -1,0 +1,217 @@
+@use '../abstracts/variables';
+@use '../abstracts/functions';
+@use '../abstracts/mixins';
+
+$hero-icon-height: rhythm(3 / 2);
+$hero-icon-width: rhythm(3 / 2);
+$hero-icon-vertical-margin: rhythm(1 / 4);
+$hero-icon-horizontal-margin: rhythm(1 / 4);
+$hero-icon-total-height: $hero-icon-height + (2 * $hero-icon-vertical-margin);
+$hero-icon-total-width: $hero-icon-width + (2 * $hero-icon-horizontal-margin);
+$hero-icon-transition-sec: 0.2s;
+
+%centered {
+  margin: 0 auto;
+}
+
+%hero-icon {
+  align-items: center;
+  display: inline-block;
+  display: flex;
+  justify-content: center;
+  transition-duration: $hero-icon-transition-sec;
+  transition-property: transform, opacity;
+  transition-timing-function: linear;
+  
+  .gatsby-image-wrapper {
+    height: $hero-icon-height;
+    margin: $hero-icon-vertical-margin $hero-icon-horizontal-margin;
+    width: $hero-icon-width;
+  }
+}
+
+.About__Hero {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  margin: rhythm(4) 0 rhythm(3);
+}
+
+.About__Hero__text {
+
+  h1 {
+    @extend %centered;
+    @include scale(2);
+    font-family: 'Roboto', sans-serif;
+    font-style: italic;
+    font-weight: 700;
+    padding-right: 1rem;
+    padding-top: 0.5rem;
+    text-align: right;
+  }
+}
+
+.About__Hero__icon {
+  height: $hero-icon-total-height;
+  position: relative;
+  width: $hero-icon-total-width * 2;
+}
+
+.About__Hero__icon-questionMark {
+  @extend %hero-icon;
+  bottom: auto;
+  left: rhythm(1);
+  position: absolute;
+  top: auto;
+}
+
+.About__Hero__icon-handThinking {
+  @extend %hero-icon;
+  bottom: auto;
+  left: 0;
+  position: absolute;
+  top: auto;
+}
+
+.About__Hero__icon-rockCheck {
+  @extend %hero-icon;
+  bottom: auto;
+  left: 0;
+  position: absolute;
+  top: auto;
+}
+
+.About__Hero__icon-current {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.About__Hero__icon-previous {
+  opacity: 0;
+  transform: translateY($hero-icon-total-height);
+}
+
+.About__Hero__icon-hidden {
+  opacity: 0;
+  transform: translateY(-1 * $hero-icon-total-height);
+}
+
+%about-blurb {
+  align-items: center;
+  background: $base-light;
+  border: 1px solid darken($base-light, 5%);
+  border-radius: rhythm(1 / 8);
+  box-shadow: 4px 4px 8px darken($base-light, 10%);
+  margin: rhythm(1);
+  padding: rhythm(1);
+}
+
+.About__blurb {
+  @extend %about-blurb;
+
+  p em {
+    @include scale(0.5);
+    color: $primary;
+    font-family: 'Oswald', sans-serif;
+    font-style: italic;
+    font-weight: 700;
+    margin-right: rhythm(1);
+  }
+}
+
+.About__blurb-summary {
+  @extend %about-blurb;
+
+  p, li {
+    @include scale(0.5);
+    color: darken($primary, 20%);
+    font-weight: 700;
+  }
+
+  ul li {
+    color: $secondary;
+    margin-left: 10%;
+  }
+
+  ul {
+
+    :first-child::before {
+      content: "🧗 ";
+      margin-right: rhythm(1 / 2);
+    }
+    :nth-child(2)::before {
+      content: "⛰ ";
+      margin-right: rhythm(1 / 2);
+    }
+    :nth-child(3)::before {
+      content: "😺 ";
+      margin-right: rhythm(1 / 2);
+    }
+  }
+}
+
+.About__blurb-parallax {
+
+  &-left {
+    position: relative;
+    right: 20%;
+    width: 30%;
+  }
+
+  &-right {
+    left: 70%;
+    position: relative;
+    width: 30%;
+  }
+}
+
+.About__beforePhoto {
+  @include before-image-height-offset-of-header();
+  width: 100%;
+}
+
+%about-photo {
+  border-radius: rhythm(1 / 8);
+}
+
+#cats-about {
+  @include before-image-height-offset-of-header(rhythm(4));
+}
+
+#vehicles-about {
+  @include before-image-height-offset-of-header(rhythm(5));
+  left: 0;
+  width: 100%;
+}
+
+.About__photo-center {
+  @extend %about-photo;
+
+  &-parallax {
+    @extend %about-photo;
+    left: 10%;
+    width: 80%;
+  }
+
+}
+
+.About__photo-left {
+  @extend %about-photo;
+
+  &-parallax {
+    @extend %about-photo;
+    height: 80vh;
+    width: 80%;
+  }
+}
+
+.About__photo-right {
+  @extend %about-photo;
+
+  &-parallax {
+    @extend %about-photo;
+    height: 80vh;
+    left: 20%;
+    width: 80%;
+  }
+}

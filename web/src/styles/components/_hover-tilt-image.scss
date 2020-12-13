@@ -1,0 +1,11 @@
+@use '../abstracts/variables';
+
+$image-margin: 2px;
+
+.HoverTiltImage {
+    background-color: $base-light;
+    cursor: pointer;
+    margin: $image-margin;
+    overflow: hidden;
+    position: relative;
+}

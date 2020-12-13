@@ -1,0 +1,69 @@
+@use '../abstracts/variables';
+
+$loading-animations-count: $masonry-gallery-loading-animation-repeat-count;
+$loading-animations-period: $masonry-gallery-loading-animation-repeat-period;
+$image-background: $base-light;
+
+$rendering-animation-count: $masonry-gallery-rendering-animation-count;
+$rendering-animation-time: $masonry-gallery-rendering-animation-time;
+$rendering-animation-inter-delay: $masonry-gallery-rendering-animation-inter-delay;
+
+.MasonryGallery {
+  .HoverTiltImage-loading {
+    animation: $loading-animations-period ease 0s pulse infinite;
+  }
+
+  .HoverTiltImage-loaded {
+    animation: $rendering-animation-time cubic-bezier(.25, .25, .25, 1.15) backwards fade-in;
+  }
+}
+
+@for $i from 0 to $loading-animations-count {
+    
+  .MasonryGallery .HoverTiltImage-loading {
+    &:nth-child(#{$i}) {
+      animation-delay: $i * ($loading-animations-period / $loading-animations-count);
+    }  
+  }
+}
+
+@for $i from 0 to $rendering-animation-count {
+  .MasonryGallery .HoverTiltImage-loaded {
+    &:nth-child(#{$i}) {
+      animation-delay: $i * $rendering-animation-inter-delay;
+    }
+  }
+}
+
+@keyframes pulse {
+  0% {
+    background: $image-background;
+    transform: scale(1);
+  }
+  
+  25% {
+    background: darken($image-background, 10%);
+    transform: scale(1.01);
+  }
+  
+  50% {
+    background: $image-background;
+    transform: scale(1);
+  }
+}
+
+
+@keyframes fade-in {
+  0% {
+    opacity: 0;
+    transform: translateX(15%) scale(0.5) rotateZ(-20deg);
+  }
+  
+  100% {
+    opacity: 1;
+    transform: translateX(0) scale(1) rotateZ(0deg);
+  }
+}
+  
+
+  

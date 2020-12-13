@@ -1,0 +1,16 @@
+{
+  "extends": [
+    "stylelint-config-sass-guidelines",
+    "stylelint-config-prettier"
+  ],
+  "ignoreFiles": ["src/styles/base/_normalize.scss"],
+  "rules": {
+    "selector-class-pattern": [
+      "([A-Z][a-z0-9]+)+(\\_[a-z0-9]+([A-Z][a-z0-9]+)*)?(\\-[a-z0-9]+([A-Z][a-z0-9]+)*)?",
+      {
+        "message":
+          "Selector should compatible with React BEM style. Example: '.BlockName-ElemName_modName_modVal'.  REF: https://en.bem.info/methodology/naming-convention/#react-style (selector-class-pattern)"
+      }
+    ]
+  }
+}

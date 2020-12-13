@@ -1,0 +1,255 @@
+@use '../abstracts/variables';
+@use '../abstracts/functions';
+@use '../abstracts/mixins';
+@use '../base/animations';
+
+$header-animation-speed: 0.3s;
+
+%centered {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+}
+
+%header-word {
+  margin: 0 0.5rem;
+  width: 13rem;
+}
+
+%header-logo {
+  @include header-logo-height-respond-to("medium");
+  @include header-logo-height-respond-to("large");
+  @include header-logo-height-respond-to("huge");
+  background-color: $base-light;
+  border-radius: 50%;
+  justify-self: center;
+  margin-bottom: 0;
+  min-width: rhythm(map-get($header-logo-height-media-map-rhythm, "small"));
+  transition: transform $header-animation-speed ease-out;
+}
+
+%header-dock {
+  @include header-title-and-dock-top();
+  position: absolute;
+  top: 0;
+  transition-duration: $header-animation-speed;
+  transition-property: transform, background-color;
+  transition-timing-function: ease-out;
+  // transition: transform $header-animation-speed ease-out;
+  // transition: background-color $header-animation-speed ease-out;
+  width: 100%;
+  z-index: z("dock");
+}
+
+%header-dock-menu {
+  @include header-dock-menu-margin-top();
+  height: rhythm($header-dock-menu-height-rhythm);
+}
+
+.Header {
+  box-sizing: border-box;
+  margin: 0 auto;
+  max-width: $page-width - 2 * $layout-padding-sides;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: z("dock");
+}
+
+.Header__word-left {
+  @extend %header-word;
+  float: right;
+  margin-left: 0;
+  text-align: right;
+}
+
+.Header__word-right {
+  @extend %header-word;
+  float: left;
+  margin-right: 0;
+  text-align: left;
+}
+
+.Header__word-isScrolling,
+.Header__Dock__nav-isScrolling {
+  animation: visible-to-hidden $header-animation-speed ease-out;
+  animation-fill-mode: forwards;
+  transform: translateY(-25%);
+  transition: transform $header-animation-speed ease-out;
+  // visibility: hidden;
+}
+
+.Header__word-notScrolling,
+.Header__Dock__nav-notScrolling {
+  animation: hidden-to-visible $header-animation-speed ease-out;
+  animation-fill-mode: forwards;
+  transform: translateY(0);
+  transition: transform $header-animation-speed ease-out;
+  // visibility: visible;
+}
+
+.Header__Title {
+  @extend %centered;
+  @include header-title-and-dock-top();
+  color: $primary;
+  font-family: $base-font-family-title;
+  font-weight: 700;
+  margin: 0 0.5rem;
+  position: relative;
+  text-rendering: optimizeLegibility;
+  z-index: z("title");
+
+  > .Header__word-left,
+  .Header__word-right {
+    @include scale(3 / 2);
+
+    @include respond-to("medium") {
+      @include scale(4 / 2);
+    }
+
+    @include respond-to("large") {
+      @include scale(5 / 2);
+    }
+
+    @include respond-to("huge") {
+      @include scale(6 / 2);
+    }
+  }
+
+  > a {
+    // Cannot get rid of 5 'ghost' pixels
+    // Being added below child img
+    // following is a #HACK to keep rhythm
+    padding-bottom: $header-logo-link-padding-bottom;
+    padding-top: $header-logo-link-padding-top;
+  }
+}
+
+.Header__logo-isScrolling {
+  @extend %header-logo;
+  transform: scale(0.75) translateY(-25%);
+}
+
+.Header__logo-notScrolling {
+  @extend %header-logo;
+  transform: scale(1) translateY(0);
+}
+
+.Header__Dock__logoBackground {
+  background-color: $base-light;
+  border-radius: 50%;
+  display: inline-block;
+  height: 25px;
+  margin: 0 auto;
+  width: 25px;
+}
+
+.Header__Dock-closed-isScrolling {
+  @extend %header-dock;
+  @include header-dock-offset-transforms();
+  background-color: transparent;
+}
+
+.Header__Dock-closed-notScrolling {
+  @extend %header-dock;
+  @include header-dock-offset-transforms();
+  background-color: $base-light;
+}
+
+.Header__Dock-opened-isScrolling, .Header__Dock-opened-notScrolling {
+  @extend %header-dock;
+  background-color: $primary-light;
+  transform: translateY(0);
+}
+
+// .Header__Dock-isScrolling {
+//   background-color: transparent;
+// }
+
+// .Header__Dock-notScrolling {
+//   background-color: $base-light;
+// }
+
+.Header__Dock__menu-closed {
+  @extend %header-dock-menu;
+  // visibility: hidden;
+  // animation: visible-to-hidden $header-animation-speed ease-out;
+  // animation-fill-mode: forwards;
+}
+
+.Header__Dock__menu-opened {
+  @extend %header-dock-menu;
+  // visibility: visible;
+  // animation: hidden-to-visible $header-animation-speed ease-out;
+  // animation-fill-mode: both;
+}
+
+.Header__Dock__nav {
+  @extend %centered;
+  color: $secondary;
+  margin: rhythm(1 / 3) 0 rhythm(2 / 3);
+
+  .Header__word-left,
+  .Header__word-right {
+    font-size: $header-dock-nav-font-height;
+    height: auto;
+    width: 13rem;
+  }
+
+  > button {
+    align-items: center;
+    align-self: center;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    height: rhythm($header-dock-menu-button-size-rhythm);
+    justify-content: space-around;
+    padding-left: 2rem;
+    padding-right: 2rem;
+    width: rhythm($header-dock-menu-button-size-rhythm);
+  }
+
+  > button span {
+    background: $secondary;
+    border-radius: 0.5rem;
+    height: 0.125rem;
+    position: relative;
+    transform-origin: 1px;
+    transition: all $header-animation-speed linear;
+    width: rhythm(1);
+  }
+}
+
+// Hamburger Menu changes if Open
+//   -> span #1: transform: open ? 'rotate(45deg)' : 'rotate(0)'
+//   -> span #2: opacity: open ? '0' : '1'
+//               transform: open ? 'translateX(20px)' : 'translateX(0)'
+//   -> span #3: transform: open ? 'rotate(-45deg)' : 'rotate(0)'
+// --Header Menu Closed--
+.Header__Dock__menu__button-closed {
+  :first-child {
+    transform: rotate(0);
+  }
+  :nth-child(2) {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  :nth-child(3) {
+    transform: rotate(0);
+  }
+}
+// --Header Menu Open--
+.Header__Dock__menu__button-opened {
+  :first-child {
+    transform: rotate(45deg);
+  }
+  :nth-child(2) {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  :nth-child(3) {
+    transform: rotate(-45deg);
+  }
+}
