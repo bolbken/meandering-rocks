@@ -17,5 +17,16 @@
     "source.fixAll.eslint": true
   },
   "eslint.validate": ["javascript"],
-  "dynamo.showExplorer": true
+  "dynamo.showExplorer": true,
+  "stylelint.enable": true,
+  "css.validate": false,
+  "less.validate": false,
+  "scss.validate": false,
+  "stylelint.configBasedir": "${workspaceFolder}",
+  "stylelint.validate": ["css", "less", "postcss", "sass", "scss"],
+  "[scss]": {
+    "editor.codeActionsOnSave": {
+      "source.fixAll.stylelint": true
+    }
+  }
 }

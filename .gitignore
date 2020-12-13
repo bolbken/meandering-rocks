@@ -1,6 +1,26 @@
+# package directories
+node_modules
+jspm_packages
+
+# Serverless directories
+.serverless
+
+# Serverless build output
+.serverless
+.serverless-offline
+.webpack
+.cache-loader
+.dynamodb
+
+# Environment Files
+**/*.env
+
+# Other Artifact Files
+**/*.log
+
 # Logs
 logs
-*.log
+**/*.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
@@ -29,15 +49,22 @@ bower_components
 # node-waf configuration
 .lock-wscript
 
-# Compiled binary addons (http://nodejs.org/api/addons.html)
+# Compiled binary addons (https://nodejs.org/api/addons.html)
 build/Release
 
 # Dependency directories
 node_modules/
 jspm_packages/
 
-# Typescript v1 declaration files
+# Zipped folders
+.zip
+
+# TypeScript v1 declaration files
 typings/
+
+# TypeScript incremental build products
+dist/
+tsconfig.tsbuildinfo
 
 # Optional npm cache directory
 .npm
@@ -51,8 +78,11 @@ typings/
 # Output of 'npm pack'
 *.tgz
 
-# dotenv environment variable files
-.env*
+# Yarn Integrity file
+.yarn-integrity
+
+# next.js build output
+.next
 
 # gatsby files
 .cache/

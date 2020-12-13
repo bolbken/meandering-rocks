@@ -5,15 +5,42 @@
   "version": "0.2.0",
   "configurations": [
     {
+      "name": "Web Develop",
       "type": "node",
       "request": "launch",
-      "name": "Newsletter Service",
-      "cwd": "${workspaceFolder}/services/newsletter",
-      "program": "${workspaceFolder}/node_modules/.bin/serverless",
+      "protocol": "inspector",
+      "cwd": "${workspaceFolder}/web",
+      "program": "${workspaceRoot}/web/node_modules/.bin/gatsby",
+      "autoAttachChildProcesses": true,
+      "args": ["develop", "--inspect-brk"],
+      "stopOnEntry": false,
+      "runtimeArgs": ["--nolazy"],
+      "sourceMaps": false
+    },
+    {
+      "name": "Web Build",
+      "type": "node",
+      "request": "launch",
+      "protocol": "inspector",
+      "cwd": "${workspaceFolder}/web",
+      "program": "${workspaceRoot}/web/node_modules/.bin/gatsby",
+      "args": ["build"],
+      "stopOnEntry": false,
+      "runtimeArgs": ["--nolazy"],
+      "sourceMaps": false
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "API Offline Newsletter Service",
+      "cwd": "${workspaceFolder}/api/services/newsletter",
+      "program": "${workspaceFolder}/api/services/newsletter/node_modules/.bin/serverless",
       "args": ["offline", "--noTimeout", "--stage=dev"],
       "sourceMaps": true,
       "runtimeArgs": ["--lazy"],
-      "outFiles": ["${workspaceFolder}/services/newsletter/.webpack/**/*.js"],
+      "outFiles": [
+        "${workspaceFolder}/api/services/newsletter/.webpack/**/*.js"
+      ],
       "protocol": "inspector",
       "runtimeExecutable": "node",
       "env": {
@@ -23,14 +50,14 @@
     {
       "type": "node",
       "request": "launch",
-      "name": "Photos Service",
-      "cwd": "${workspaceFolder}/services/photos",
-      "program": "${workspaceFolder}/node_modules/.bin/serverless",
+      "name": "API Offline Photos Service",
+      "cwd": "${workspaceFolder}/api/services/photos",
+      "program": "${workspaceFolder}/api/services/photos/node_modules/.bin/serverless",
       // "args": ["offline", "--noTimeout", "--dontPrintOutput", "--stage=dev"],
       "args": ["offline", "--noTimeout", "--stage=dev"],
       "sourceMaps": true,
       "runtimeArgs": ["--lazy"],
-      "outFiles": ["${workspaceFolder}/services/photos/.webpack/**/*.js"],
+      "outFiles": ["${workspaceFolder}/api/services/photos/.webpack/**/*.js"],
       "protocol": "inspector",
       "runtimeExecutable": "node",
       "env": {

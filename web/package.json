@@ -1,11 +1,13 @@
 {
-  "name": "meandering-rocks",
+  "name": "meandering-rocks-web",
   "private": true,
-  "description": "An outdoor climbing and travel blog.",
+  "description": "Source code for the Meandering.Rocks \"static\" site web page.",
   "version": "0.1.0",
-  "author": "Ben Kolb <ben@meandering.rocks>",
-  "bugs": {
-    "url": "https://meandering.rocks/issues"
+  "author": "Ben Kolb <ben@bolbken.dev>",
+  "workspaces": {
+    "nohoist": [
+      "**"
+    ]
   },
   "dependencies": {
     "classnames": "^2.2.6",
@@ -41,12 +43,7 @@
     "react-scroll-parallax": "^2.3.4",
     "react-tilt": "^0.1.4"
   },
-  "devDependencies": {
-    "prettier": "2.1.2",
-    "stylelint": "^13.7.2",
-    "stylelint-config-prettier": "^8.0.2",
-    "stylelint-config-sass-guidelines": "^7.1.0"
-  },
+  "devDependencies": {},
   "homepage": "https://meandering.rocks",
   "keywords": [
     "climbing",
@@ -55,12 +52,7 @@
     "rocks",
     "rv"
   ],
-  "license": "MIT",
   "main": "n/a",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/bolbken/meandering-rocks-web.git"
-  },
   "scripts": {
     "build": "gatsby build",
     "develop": "gatsby develop",

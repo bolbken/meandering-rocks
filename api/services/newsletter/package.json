@@ -1,6 +1,6 @@
 {
   "name": "newsletter",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "Serverless api for handling subscriptions and publishing of the meandering.rocks email newsletter.",
   "workspaces": {
     "nohoist": [
@@ -16,7 +16,6 @@
     "deploy": "serverless deploy --stage $(../../utils/sls-deploy-git-stage.sh ../../config.json)"
   },
   "author": "Ben Kolb (@bolbken)",
-  "license": "MIT",
   "devDependencies": {
     "aws-sdk": "^2.803.0",
     "concurrently": "^5.3.0",

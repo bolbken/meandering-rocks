@@ -1,18 +1,17 @@
 {
-  "name": "meandering-rocks-api",
-  "version": "1.0.0",
-  "description": "Serverless API backend for Meandering.Rocks website.",
+  "name": "meandering-rocks",
+  "version": "0.1.0",
+  "description": "Source code of the Meandering.Rocks website.",
   "main": "index.js",
-  "repository": "https://github.com/bolbken/meandering-rocks-api.git",
+  "repository": "https://github.com/bolbken/meandering-rocks.git",
   "author": "@bolbken",
   "license": "ISC",
   "private": "true",
   "workspaces": {
     "packages": [
-      "services/*"
-    ],
-    "nohoist": [
-      "**"
+      "api/services/*",
+      "api/packages/*",
+      "web/"
     ]
   },
   "keywords": [
@@ -22,9 +21,9 @@
     "api"
   ],
   "bugs": {
-    "url": "https://github.com/bolbken/meandering-rocks-api/issues"
+    "url": "https://github.com/bolbken/meandering-rocks/issues"
   },
-  "homepage": "https://github.com/bolbken/meandering-rocks-api#readme",
+  "homepage": "https://github.com/bolbken/meandering-rocks#readme",
   "scripts": {
     "test": "lerna run test",
     "new-version": "lerna version --conventional-commits --yes",
@@ -46,7 +45,10 @@
     "lerna": "^3.22.1",
     "prettier": "2.2.0",
     "serverless": "^2.12.0",
-    "serverless-offline": "^6.8.0"
+    "serverless-offline": "^6.8.0",
+    "stylelint": "^13.7.2",
+    "stylelint-config-prettier": "^8.0.2",
+    "stylelint-config-sass-guidelines": "^7.1.0"
   },
   "dependencies": {}
 }
