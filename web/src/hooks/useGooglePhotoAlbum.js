@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react"
-import { useStaticQuery, graphql } from "gatsby"
+import { useState, useEffect } from 'react'
+import { useStaticQuery, graphql } from 'gatsby'
 
 export default function useGooglePhotoAlbum(albumName, query, fillPhotos) {
   const creationTimeDecendingSort = (a, b) => {
@@ -16,23 +16,35 @@ export default function useGooglePhotoAlbum(albumName, query, fillPhotos) {
       site {
         siteMetadata {
           api {
-            baseUrl
+            photos {
+              baseUrl
+              port
+              pathPrefix
+            }
           }
         }
       }
     }
   `)
-  const { baseUrl } = data.site.siteMetadata.api
+  const { baseUrl, port, pathPrefix } = data.site.siteMetadata.api.photos
   const queryStr = Object.keys(query)
-    .map(key => encodeURIComponent(key) + "=" + encodeURIComponent(query[key]))
-    .join("&")
+    .map(
+      (key) => encodeURIComponent(key) + '=' + encodeURIComponent(query[key])
+    )
+    .join('&')
+
+  // function handleUrl(baseUrl, port) {
+  //   // http://localhost:7010/development/album
+  // }
 
   useEffect(() => {
     async function fetchAlbum() {
-      const res = await fetch(`${baseUrl}/album/${albumName}?${queryStr}`)
+      const res = await fetch(
+        `${baseUrl}:${port}${pathPrefix}/album/${albumName}?${queryStr}`
+      )
       const json = await res.json()
       const googlePhotos = json.mediaItems
-        .map(item => {
+        .map((item) => {
           return {
             id: item.id,
             alt: item.description || item.filename,
@@ -58,9 +70,9 @@ export default function useGooglePhotoAlbum(albumName, query, fillPhotos) {
 }
 
 function base64ArrayBuffer(arrayBuffer) {
-  let base64 = ""
+  let base64 = ''
   const encodings =
-    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"
+    'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'
 
   const bytes = new Uint8Array(arrayBuffer)
   const byteLength = bytes.byteLength

@@ -12,18 +12,31 @@ plugins:
   - serverless-offline
 
 custom:
+  dotenv:
+    # Root of monorepo has .env* files
+    basePath: '../../../'
+    include:
+      - API_KEY_NAME_TARGET_BROWSER
+      - API_KEY_NAME_TARGET_AUX
+      - API_NEWSLETTER_SERVICE_OFFLINE_HTTP_PORT
+      - API_NEWSLETTER_SERVICE_OFFLINE_WEBSOCKET_PORT
+      - API_NEWSLETTER_SERVICE_OFFLINE_LAMBDA_PORT
+      - API_NEWSLETTER_SERVICE_DYNAMODB_PORT
+      - API_NEWSLETTER_SERVICE_DYNAMODB_TABLE_NAME
   serverless-offline:
-    httpPort: 5010
+    httpPort: ${env:API_NEWSLETTER_SERVICE_OFFLINE_HTTP_PORT, 7020}
+    websocketPort: ${env:API_NEWSLETTER_SERVICE_OFFLINE_WEBSOCKET_PORT, 7021}
+    lambdaPort: ${env:API_NEWSLETTER_SERVICE_OFFLINE_LAMBDA_PORT, 7022}
   dynamodb:
     stages:
       - ${self:provider.stage}
     start:
-      port: ${env:AWS_DYNAMODB_LOCAL_PORT, 5015}
+      port: ${env:API_NEWSLETTER_SERVICE_DYNAMODB_PORT, 7025}
       migrate: true
     seed:
       dev:
         sources:
-          - table: ${env:AWS_DYNAMODB_NEWSLETTER_SUBSCRIPTION_TABLE_NAME}-${opt:stage, 'dev'}
+          - table: ${env:API_NEWSLETTER_SERVICE_DYNAMODB_TABLE_NAME}-${opt:stage, 'dev'}
             sources: [./utils/seed.json]
   enablePrivate:
     prod: true
@@ -60,8 +73,8 @@ provider:
       'Fn::ImportValue': MeanderingRocksApiGW-rootResourceId-${opt:stage, 'dev'}
     metrics: false
   apiKeys:
-    - ${env:BROWSER_API_KEY_NAME}-${opt:stage, 'dev'}
-    - ${env:AUX_API_KEY_NAME}-${opt:stage, 'dev'}
+    - ${env:API_KEY_NAME_TARGET_BROWSER}-${opt:stage, 'dev'}
+    - ${env:API_KEY_NAME_TARGET_AUX}-${opt:stage, 'dev'}
   usagePlan:
     quota:
       limit: ${self:custom.limits.${opt:stage, 'dev'}.limit, self:custom.limits.other.limit}
@@ -76,7 +89,7 @@ resources:
     subscriptionsTable:
       Type: AWS::DynamoDB::Table
       Properties:
-        TableName: ${env:AWS_DYNAMODB_NEWSLETTER_SUBSCRIPTION_TABLE_NAME}-${opt:stage, 'dev'}
+        TableName: ${env:API_NEWSLETTER_SERVICE_DYNAMODB_TABLE_NAME}-${opt:stage, 'dev'}
         AttributeDefinitions:
           - AttributeName: email
             AttributeType: S

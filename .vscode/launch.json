@@ -12,10 +12,11 @@
       "cwd": "${workspaceFolder}/web",
       "program": "${workspaceRoot}/web/node_modules/.bin/gatsby",
       "autoAttachChildProcesses": true,
-      "args": ["develop", "--inspect-brk"],
+      "args": ["develop", "--inspect-brk", "--port"],
       "stopOnEntry": false,
       "runtimeArgs": ["--nolazy"],
-      "sourceMaps": false
+      "sourceMaps": false,
+      "envFile": "${workspaceFolder}/.env"
     },
     {
       "name": "Web Build",

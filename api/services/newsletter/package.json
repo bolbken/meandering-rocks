@@ -9,11 +9,12 @@
   },
   "private": true,
   "scripts": {
-    "offline": "export SLS_DEBUG=* && serverless offline -s dev",
-    "dynamodb": "export SLS_DEBUG=* && serverless dynamodb start --seed=dev",
-    "develop": "concurrently \"yarn run dynamodb\" \"yarn run offline\" ",
+    "offline": "SLS_DEBUG=* serverless offline --stage development",
+    "dynamodb": "SLS_DEBUG=* serverless dynamodb start --seed=dev --stage development",
+    "dynamodb:init": "serverless dynamodb install",
+    "develop": "yarn run dynamodb:init && concurrently -n newsletter-offline,newsletter-dynamodb \"yarn run offline\" \"yarn run dynamodb\"",
     "test": "echo \"WARNING: no tests specified\"",
-    "deploy": "serverless deploy --stage $(../../utils/sls-deploy-git-stage.sh ../../config.json)"
+    "deploy": "serverless deploy --stage $(../utils/sls-deploy-git-stage.sh ../config.json)"
   },
   "author": "Ben Kolb (@bolbken)",
   "devDependencies": {

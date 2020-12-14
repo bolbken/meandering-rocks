@@ -1,4 +1,15 @@
-const targetAddress = new URL(process.env.TARGET_ADDRESS || `http://localhost`)
+// Environment setup
+const activeEnv = process.env.BUILD_ENV || process.env.NODE_ENV || 'development'
+console.log(`Using environment config: '${activeEnv}'`)
+require('dotenv').config({
+  // env file is at root of monorepo
+  path: `../.env.${activeEnv}`,
+})
+
+// Config variables
+const targetAddress = new URL(
+  process.env.WEB_TARGET_ADDRESS || `http://localhost`
+)
 const maxContentWidthPx = 590
 
 module.exports = {
@@ -10,25 +21,32 @@ module.exports = {
       email: `contact@meandering.rocks`,
     },
     description: `Pictures and stories accross the USA.`,
-    siteUrl: process.env.TARGET_ADDRESS,
+    siteUrl: process.env.WEB_TARGET_ADDRESS,
     size: {
       maxWidth: maxContentWidthPx,
     },
     api: {
-      baseUrl:
-        process.env.MEANDERING_ROCKS_API_BASE_URL ||
-        `http://localhost:${process.env.MEANDERING_ROCKS_API_PORT || 5000}/dev`,
+      photos: {
+        baseUrl: process.env.API_BASE_URL || 'http://localhost',
+        port: process.env.API_PHOTOS_SERVICE_OFFLINE_HTTP_PORT || '443',
+        pathPrefix: process.env.NODE_ENV == 'development' ? '/development' : '',
+      },
+      newsletter: {
+        baseUrl: process.env.API_BASE_URL || 'http://localhost',
+        port: process.env.API_NEWSLETTER_SERVICE_OFFLINE_HTTP_PORT || '443',
+        pathPrefix: process.env.NODE_ENV == 'development' ? '/development' : '',
+      },
     },
   },
 
   plugins: [
-    "gatsby-source-google-photos",
-    "gatsby-remark-embed-video",
+    'gatsby-source-google-photos',
+    'gatsby-remark-embed-video',
     {
       resolve: `gatsby-plugin-s3`,
       options: {
-        bucketName: process.env.TARGET_BUCKET_NAME || "meandering.rocks",
-        region: process.env.AWS_REGION || "us-east-1",
+        bucketName: process.env.WEB_TARGET_BUCKET_NAME || 'fake-bucket',
+        region: process.env.AWS_REGION || 'us-east-1',
         protocol: targetAddress.protocol.slice(0, -1),
         hostname: targetAddress.hostname,
         acl: null,
@@ -74,7 +92,7 @@ module.exports = {
             },
           },
           {
-            resolve: "gatsby-remark-embed-video",
+            resolve: 'gatsby-remark-embed-video',
             options: {
               width: maxContentWidthPx,
               ratio: 1.77, // Optional: Defaults to 16/9 = 1.77
@@ -83,12 +101,12 @@ module.exports = {
               noIframeBorder: true, //Optional: Disable insertion of <style> border: 0
               urlOverrides: [
                 {
-                  id: "youtube",
-                  embedURL: videoId =>
+                  id: 'youtube',
+                  embedURL: (videoId) =>
                     `https://www.youtube-nocookie.com/embed/${videoId}`,
                 },
               ], //Optional: Override URL of a service provider, e.g to enable youtube-nocookie support
-              containerClass: "embedVideo-container", //Optional: Custom CSS class for iframe container, for multiple classes separate them by space
+              containerClass: 'embedVideo-container', //Optional: Custom CSS class for iframe container, for multiple classes separate them by space
             },
           },
           `gatsby-remark-prismjs`,
@@ -115,14 +133,14 @@ module.exports = {
         // background_color: `#ffffff`,
         // theme_color: `#663399`,
         // display: `minimal-ui`,
-        // icon: `content/assets/gatsby-icon.png`,
+        icon: `content/assets/site-logo.svg`,
       },
     },
     `gatsby-plugin-react-helmet`,
     {
       resolve: `gatsby-plugin-sass`,
       options: {
-        includePaths: ["src/styles"],
+        includePaths: ['src/styles'],
       },
     },
     // this (optional) plugin enables Progressive Web App + Offline functionality

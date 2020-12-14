@@ -11,7 +11,7 @@
     "packages": [
       "api/services/*",
       "api/packages/*",
-      "web/"
+      "web"
     ]
   },
   "keywords": [
@@ -25,16 +25,20 @@
   },
   "homepage": "https://github.com/bolbken/meandering-rocks#readme",
   "scripts": {
-    "test": "lerna run test",
-    "new-version": "lerna version --conventional-commits --yes",
+    "develop": "lerna run develop --stream",
     "diff": "lerna diff",
-    "deploy:common": "serverless deploy --stage $(./utils/sls-deploy-git-stage.sh ./config.json)",
-    "deploy:packages": "lerna run deploy"
+    "test": "lerna run test",
+    "test:since-review": "lerna run test --since review",
+    "test:since-dev": "lerna run test --since dev",
+    "new-version": "lerna version --conventional-commits --yes",
+    "deploy": "lerna run deploy",
+    "deploy:since-review": "lerna run deploy --since review"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",
     "@babel/eslint-parser": "^7.12.1",
     "aws-sdk": "^2.797.0",
+    "concurrently": "^5.3.0",
     "eslint": "^7.9.0",
     "eslint-config-airbnb-base": "^14.2.1",
     "eslint-config-prettier": "^6.15.0",
@@ -49,6 +53,5 @@
     "stylelint": "^13.7.2",
     "stylelint-config-prettier": "^8.0.2",
     "stylelint-config-sass-guidelines": "^7.1.0"
-  },
-  "dependencies": {}
+  }
 }

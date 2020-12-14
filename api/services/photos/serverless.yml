@@ -12,6 +12,20 @@ plugins:
   - serverless-express
 
 custom:
+  dotenv:
+    # Root of monorepo has .env* files
+    basePath: '../../../'
+    include:
+      - API_KEY_NAME_TARGET_BROWSER
+      - API_KEY_NAME_TARGET_AUX
+      - API_PHOTOS_SERVICE_OFFLINE_HTTP_PORT=7010
+      - API_PHOTOS_SERVICE_OFFLINE_WEBSOCKET_PORT=7011
+      - API_PHOTOS_SERVICE_OFFLINE_LAMBDA_PORT=7012
+      - API_PHOTOS_SERVICE_GOOGLE_OAUTH_CLIENT_ID
+      - API_PHOTOS_SERVICE_GOOGLE_OAUTH_CLIENT_SECRET
+      - API_PHOTOS_SERVICE_GOOGLE_OAUTH_EMAIL
+      - API_PHOTOS_SERVICE_GOOGLE_OAUTH_PASSWORD
+
   bundle:
     stats: false
     linting: false
@@ -23,7 +37,9 @@ custom:
     fixPackages:
       - 'formidable@1.x'
   serverless-offline:
-    httpPort: 5000
+    httpPort: ${env:API_PHOTOS_SERVICE_OFFLINE_HTTP_PORT, 7010}
+    websocketPort: ${env:API_PHOTOS_SERVICE_OFFLINE_WEBSOCKET_PORT, 7011}
+    lambdaPort: ${env:API_PHOTOS_SERVICE_OFFLINE_LAMBDA_PORT, 7012}
   enablePrivate:
     prod: true
     review: true
@@ -61,8 +77,8 @@ provider:
       'Fn::ImportValue': MeanderingRocksApiGW-rootResourceId-${opt:stage}
     metrics: false
   apiKeys:
-    - ${env:BROWSER_API_KEY_NAME}-${opt:stage}
-    - ${env:AUX_API_KEY_NAME}-${opt:stage}
+    - ${env:API_KEY_NAME_TARGET_BROWSER}-${opt:stage}
+    - ${env:API_KEY_NAME_TARGET_AUX}-${opt:stage}
   usagePlan:
     quota:
       limit: ${self:custom.limits.${opt:stage}.limit, self:custom.limits.other.limit}

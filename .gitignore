@@ -13,7 +13,7 @@ jspm_packages
 .dynamodb
 
 # Environment Files
-**/*.env
+**/*.env*
 
 # Other Artifact Files
 **/*.log

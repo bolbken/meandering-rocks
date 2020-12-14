@@ -1,5 +1,5 @@
 {
-  "name": "meandering-rocks-web",
+  "name": "web",
   "private": true,
   "description": "Source code for the Meandering.Rocks \"static\" site web page.",
   "version": "0.1.0",
@@ -55,14 +55,13 @@
   "main": "n/a",
   "scripts": {
     "build": "gatsby build",
-    "develop": "gatsby develop",
+    "develop": "PORT=8000 gatsby develop",
     "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,md,scss}\"",
-    "start": "yarn develop",
+    "start": "gatsby build && gatsby serve",
     "serve": "gatsby serve",
     "clean": "gatsby clean",
     "test": "echo \"Write tests! -> https://gatsby.dev/unit-testing\" && exit 1",
-    "deploy": "gatsby-plugin-s3 deploy --yes && aws cloudfront create-invalidation --distribution-id $CLOUDFRONT_DISTRIBUTION --paths \"/*\"",
-    "token-photos": "gatsby-source-google-photos-token",
-    "token-docs": "gatsby-source-google-docs-token"
+    "deploy": "gatsby build && gatsby-plugin-s3 deploy --yes && aws cloudfront create-invalidation --distribution-id $CLOUDFRONT_DISTRIBUTION --paths \"/*\"",
+    "token-photos": "gatsby-source-google-photos-token"
   }
 }

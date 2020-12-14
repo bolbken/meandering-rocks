@@ -10,9 +10,10 @@
   "main": "handler.js",
   "private": true,
   "scripts": {
-    "offline": "export SLS_DEBUG=* && serverless offline -s dev",
+    "offline": "SLS_DEBUG=* serverless offline --stage development",
+    "develop": "yarn run offline",
     "test": "echo \"WARNING: no tests specified\"",
-    "deploy": "serverless deploy --stage $(../../utils/sls-deploy-git-stage.sh ../../config.json)"
+    "deploy": "serverless deploy --stage $(../utils/sls-deploy-git-stage.sh ../config.json)"
   },
   "author": "Ben Kolb (@bolbken)",
   "devDependencies": {
