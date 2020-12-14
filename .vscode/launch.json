@@ -12,11 +12,14 @@
       "cwd": "${workspaceFolder}/web",
       "program": "${workspaceRoot}/web/node_modules/.bin/gatsby",
       "autoAttachChildProcesses": true,
-      "args": ["develop", "--inspect-brk", "--port"],
+      "args": ["develop", "--inspect-brk"],
       "stopOnEntry": false,
       "runtimeArgs": ["--nolazy"],
       "sourceMaps": false,
-      "envFile": "${workspaceFolder}/.env"
+      "envFile": "${workspaceFolder}/.env.development",
+      "env": {
+        "PORT": "8000"
+      }
     },
     {
       "name": "Web Build",
@@ -28,7 +31,8 @@
       "args": ["build"],
       "stopOnEntry": false,
       "runtimeArgs": ["--nolazy"],
-      "sourceMaps": false
+      "sourceMaps": false,
+      "envFile": "${workspaceFolder}/.env.development"
     },
     {
       "type": "node",
@@ -44,6 +48,7 @@
       ],
       "protocol": "inspector",
       "runtimeExecutable": "node",
+      "envFile": "${workspaceFolder}/.env.development",
       "env": {
         "SLS_DEBUG": "*"
       }
@@ -61,6 +66,7 @@
       "outFiles": ["${workspaceFolder}/api/services/photos/.webpack/**/*.js"],
       "protocol": "inspector",
       "runtimeExecutable": "node",
+      "envFile": "${workspaceFolder}/.env.development",
       "env": {
         "SLS_DEBUG": "*"
       }
