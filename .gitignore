@@ -12,6 +12,9 @@ jspm_packages
 .cache-loader
 .dynamodb
 
+# Terraform output
+
+
 # Environment Files
 **/*.env*
 

@@ -1,26 +1,21 @@
 version: 0.2
 phases:
-    install:
-        runtime-versions:
-            nodejs: 12
-        commands:
-            - 'touch .npmignore'
-            - 'npm install -g gatsby'
-    pre_build:
-        commands:
-            - 'npm ci --production'
-    build:
-        commands:
-            - 'npm run-script build'
-    post_build:
-        commands:
-            - 'npm run-script deploy'
-artifacts:
-    base-directory: public
-    files:
-        - '**/*'
-    discard-paths: no
+  install:
+    runtime-versions:
+      nodejs: 12
+    commands:
+      - 'apt-get -y update'
+      - 'npm install -g yarn gatsby serverless'
+      - 'yarn install --production'
+  build:
+    commands:
+      - 'yarn run build'
+  post_build:
+    commands:
+      - 'yarn run deploy'
 cache:
-    paths:
-        - '.cache/*'
-        - 'public/*'
+  paths:
+    - 'web/.cache/*'
+    - 'web/public/*'
+    - 'api/services/newsletter/.webpack/*'
+    - 'api/services/photos/.webpack/*'
