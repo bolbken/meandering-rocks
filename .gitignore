@@ -19,6 +19,8 @@ jspm_packages
 *.tfstate.lock.info
 #   Directories
 **/.terraform/
+# .tfvars files
+*.tfvars
 
 # Environment Files
 **/*.env*
