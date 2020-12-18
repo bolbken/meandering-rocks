@@ -27,3 +27,14 @@ variable "my_env_var" {
   description = "My environment variable."
 }
 ```
+
+## Running `terraform plan` using the .env file
+
+The tools [dotenv-cli]() and [tfenv]() are used to transform and export the `.env.*` file
+in the root directory of this project.
+
+Below is an example call to `terraform plan` that transforms `.env.development` and exposes it to terraform.
+
+```shell
+dotenv -e ../.env.development tfenv terraform plan
+```

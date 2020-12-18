@@ -1,6 +1,6 @@
 terraform {
   backend "s3" {
-    bucket = "meandering-rocks-onfiguration"
+    bucket = "meandering-rocks-configuration"
     key    = "terraform/.tfstate"
     region = "us-east-1"
   }
