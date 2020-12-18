@@ -1,17 +1,33 @@
+terraform {
+  backend "s3" {
+    bucket = "meandering-rocks-onfiguration"
+    key    = "terraform/.tfstate"
+    region = "us-east-1"
+  }
+}
+
 provider "aws" {
   region = "us-east-1"
 }
-
 
 # Shared CI/CD resources
 
 resource "aws_s3_bucket" "artifacts" {
   bucket = "meandering-rocks-artifacts"
   acl    = "private"
+
+  versioning {
+    enabled = true
+  }
+
+  tags = {
+    project = "meandering.rocks"
+    environment = "build"
+  }
 }
 
 resource "aws_iam_role" "codebuild" {
-  name = "meandering-rocks-codebuild-policy-master"
+  name = "meandering-rocks-codebuild-policy"
 
   assume_role_policy = <<EOF
 {
@@ -23,14 +39,20 @@ resource "aws_iam_role" "codebuild" {
         "Service": "codebuild.amazonaws.com"
       },
       "Action": "sts:AssumeRole"
-    }example
+    }
   ]
 }
 EOF
+
+  tags = {
+    project = "meandering.rocks"
+    environment = "build"
+  }
 }
 
 resource "aws_iam_role_policy" "codebuild" {
   role = aws_iam_role.codebuild.name
+  name = "meandering-rocks-codebuild-policy"
 
   policy = <<POLICY
 {
@@ -63,14 +85,15 @@ POLICY
 }
 
 resource "aws_codebuild_project" "codebuild" {
+  
   name          = "meandering-rocks-build"
   description   = "Build the source code of meandering-rocks and deploy."
   build_timeout = "5"
   service_role  = aws_iam_role.codebuild.arn
 
-  # artifacts {
-  #   type = "NO_ARTIFACTS"
-  # }
+  artifacts {
+    type = "NO_ARTIFACTS"
+  }
 
   # cache {
   #   type     = "S3"
@@ -110,7 +133,8 @@ resource "aws_codebuild_project" "codebuild" {
   # source_version = "master"
 
   tags = {
-    environment = "Test"
+    project = "meandering.rocks"
+    environment = "build"
   }
 }
 
@@ -143,10 +167,16 @@ module "api_gateway_stage_rerview" {
 
 resource "aws_s3_bucket" "production" {
   bucket = "meandering.rocks"
-  acl    = "public"
+  acl    = "public-read"
+
+  versioning {
+    enabled = true
+  }
 
   tags = {
-    Name = "meandering.rocks"
+    project = "meandering.rocks"
+    environment = "production"
+    component = "web"
   }
 }
 
@@ -181,10 +211,19 @@ resource "aws_cloudfront_distribution" "production" {
     max_ttl                = 86400
   }
 
+  restrictions {
+    geo_restriction {
+      restriction_type = "whitelist"
+      locations        = ["US", "CA", "GB", "DE"]
+    }
+  }
+
   price_class = "PriceClass_100"
 
   tags = {
+    project = "meandering.rocks"
     environment = "production"
+    component = "web"
   }
 
   viewer_certificate {
@@ -199,12 +238,14 @@ resource "aws_s3_bucket" "review" {
   acl    = "private"
 
   tags = {
-    Name = "dev.meandering.rocks"
+    project = "meandering.rocks"
+    environment = "review"
+    component = "web"
   }
 }
 
 resource "aws_iam_role" "redirect_lambda" {
-  name = "iam_for_lambda"
+  name = "meandering_rocks_web_redirect_lambda"
 
   assume_role_policy = <<EOF
 {
@@ -221,14 +262,20 @@ resource "aws_iam_role" "redirect_lambda" {
   ]
 }
 EOF
+
+  tags = {
+    project = "meandering.rocks"
+    environment = "review"
+    component = "web"
+  }
 }
 
 resource "aws_lambda_function" "review_auth_redirect" {
   # arn:aws:lambda:us-east-1:310674449483:function:meandering-rocks-dev-s3-redirect-auth
   filename      = "../services/redirect/.serverless/redirect.zip"
-  function_name = "meandering-rocks-dev-s3-redirect-auth"
+  function_name = "meandering-rocks-web-redirect-lambda"
   role          = aws_iam_role.redirect_lambda.arn
-  handler       = "exports.test" # TODO
+  handler       = "handler.redirect"
 
   # The filebase64sha256() function is available in Terraform 0.11.12 and later
   # For Terraform 0.11.11 and earlier, use the base64sha256() function and the file() function:
@@ -241,6 +288,12 @@ resource "aws_lambda_function" "review_auth_redirect" {
     variables = {
       SERVICE_REDIRECT_AUTH_CREDENTIALS = var.service_redirect_auth_credentials
     }
+  }
+
+  tags = {
+    project = "meandering.rocks"
+    environment = "review"
+    component = "web"
   }
 }
 
@@ -284,7 +337,16 @@ resource "aws_cloudfront_distribution" "review" {
   price_class = "PriceClass_100"
 
   tags = {
+    project = "meandering.rocks"
     environment = "review"
+    component = "web"
+  }
+
+  restrictions {
+    geo_restriction {
+      restriction_type = "whitelist"
+      locations        = ["US", "CA", "GB", "DE"]
+    }
   }
 
   viewer_certificate {
