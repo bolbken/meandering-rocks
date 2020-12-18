@@ -11,7 +11,8 @@
     "packages": [
       "api/services/*",
       "api/packages/*",
-      "web"
+      "web",
+      "services/*"
     ]
   },
   "keywords": [

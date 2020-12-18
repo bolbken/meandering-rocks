@@ -3,10 +3,10 @@ provider "aws" {
 }
 
 
-# CI/CD resources
+# Shared CI/CD resources
 
 resource "aws_s3_bucket" "artifacts" {
-  bucket = "meandering-rocks-build-master"
+  bucket = "meandering-rocks-artifacts"
   acl    = "private"
 }
 
@@ -53,8 +53,8 @@ resource "aws_iam_role_policy" "codebuild" {
         "s3:*"
       ],
       "Resource": [
-        "${aws_s3_bucket.build_artifacts.arn}",
-        "${aws_s3_bucket.build_artifacts.arn}/*"
+        "${aws_s3_bucket.artifacts.arn}",
+        "${aws_s3_bucket.artifacts.arn}/*"
       ]
     }
   ]
@@ -66,16 +66,16 @@ resource "aws_codebuild_project" "codebuild" {
   name          = "meandering-rocks-build"
   description   = "Build the source code of meandering-rocks and deploy."
   build_timeout = "5"
-  service_role  = aws_iam_role.example.arn
+  service_role  = aws_iam_role.codebuild.arn
 
-  artifacts {
-    type = "NO_ARTIFACTS"
-  }
+  # artifacts {
+  #   type = "NO_ARTIFACTS"
+  # }
 
-  cache {
-    type     = "S3"
-    location = aws_s3_bucket.build_artifacts.bucket
-  }
+  # cache {
+  #   type     = "S3"
+  #   location = aws_s3_bucket.artifacts.bucket
+  # }
 
   environment {
     compute_type                = "BUILD_GENERAL1_SMALL"
@@ -97,7 +97,7 @@ resource "aws_codebuild_project" "codebuild" {
 
     s3_logs {
       status   = "ENABLED"
-      location = "${aws_s3_bucket.build_artifacts.id}/build-log"
+      location = "${aws_s3_bucket.artifacts.id}/build-log"
     }
   }
 
@@ -105,77 +105,189 @@ resource "aws_codebuild_project" "codebuild" {
     type            = "GITHUB"
     location        = "https://github.com/bolbken/meandering-rocks.git"
     git_clone_depth = 1
-
-    # git_submodules_config {
-    #   fetch_submodules = true
-    # }
   }
 
-  source_version = "master"
-
-  # vpc_config {
-  #   vpc_id = aws_vpc.example.id
-
-  #   subnets = [
-  #     aws_subnet.example1.id,
-  #     aws_subnet.example2.id,
-  #   ]
-
-  #   security_group_ids = [
-  #     aws_security_group.example1.id,
-  #     aws_security_group.example2.id,
-  #   ]
-  # }
+  # source_version = "master"
 
   tags = {
     environment = "Test"
   }
 }
 
-# resource "aws_codebuild_project" "project-with-cache" {
-#   name           = "test-project-cache"
-#   description    = "test_codebuild_project_cache"
-#   build_timeout  = "5"
-#   queued_timeout = "5"
 
-#   service_role = aws_iam_role.example.arn
-
-#   artifacts {
-#     type = "NO_ARTIFACTS"
-#   }
-
-#   cache {
-#     type  = "LOCAL"
-#     modes = ["LOCAL_DOCKER_LAYER_CACHE", "LOCAL_SOURCE_CACHE"]
-#   }
-
-#   environment {
-#     compute_type                = "BUILD_GENERAL1_SMALL"
-#     image                       = "aws/codebuild/standard:1.0"
-#     type                        = "LINUX_CONTAINER"
-#     image_pull_credentials_type = "CODEBUILD"
-
-#     environment_variable {
-#       name  = "SOME_KEY1"
-#       value = "SOME_VALUE1"
-#     }
-#   }
-
-#   source {
-#     type            = "GITHUB"
-#     location        = "https://github.com/mitchellh/packer.git"
-#     git_clone_depth = 1
-#   }
-
-#   tags = {
-#     Environment = "Test"
-#   }
-# }
-
-
-# Back-end API resources
+# Common back-end API resources
 resource "aws_api_gateway_rest_api" "default" {
   name = "MeanderingRocksAPIGateway"
   
 }
 
+# Production API resources
+module "api_gateway_stage_production" {
+  source = "./modules/api_gateway_stage"
+
+  api_gateway_stage_name = "production"
+  api_gateway_id = aws_api_gateway_rest_api.default.id
+}
+
+
+# Review stage API resources
+module "api_gateway_stage_rerview" {
+  source = "./modules/api_gateway_stage"
+
+  api_gateway_stage_name = "review"
+  api_gateway_id = aws_api_gateway_rest_api.default.id
+}
+
+
+# Production Web resources
+
+resource "aws_s3_bucket" "production" {
+  bucket = "meandering.rocks"
+  acl    = "public"
+
+  tags = {
+    Name = "meandering.rocks"
+  }
+}
+
+resource "aws_cloudfront_distribution" "production" {
+  origin {
+    domain_name = aws_s3_bucket.production.bucket_regional_domain_name
+    origin_id   = "S3-Website-${aws_s3_bucket.production.bucket_regional_domain_name}/."
+  }
+
+  enabled             = true
+  is_ipv6_enabled     = true
+  comment             = "Production meandering.rocks website."
+
+  aliases = ["meandering.rocks", "www.meandering.rocks"]
+
+  default_cache_behavior {
+    allowed_methods  = ["GET", "HEAD"]
+    cached_methods   = ["GET", "HEAD"]
+    target_origin_id = "S3-Website-${aws_s3_bucket.production.bucket_regional_domain_name}/."
+
+    forwarded_values {
+      query_string = false
+
+      cookies {
+        forward = "none"
+      }
+    }
+
+    viewer_protocol_policy = "allow-all"
+    min_ttl                = 0
+    default_ttl            = 3600
+    max_ttl                = 86400
+  }
+
+  price_class = "PriceClass_100"
+
+  tags = {
+    environment = "production"
+  }
+
+  viewer_certificate {
+    iam_certificate_id = "9d4fa27e-4778-4006-96d0-3eb0f3ce3b9b"
+  }
+}
+
+# Review Web Resources
+
+resource "aws_s3_bucket" "review" {
+  bucket = "dev.meandering.rocks"
+  acl    = "private"
+
+  tags = {
+    Name = "dev.meandering.rocks"
+  }
+}
+
+resource "aws_iam_role" "redirect_lambda" {
+  name = "iam_for_lambda"
+
+  assume_role_policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": "sts:AssumeRole",
+      "Principal": {
+        "Service": "lambda.amazonaws.com"
+      },
+      "Effect": "Allow",
+      "Sid": ""
+    }
+  ]
+}
+EOF
+}
+
+resource "aws_lambda_function" "review_auth_redirect" {
+  # arn:aws:lambda:us-east-1:310674449483:function:meandering-rocks-dev-s3-redirect-auth
+  filename      = "../services/redirect/.serverless/redirect.zip"
+  function_name = "meandering-rocks-dev-s3-redirect-auth"
+  role          = aws_iam_role.redirect_lambda.arn
+  handler       = "exports.test" # TODO
+
+  # The filebase64sha256() function is available in Terraform 0.11.12 and later
+  # For Terraform 0.11.11 and earlier, use the base64sha256() function and the file() function:
+  # source_code_hash = "${base64sha256(file("lambda_function_payload.zip"))}"
+  source_code_hash = filebase64sha256("../services/redirect/.serverless/redirect.zip")
+
+  runtime = "nodejs12.x"
+
+  environment {
+    variables = {
+      SERVICE_REDIRECT_AUTH_CREDENTIALS = var.service_redirect_auth_credentials
+    }
+  }
+}
+
+resource "aws_cloudfront_distribution" "review" {
+  origin {
+    domain_name = aws_s3_bucket.review.bucket_regional_domain_name
+    origin_id   = "S3-Website-${aws_s3_bucket.review.bucket_regional_domain_name}/."
+  }
+
+  enabled             = true
+  is_ipv6_enabled     = true
+  comment             = "Review dev.meandering.rocks website."
+
+  aliases = ["dev.meandering.rocks", "dev.www.meandering.rocks"]
+
+  default_cache_behavior {
+    allowed_methods  = ["GET", "HEAD"]
+    cached_methods   = ["GET", "HEAD"]
+    target_origin_id = "S3-Website-${aws_s3_bucket.review.bucket_regional_domain_name}/."
+
+    forwarded_values {
+      query_string = false
+
+      cookies {
+        forward = "none"
+      }
+    }
+
+    viewer_protocol_policy = "allow-all"
+    min_ttl                = 0
+    default_ttl            = 3600
+    max_ttl                = 86400
+
+    lambda_function_association {
+      event_type   = "viewer-request"
+      lambda_arn   = aws_lambda_function.review_auth_redirect.qualified_arn
+      include_body = false
+    }
+  }
+
+  price_class = "PriceClass_100"
+
+  tags = {
+    environment = "review"
+  }
+
+  viewer_certificate {
+    iam_certificate_id = "f64af084-6b6f-49f9-87bd-7282d2eed99e"
+  }
+}

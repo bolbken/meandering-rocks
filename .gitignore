@@ -5,15 +5,20 @@ jspm_packages
 # Serverless directories
 .serverless
 
-# Serverless build output
+# Serverless Framework
 .serverless
 .serverless-offline
 .webpack
 .cache-loader
 .dynamodb
 
-# Terraform output
-
+# Terraform
+#   Compiled files
+*.tfstate
+*.tfstate.backup
+*.tfstate.lock.info
+#   Directories
+**/.terraform/
 
 # Environment Files
 **/*.env*

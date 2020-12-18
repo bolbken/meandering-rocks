@@ -1,0 +1,27 @@
+service: meandering-rocks-auth-redirect
+frameworkVersion: '2'
+
+package:
+  excludeDevDependencies: true
+  individually: true
+
+plugins:
+  - serverless-dotenv-plugin
+
+custom:
+  dotenv:
+    # Root of monorepo has .env* files
+    basePath: '../../'
+    include:
+      - SERVICE_REDIRECT_AUTH_CREDENTIALS
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  stage: ${opt:stage, 'dev'}
+  region: ${opt:region, 'us-east-1'}
+  timeout: 5
+
+functions:
+  redirect:
+    handler: handler.redirect
