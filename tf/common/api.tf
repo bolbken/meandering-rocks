@@ -89,6 +89,10 @@ resource "aws_iam_role_policy" "photos_service_lambda" {
   policy = data.aws_iam_policy_document.photos_service_lambda.json
 }
 
+output "photos-service-lambda-role-arn" {
+  value = aws_iam_role.photos_service_lambda.arn
+}
+
 data "aws_iam_policy_document" "newsletter_service_lambda" {
   statement {
     sid       = "kms-decrypt"
@@ -106,4 +110,8 @@ resource "aws_iam_role_policy" "newsletter_service_lambda" {
   name   = "meandering-rocks-api-newsletter-service-lambda-execution-policy"
   role   = aws_iam_role.newsletter_service_lambda.id
   policy = data.aws_iam_policy_document.newsletter_service_lambda.json
+}
+
+output "newsletter-service-lambda-role-arn" {
+  value = aws_iam_role.newsletter_service_lambda.arn
 }

@@ -8,8 +8,8 @@ resource "aws_s3_bucket" "artifacts" {
   }
 
   tags = {
-    project     = "meandering.rocks"
-    environment = "build"
+    project   = "meandering.rocks"
+    component = "build"
   }
 }
 
