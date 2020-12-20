@@ -1,15 +1,3 @@
-terraform {
-  backend "s3" {
-    bucket = "meandering-rocks-configuration"
-    key    = "terraform/common/.tfstate"
-    region = "us-east-1"
-  }
-}
-
-provider "aws" {
-  region = "us-east-1"
-}
-
 
 resource "aws_s3_bucket" "artifacts" {
   bucket = "meandering-rocks-artifacts"
@@ -25,114 +13,129 @@ resource "aws_s3_bucket" "artifacts" {
   }
 }
 
-resource "aws_iam_role" "codebuild" {
-  name = "meandering-rocks-codebuild-policy"
-
-  assume_role_policy = <<EOF
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Effect": "Allow",
-      "Principal": {
-        "Service": "codebuild.amazonaws.com"
-      },
-      "Action": "sts:AssumeRole"
-    }
-  ]
-}
-EOF
-
-  tags = {
-    project     = "meandering.rocks"
-    environment = "build"
-  }
-}
-
-resource "aws_iam_role_policy" "codebuild" {
-  role = aws_iam_role.codebuild.name
-  name = "meandering-rocks-codebuild-policy"
-
-  policy = <<POLICY
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Effect": "Allow",
-      "Resource": [
-        "*"
-      ],
-      "Action": [
-        "logs:CreateLogGroup",
-        "logs:CreateLogStream",
-        "logs:PutLogEvents"
-      ]
-    },
-    {
-      "Effect": "Allow",
-      "Action": [
-        "s3:*"
-      ],
-      "Resource": [
-        "${aws_s3_bucket.artifacts.arn}",
-        "${aws_s3_bucket.artifacts.arn}/*"
-      ]
-    }
-  ]
-}
-POLICY
-}
-
-resource "aws_codebuild_project" "codebuild" {
-
-  name          = "meandering-rocks-build"
-  description   = "Build the source code of meandering-rocks and deploy."
-  build_timeout = "5"
-  service_role  = aws_iam_role.codebuild.arn
-
-  artifacts {
-    type = "NO_ARTIFACTS"
-  }
-
-  # cache {
-  #   type     = "S3"
-  #   location = aws_s3_bucket.artifacts.bucket
-  # }
-
-  environment {
-    compute_type                = "BUILD_GENERAL1_SMALL"
-    image                       = "aws/codebuild/standard:3.0"
-    type                        = "LINUX_CONTAINER"
-    image_pull_credentials_type = "CODEBUILD"
-
-    # environment_variable {
-    #   name  = "SOME_KEY1"
-    #   value = "SOME_VALUE1"
-    # }
-  }
-
-  logs_config {
-    cloudwatch_logs {
-      group_name  = "log-group"
-      stream_name = "log-stream"
-    }
-
-    s3_logs {
-      status   = "ENABLED"
-      location = "${aws_s3_bucket.artifacts.id}/build-log"
+data "aws_iam_policy_document" "codebuild_role" {
+  statement {
+    actions = ["sts:AssumeRole"]
+    principals {
+      type        = "Service"
+      identifiers = "codebuild.amazonaws.com"
     }
   }
+}
 
-  source {
-    type            = "GITHUB"
-    location        = "https://github.com/bolbken/meandering-rocks.git"
-    git_clone_depth = 1
+data "aws_iam_policy_document" "codebuild_base" {
+  statement {
+    sid       = "apigateway"
+    actions   = ["apigateway:*"]
+    resources = ["*"]
   }
 
-  # source_version = "master"
+  statement {
+    sid = "cloudformation"
+    actions = [
+      "cloudformation:CancelUpdateStack",
+      "cloudformation:ContinueUpdateRollback",
+      "cloudformation:CreateChangeSet",
+      "cloudformation:CreateStack",
+      "cloudformation:CreateUploadBucket",
+      "cloudformation:DeleteStack",
+      "cloudformation:Describe*",
+      "cloudformation:EstimateTemplateCost",
+      "cloudformation:ExecuteChangeSet",
+      "cloudformation:Get*",
+      "cloudformation:List*",
+      "cloudformation:UpdateStack",
+      "cloudformation:UpdateTerminationProtection",
+      "cloudformation:ValidateTemplate"
+    ]
+    resources = ["*"]
+  }
 
-  tags = {
-    project     = "meandering.rocks"
-    environment = "build"
+  statement {
+    sid = "dynamodb"
+    actions = [
+      "dynamodb:CreateTable",
+      "dynamodb:DeleteTable",
+      "dynamodb:DescribeTable",
+      "dynamodb:DescribeTimeToLive",
+      "dynamodb:UpdateTimeToLive"
+    ]
+    resources = ["*"]
+  }
+
+  statement {
+    sid = "events"
+    actions = [
+      "events:DeleteRule",
+      "events:DescribeRule",
+      "events:ListRuleNamesByTarget",
+      "events:ListRules",
+      "events:ListTargetsByRule",
+      "events:PutRule",
+      "events:PutTargets",
+      "events:RemoveTargets"
+    ]
+    resources = ["*"]
+  }
+
+  statement {
+    sid = "iam"
+    actions = [
+      "iam:AttachRolePolicy",
+      "iam:CreateRole",
+      "iam:DeleteRole",
+      "iam:DeleteRolePolicy",
+      "iam:DetachRolePolicy",
+      "iam:GetRole",
+      "iam:PassRole",
+      "iam:PutRolePolicy"
+    ]
+    resources = ["*"]
+  }
+
+  statement {
+    sid = "lambda"
+    actions = [
+      "lambda:*"
+    ]
+    resources = ["*"]
+  }
+
+  statement {
+    sid = "logs"
+    actions = [
+      "logs:CreateLogGroup",
+      "logs:DeleteLogGroup",
+      "logs:DescribeLogGroups",
+      "logs:DescribeLogStreams",
+      "logs:FilterLogEvents",
+      "logs:GetLogEvents",
+      "logs:PutSubscriptionFilter"
+    ]
+    resources = ["*"]
+  }
+
+  statement {
+    sid = "s3"
+    actions = [
+      "s3:CreateBucket",
+      "s3:DeleteBucket",
+      "s3:DeleteBucketPolicy",
+      "s3:DeleteObject",
+      "s3:DeleteObjectVersion",
+      "s3:GetObject",
+      "s3:GetObjectVersion",
+      "s3:ListAllMyBuckets",
+      "s3:ListBucket",
+      "s3:PutBucketNotification",
+      "s3:PutBucketPolicy",
+      "s3:PutBucketTagging",
+      "s3:PutBucketWebsite",
+      "s3:PutEncryptionConfiguration",
+      "s3:PutObject"
+    ]
+    resources = ["*"]
   }
 }
+
+

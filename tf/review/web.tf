@@ -1,15 +1,3 @@
-terraform {
-  backend "s3" {
-    bucket = "meandering-rocks-configuration"
-    key    = "terraform/review/.tfstate"
-    region = "us-east-1"
-  }
-}
-
-provider "aws" {
-  region = "us-east-1"
-}
-
 resource "aws_s3_bucket" "review" {
   bucket = "meandering-rocks-site-review"
 
@@ -37,17 +25,21 @@ resource "aws_s3_bucket_policy" "review" {
     "Id": "PolicyForCloudFrontPrivateContent",
     "Statement": [
         {
-            "Sid": "1",
+            "Sid": "meandering-rocks-site-review-private-cloudfront-get-object",
             "Effect": "Allow",
             "Principal": {
-                "AWS": "arn:aws:iam::cloudfront:user/CloudFront Origin Access Identity EHXV6VMM0JPFU"
+                "AWS": "${aws_cloudfront_origin_access_identity.review.iam_arn}"
             },
             "Action": "s3:GetObject",
-            "Resource": "arn:aws:s3:::dev.meandering.rocks/*"
+            "Resource": "${aws_s3_bucket.review.arn}/*"
         }
     ]
 }
 POLICY
+}
+
+resource "aws_cloudfront_origin_access_identity" "review" {
+  comment = "meandering-rocks-site-review-origin-access-id"
 }
 
 resource "aws_cloudfront_distribution" "review" {
@@ -65,6 +57,9 @@ resource "aws_cloudfront_distribution" "review" {
   origin {
     domain_name = aws_s3_bucket.review.bucket_regional_domain_name
     origin_id   = "S3-Website-${aws_s3_bucket.review.bucket_regional_domain_name}/."
+    s3_origin_config {
+      origin_access_identity = aws_cloudfront_origin_access_identity.review.cloudfront_access_identity_path
+    }
   }
 
   default_cache_behavior {

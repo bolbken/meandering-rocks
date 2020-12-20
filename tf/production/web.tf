@@ -1,15 +1,3 @@
-terraform {
-  backend "s3" {
-    bucket = "meandering-rocks-configuration"
-    key    = "terraform/production/.tfstate"
-    region = "us-east-1"
-  }
-}
-
-provider "aws" {
-  region = "us-east-1"
-}
-
 resource "aws_s3_bucket" "production" {
   bucket = "meandering-rocks-site-production"
   acl    = "public-read"
@@ -28,6 +16,23 @@ resource "aws_s3_bucket" "production" {
     environment = "production"
     component   = "web"
   }
+}
+
+resource "aws_s3_bucket_policy" "production" {
+  bucket = aws_s3_bucket.production.id
+  policy = <<POLICY
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "meandering-rocks-site-production-public-get-object",
+            "Effect": "Allow",
+            "Action": "s3:GetObject",
+            "Resource": "${aws_s3_bucket.production.arn}/*"
+        }
+    ]
+}
+POLICY
 }
 
 resource "aws_cloudfront_distribution" "production" {

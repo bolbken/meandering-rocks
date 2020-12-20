@@ -27,6 +27,7 @@ jspm_packages
 
 # Other Artifact Files
 **/*.log
+**/*.zip
 
 # Logs
 logs
