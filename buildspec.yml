@@ -9,11 +9,12 @@ phases:
     runtime-versions:
       nodejs: 12
     commands:
+      - 'sudo chmod +x utils -R'
+      - 'export STAGE=$(utils/branch-to-stage.sh config.json)'
       - 'apt-get -y update && apt-get install zip -y'
       - 'npm install -g yarn gatsby serverless json dotenv-cli'
       - 'sudo wget https://github.com/cloudposse/tfenv/releases/download/0.4.0/tfenv_linux_amd64 > $HOME/bin/tfenv && chmod +x $HOME/bin/tfenv'
-      - 'sudo chmod +x utils -R'
-      - 'STAGE=$(utils/branch-to-stage.sh config.json) aws s3 cp s3://meandering-rocks-configuration/env/.env.$STAGE .env.$STAGE'
+      - 'aws s3 cp s3://meandering-rocks-configuration/env/.env.$STAGE .env.$STAGE'
       - 'yarn install'
 
   pre_build:
@@ -26,18 +27,18 @@ phases:
       - 'echo "Running terraform plan for common environment resources." \
             && cd tf/common && dotenv -e ../../.env.$STAGE tfenv terraform plan -out=tfplan-common \
             $$ cd ../..'
-      - 'STAGE=$(utils/branch-to-stage.sh config.json) echo "Running terraform plan for $STAGE environment resources." \
+      - 'echo "Running terraform plan for $STAGE environment resources." \
             && cd tf/$STAGE && dotenv -e ../.env.$STAGE tfenv terraform plan -out=tfplan-$STAGE \
             $$ cd ../..'
 
   post_build:
     commands:
       - 'echo "Running terraform apply for common environment resources." \
-            && cd tf/common && dotenv -e ../../.env.$STAGE tfenv terraform apply tfplan-common -auto-approve \
-            $$ cd ../..'
-      - 'STAGE=$(utils/branch-to-stage.sh config.json) echo "Running terraform apply for $STAGE environment resources." \
-            && cd tf/$STAGE && dotenv -e ../../.env.$STAGE tfenv terraform apply tfplan-$STAGE -auto-approve \
-            $$ cd ../..'
+            && cd tf/common && dotenv -e ../../.env.$STAGE tfenv terraform apply tfplan-common -auto-approve'
+      - 'terraform output -json > output.json $$ cd ../..'
+      - 'echo "Running terraform apply for $STAGE environment resources." \
+            && cd tf/$STAGE && dotenv -e ../../.env.$STAGE tfenv terraform apply tfplan-$STAGE -auto-approve'
+      - 'terraform output -json > output.json $$ cd ../..'
       - 'yarn run deploy'
       - 'echo "TBD: Tag and release a new version if its on review branch"'
       - 'echo "TBD: Save some artifacts or something"'

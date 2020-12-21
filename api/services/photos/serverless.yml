@@ -68,13 +68,12 @@ provider:
   stage: ${opt:stage, 'dev'}
   region: ${opt:region, 'us-east-1'}
   timeout: 10
-  logs:
-    restApi: true
+  role: ${file(../../../tf/common/output.json):photos_service_lambda_role_arn}
   apiGateway:
     restApiId:
-      'Fn::ImportValue': MeanderingRocksApiGW-restApiId-${opt:stage}
+      '${file(../../../tf/common/output.json):api_gateway_id, 12345}'
     restApiRootResourceId:
-      'Fn::ImportValue': MeanderingRocksApiGW-rootResourceId-${opt:stage}
+      '${file(../../../tf/common/output.json):api_gateway_resource_id, 67890}'
     metrics: false
   apiKeys:
     - ${env:API_KEY_NAME_TARGET_BROWSER}-${opt:stage}
