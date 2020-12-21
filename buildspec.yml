@@ -1,18 +1,43 @@
 version: 0.2
+env:
+  shell: bash
 phases:
+
   install:
     runtime-versions:
       nodejs: 12
     commands:
-      - 'apt-get -y update'
-      - 'npm install -g yarn gatsby serverless'
-      - 'yarn install --production'
+      - 'apt-get -y update && apt-get install zip -y'
+      - 'npm install -g yarn gatsby serverless json dotenv-cli'
+      - 'sudo wget https://github.com/cloudposse/tfenv/releases/download/0.4.0/tfenv_linux_amd64 > tfenv && chmod +x tfenv && sudo mv tfenv /usr/local/bin/ && export PATH=/usr/local/bin:$PATH'
+      - 'sudo chmod +x utils -R'
+      - 'STAGE=$(utils/branch-to-stage.sh config.json) aws s3 cp s3://meandering-rocks-configuration/env/.env.$STAGE .env.$STAGE'
+      - 'yarn install'
+
+  pre_build:
+    commands:
+      - 'yarn run test'
+
   build:
     commands:
       - 'yarn run build'
+      - 'echo "Running terraform plan for common environment resources." \
+            && cd tf/common && dotenv -e ../../.env.$STAGE tfenv terraform plan -out=tfplan-common \
+            $$ cd ../..'
+      - 'STAGE=$(utils/branch-to-stage.sh config.json) echo "Running terraform plan for $STAGE environment resources." \
+            && cd tf/$STAGE && dotenv -e ../.env.$STAGE tfenv terraform plan -out=tfplan-$STAGE \
+            $$ cd ../..'
+
   post_build:
     commands:
+      - 'echo "Running terraform apply for common environment resources." \
+            && cd tf/common && dotenv -e ../../.env.$STAGE tfenv terraform apply tfplan-common -auto-approve \
+            $$ cd ../..'
+      - 'STAGE=$(utils/branch-to-stage.sh config.json) echo "Running terraform apply for $STAGE environment resources." \
+            && cd tf/$STAGE && dotenv -e ../../.env.$STAGE tfenv terraform apply tfplan-$STAGE -auto-approve \
+            $$ cd ../..'
       - 'yarn run deploy'
+      - 'echo "save some artifacts or something"'
 cache:
   paths:
     - 'web/.cache/*'

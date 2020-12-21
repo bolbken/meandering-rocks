@@ -14,7 +14,7 @@
     "dynamodb:init": "serverless dynamodb install",
     "develop": "yarn run dynamodb:init && concurrently -n newsletter-offline,newsletter-dynamodb \"yarn run offline\" \"yarn run dynamodb\"",
     "test": "echo \"WARNING: no tests specified\"",
-    "deploy": "serverless deploy --stage $(../utils/sls-deploy-git-stage.sh ../config.json)"
+    "deploy": "serverless deploy --stage $(../../../utils/branch-to-stage.sh ../../../config.json)"
   },
   "author": "Ben Kolb (@bolbken)",
   "devDependencies": {

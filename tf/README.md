@@ -30,7 +30,7 @@ variable "my_env_var" {
 
 ## Running `terraform plan` using the .env file
 
-The tools [dotenv-cli]() and [tfenv]() are used to transform and export the `.env.*` file
+The tools [dotenv-cli](https://github.com/entropitor/dotenv-cli#readme) and [tfenv](https://github.com/cloudposse/tfenv/releases/tag/0.4.0) are used to transform and export the `.env.*` file
 in the root directory of this project.
 
 Below is an example call to `terraform plan` that transforms `.env.development` and exposes it to terraform.
