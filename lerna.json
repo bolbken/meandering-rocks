@@ -1,5 +1,11 @@
 {
-  "packages": ["api/services/*", "api/packages/*", "web", "services/*"],
+  "packages": [
+    "api/services/*",
+    "api/packages/*",
+    "api/layers/*",
+    "services/*",
+    "web"
+  ],
   "version": "0.1.0",
   "npmClient": "yarn",
   "useWorkspaces": true

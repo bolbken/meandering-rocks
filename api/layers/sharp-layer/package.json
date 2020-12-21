@@ -1,15 +1,20 @@
 {
-  "name": "nodejs",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "name": "sharp-layer",
+  "version": "0.1.0",
+  "description": "An AWS lambda layer package.  Intended to provide sharp.js to connected lambdas.",
+  "workspaces": {
+    "nohoist": [
+      "**"
+    ]
+  },
+  "private": true,
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "mkdir nodejs && cp node_modules package*.json nodejs -r && zip nodejs.zip nodejs/ -r && rm -rf nodejs"
+    "test": "echo \"WARNING: no test specified\"",
+    "build": "mkdir nodejs && cp node_modules package*.json nodejs -r && zip nodejs.zip nodejs/ -r && rm -rf nodejs",
+    "deploy": "echo \"WARNING: no deployment specified\""
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "author": "Ben Kolb (@bolbken)",
   "dependencies": {
     "sharp": "^0.26.3"
   }

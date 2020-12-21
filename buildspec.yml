@@ -1,6 +1,8 @@
 version: 0.2
 env:
   shell: bash
+  variables:
+    - PATH: "$PATH:$HOME/bin"
 phases:
 
   install:
@@ -9,7 +11,7 @@ phases:
     commands:
       - 'apt-get -y update && apt-get install zip -y'
       - 'npm install -g yarn gatsby serverless json dotenv-cli'
-      - 'sudo wget https://github.com/cloudposse/tfenv/releases/download/0.4.0/tfenv_linux_amd64 > tfenv && chmod +x tfenv && sudo mv tfenv /usr/local/bin/ && export PATH=/usr/local/bin:$PATH'
+      - 'sudo wget https://github.com/cloudposse/tfenv/releases/download/0.4.0/tfenv_linux_amd64 > $HOME/bin/tfenv && chmod +x $HOME/bin/tfenv'
       - 'sudo chmod +x utils -R'
       - 'STAGE=$(utils/branch-to-stage.sh config.json) aws s3 cp s3://meandering-rocks-configuration/env/.env.$STAGE .env.$STAGE'
       - 'yarn install'
@@ -37,7 +39,8 @@ phases:
             && cd tf/$STAGE && dotenv -e ../../.env.$STAGE tfenv terraform apply tfplan-$STAGE -auto-approve \
             $$ cd ../..'
       - 'yarn run deploy'
-      - 'echo "save some artifacts or something"'
+      - 'echo "TBD: Tag and release a new version if its on review branch"'
+      - 'echo "TBD: Save some artifacts or something"'
 cache:
   paths:
     - 'web/.cache/*'

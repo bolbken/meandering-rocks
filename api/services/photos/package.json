@@ -13,6 +13,7 @@
     "offline": "SLS_DEBUG=* serverless offline --stage development",
     "develop": "yarn run offline",
     "test": "echo \"WARNING: no tests specified\"",
+    "build": "serverless package --stage $(../../../utils/branch-to-stage.sh ../../../config.json)",
     "deploy": "serverless deploy --stage $(../../../utils/branch-to-stage.sh ../../../config.json)"
   },
   "author": "Ben Kolb (@bolbken)",

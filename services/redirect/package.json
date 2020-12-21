@@ -12,7 +12,7 @@
   "scripts": {
     "develop": "echo \"WARNING: no development mode specified\"",
     "test": "echo \"WARNING: no tests specified\"",
-    "build": "serverless package",
+    "build": "serverless package --stage $(../utils/sls-deploy-git-stage.sh ../config.json)",
     "deploy": "serverless deploy --stage $(../utils/sls-deploy-git-stage.sh ../config.json)"
   },
   "author": "Ben Kolb (@bolbken)",
