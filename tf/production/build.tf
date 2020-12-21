@@ -1,8 +1,131 @@
-# data.terraform_remote_state.common.
+data "aws_iam_policy_document" "codebuild_role" {
+  statement {
+    actions = ["sts:AssumeRole"]
+    principals {
+      type        = "Service"
+      identifiers = ["codebuild.amazonaws.com"]
+    }
+  }
+}
+
+data "aws_iam_policy_document" "codebuild_base" {
+  statement {
+    sid       = "apigateway"
+    actions   = ["apigateway:*"]
+    resources = ["*"]
+  }
+
+  statement {
+    sid = "cloudformation"
+    actions = [
+      "cloudformation:CancelUpdateStack",
+      "cloudformation:ContinueUpdateRollback",
+      "cloudformation:CreateChangeSet",
+      "cloudformation:CreateStack",
+      "cloudformation:CreateUploadBucket",
+      "cloudformation:DeleteStack",
+      "cloudformation:Describe*",
+      "cloudformation:EstimateTemplateCost",
+      "cloudformation:ExecuteChangeSet",
+      "cloudformation:Get*",
+      "cloudformation:List*",
+      "cloudformation:UpdateStack",
+      "cloudformation:UpdateTerminationProtection",
+      "cloudformation:ValidateTemplate"
+    ]
+    resources = ["*"]
+  }
+
+  statement {
+    sid = "dynamodb"
+    actions = [
+      "dynamodb:CreateTable",
+      "dynamodb:DeleteTable",
+      "dynamodb:DescribeTable",
+      "dynamodb:DescribeTimeToLive",
+      "dynamodb:UpdateTimeToLive"
+    ]
+    resources = ["*"]
+  }
+
+  statement {
+    sid = "events"
+    actions = [
+      "events:DeleteRule",
+      "events:DescribeRule",
+      "events:ListRuleNamesByTarget",
+      "events:ListRules",
+      "events:ListTargetsByRule",
+      "events:PutRule",
+      "events:PutTargets",
+      "events:RemoveTargets"
+    ]
+    resources = ["*"]
+  }
+
+  statement {
+    sid = "iam"
+    actions = [
+      "iam:AttachRolePolicy",
+      "iam:CreateRole",
+      "iam:DeleteRole",
+      "iam:DeleteRolePolicy",
+      "iam:DetachRolePolicy",
+      "iam:GetRole",
+      "iam:PassRole",
+      "iam:PutRolePolicy"
+    ]
+    resources = ["*"]
+  }
+
+  statement {
+    sid = "lambda"
+    actions = [
+      "lambda:*"
+    ]
+    resources = ["*"]
+  }
+
+  statement {
+    sid = "logs"
+    actions = [
+      "logs:CreateLogGroup",
+      "logs:DeleteLogGroup",
+      "logs:DescribeLogGroups",
+      "logs:DescribeLogStreams",
+      "logs:FilterLogEvents",
+      "logs:GetLogEvents",
+      "logs:PutSubscriptionFilter"
+    ]
+    resources = ["*"]
+  }
+
+  statement {
+    sid = "s3"
+    actions = [
+      "s3:CreateBucket",
+      "s3:DeleteBucket",
+      "s3:DeleteBucketPolicy",
+      "s3:DeleteObject",
+      "s3:DeleteObjectVersion",
+      "s3:GetObject",
+      "s3:GetObjectVersion",
+      "s3:ListAllMyBuckets",
+      "s3:ListBucket",
+      "s3:PutBucketNotification",
+      "s3:PutBucketPolicy",
+      "s3:PutBucketTagging",
+      "s3:PutBucketWebsite",
+      "s3:PutEncryptionConfiguration",
+      "s3:PutObject"
+    ]
+    resources = ["*"]
+  }
+}
 
 resource "aws_iam_role" "codebuild" {
   name               = "meandering-rocks-codebuild-role-production"
-  assume_role_policy = data.terraform_remote_state.common.aws_iam_policy_document.codebuild_role.json
+  assume_role_policy = data.aws_iam_policy_document.codebuild_role.json
 
   tags = {
     project     = "meandering.rocks"
@@ -14,7 +137,7 @@ resource "aws_iam_role" "codebuild" {
 resource "aws_iam_role_policy" "codebuild" {
   role   = aws_iam_role.codebuild.name
   name   = "meandering-rocks-codebuild-policy-production"
-  policy = data.terraform_remote_state.common.data.aws_iam_policy_document.codebuild.json
+  policy = data.aws_iam_policy_document.codebuild_base.json
 }
 
 data "aws_iam_policy_document" "cloudfront" {
@@ -38,7 +161,7 @@ resource "aws_iam_policy" "cloudfront" {
 }
 
 resource "aws_iam_role_policy_attachment" "cloudfront" {
-  role       = aws_iam_rol3.codebuild.name
+  role       = aws_iam_role.codebuild.name
   policy_arn = aws_iam_policy.cloudfront.arn
 }
 
@@ -60,9 +183,18 @@ resource "aws_codebuild_project" "production" {
     image_pull_credentials_type = "CODEBUILD"
 
     environment_variable {
-      TARGET_ADDRESS          = local.target_address
-      TARGET_BUCKET_NAME      = aws_s3_bucket.production.id
-      CLOUDFRONT_DISTRIBUTION = aws_cloudfront_distribution.production.id
+      name  = "TARGET_ADDRESS"
+      value = local.target_address
+    }
+
+    environment_variable {
+      name  = "TARGET_BUCKET_NAME"
+      value = aws_s3_bucket.production.id
+    }
+
+    environment_variable {
+      name  = "CLOUDFRONT_DISTRIBUTION"
+      value = aws_cloudfront_distribution.production.id
     }
   }
 

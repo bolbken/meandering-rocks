@@ -1,3 +1,7 @@
+resource "aws_cloudfront_origin_access_identity" "review" {
+  comment = "meandering-rocks-site-review-origin-access-id"
+}
+
 resource "aws_s3_bucket" "review" {
   bucket = "meandering-rocks-site-review"
 
@@ -17,29 +21,21 @@ resource "aws_s3_bucket" "review" {
   }
 }
 
-resource "aws_s3_bucket_policy" "review" {
-  bucket = aws_s3_bucket.review.id
-  policy = <<POLICY
-{
-    "Version": "2008-10-17",
-    "Id": "PolicyForCloudFrontPrivateContent",
-    "Statement": [
-        {
-            "Sid": "meandering-rocks-site-review-private-cloudfront-get-object",
-            "Effect": "Allow",
-            "Principal": {
-                "AWS": "${aws_cloudfront_origin_access_identity.review.iam_arn}"
-            },
-            "Action": "s3:GetObject",
-            "Resource": "${aws_s3_bucket.review.arn}/*"
-        }
-    ]
-}
-POLICY
+data "aws_iam_policy_document" "review_site_policy" {
+  statement {
+    actions   = ["s3:GetObject"]
+    resources = ["${aws_s3_bucket.review.arn}/*"]
+
+    principals {
+      type        = "AWS"
+      identifiers = [aws_cloudfront_origin_access_identity.review.iam_arn]
+    }
+  }
 }
 
-resource "aws_cloudfront_origin_access_identity" "review" {
-  comment = "meandering-rocks-site-review-origin-access-id"
+resource "aws_s3_bucket_policy" "review" {
+  bucket = aws_s3_bucket.review.id
+  policy = data.aws_iam_policy_document.review_site_policy.json
 }
 
 resource "aws_cloudfront_distribution" "review" {
@@ -56,7 +52,7 @@ resource "aws_cloudfront_distribution" "review" {
 
   origin {
     domain_name = aws_s3_bucket.review.bucket_regional_domain_name
-    origin_id   = "S3-Website-${aws_s3_bucket.review.bucket_regional_domain_name}/."
+    origin_id   = "S3-Website-${aws_s3_bucket.review.bucket_regional_domain_name}"
     s3_origin_config {
       origin_access_identity = aws_cloudfront_origin_access_identity.review.cloudfront_access_identity_path
     }
@@ -95,7 +91,8 @@ resource "aws_cloudfront_distribution" "review" {
   }
 
   viewer_certificate {
-    iam_certificate_id = "f64af084-6b6f-49f9-87bd-7282d2eed99e"
+    acm_certificate_arn = "arn:aws:acm:us-east-1:310674449483:certificate/f64af084-6b6f-49f9-87bd-7282d2eed99e"
+    ssl_support_method  = "sni-only"
   }
 
   tags = {
@@ -115,7 +112,10 @@ resource "aws_iam_role" "redirect_lambda" {
     {
       "Action": "sts:AssumeRole",
       "Principal": {
-        "Service": "lambda.amazonaws.com"
+        "Service": [
+          "lambda.amazonaws.com",
+          "edgelambda.amazonaws.com"
+        ]
       },
       "Effect": "Allow",
       "Sid": ""
@@ -131,8 +131,25 @@ EOF
   }
 }
 
+data "aws_iam_policy_document" "lambda_edge" {
+  statement {
+    actions   = ["lambda:GetFunction"]
+    resources = [aws_lambda_function.review_auth_redirect.qualified_arn]
+  }
+}
+
+resource "aws_iam_policy" "lambda_edge" {
+  name   = "meandering-rocks-web-redirect-service-lambda-edge-policy"
+  policy = data.aws_iam_policy_document.lambda_edge.json
+}
+
+resource "aws_iam_role_policy_attachment" "lambda_edge" {
+  role       = aws_iam_role.redirect_lambda.id
+  policy_arn = aws_iam_policy.lambda_edge.arn
+}
+
 resource "aws_lambda_function" "review_auth_redirect" {
-  filename      = "../services/redirect/.serverless/redirect.zip"
+  filename      = "../../services/redirect/.serverless/redirect.zip"
   function_name = "meandering-rocks-web-redirect-lambda"
   role          = aws_iam_role.redirect_lambda.arn
   handler       = "handler.redirect"
@@ -140,15 +157,10 @@ resource "aws_lambda_function" "review_auth_redirect" {
   # The filebase64sha256() function is available in Terraform 0.11.12 and later
   # For Terraform 0.11.11 and earlier, use the base64sha256() function and the file() function:
   # source_code_hash = "${base64sha256(file("lambda_function_payload.zip"))}"
-  source_code_hash = filebase64sha256("../services/redirect/.serverless/redirect.zip")
+  source_code_hash = filebase64sha256("../../services/redirect/.serverless/redirect.zip")
 
   runtime = "nodejs12.x"
-
-  environment {
-    variables = {
-      SERVICE_REDIRECT_AUTH_CREDENTIALS = var.service_redirect_auth_credentials
-    }
-  }
+  publish = true
 
   tags = {
     project     = "meandering.rocks"

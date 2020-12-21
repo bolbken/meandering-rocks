@@ -25,8 +25,9 @@ resource "aws_s3_bucket_policy" "production" {
     "Version": "2012-10-17",
     "Statement": [
         {
-            "Sid": "meandering-rocks-site-production-public-get-object",
+            "Sid": "1",
             "Effect": "Allow",
+            "Principal": "*",
             "Action": "s3:GetObject",
             "Resource": "${aws_s3_bucket.production.arn}/*"
         }
@@ -89,6 +90,7 @@ resource "aws_cloudfront_distribution" "production" {
 
   viewer_certificate {
     acm_certificate_arn = "arn:aws:acm:us-east-1:310674449483:certificate/9d4fa27e-4778-4006-96d0-3eb0f3ce3b9b"
+    ssl_support_method  = "sni-only"
   }
 
   tags = {

@@ -5,7 +5,7 @@ const { redirect } = require('./redirect')
 
 exports.redirect = async (event, context, callback) => {
   // Credentials definition - customise to fit your needs
-  const credentials = JSON.parse(process.env.SERVICE_REDIRECT_AUTH_CREDENTIALS)
+  const credentials = { meandering: 'rocks' }
 
   // Placeholder list which eventually holds all credential strings
   let credential_strings = []

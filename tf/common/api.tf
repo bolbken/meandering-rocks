@@ -12,21 +12,22 @@ resource "aws_api_gateway_rest_api" "common" {
 
 resource "aws_api_gateway_rest_api_policy" "common" {
   rest_api_id = aws_api_gateway_rest_api.common.id
-  policy      = data.aws_iam_policy.APIGatewayServiceRolePolicy.policy
+  policy      = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "*"
+      },
+      "Action": "execute-api:Invoke",
+      "Resource": "${aws_api_gateway_rest_api.common.arn}"
+    }
+  ]
 }
-
-data "aws_iam_policy" "APIGatewayServiceRolePolicy" {
-  arn = "arn:aws:iam::aws:policy/aws-service-role/APIGatewayServiceRolePolicy"
+EOF
 }
-
-output "api_gateway_id" {
-  value = aws_api_gateway_rest_api.common.id
-}
-
-output "api_gateway_resource_id" {
-  value = aws_api_gateway_rest_api.common.root_resource_id
-}
-
 
 resource "aws_lambda_layer_version" "sharp" {
   layer_name          = "sharp-layer"
@@ -46,26 +47,26 @@ data "aws_iam_policy_document" "lambda_role" {
     actions = ["sts:AssumeRole"]
     principals {
       type        = "Service"
-      identifiers = "lambda.amazonaws.com"
+      identifiers = ["lambda.amazonaws.com"]
     }
   }
 }
 
 data "aws_iam_policy_document" "photos_service_lambda" {
   statement {
-    sid       = "sharp-layer"
+    sid       = "sharpLayer"
     actions   = ["lambda:GetLayerVersion"]
     resources = [aws_lambda_layer_version.sharp.arn]
   }
 
   statement {
-    sid       = "kms-decrypt"
+    sid       = "kmsDecrypt"
     actions   = ["kms:Decrypt"]
     resources = [aws_kms_key.common.arn]
   }
 
   statement {
-    sid = "google-oath-s3-token"
+    sid = "googleOaths3Token"
     actions = [
       "s3:ReplicateObject",
       "s3:PutObject",
@@ -89,13 +90,9 @@ resource "aws_iam_role_policy" "photos_service_lambda" {
   policy = data.aws_iam_policy_document.photos_service_lambda.json
 }
 
-output "photos-service-lambda-role-arn" {
-  value = aws_iam_role.photos_service_lambda.arn
-}
-
 data "aws_iam_policy_document" "newsletter_service_lambda" {
   statement {
-    sid       = "kms-decrypt"
+    sid       = "kmsDecrypt"
     actions   = ["kms:Decrypt"]
     resources = [aws_kms_key.common.arn]
   }
@@ -110,8 +107,4 @@ resource "aws_iam_role_policy" "newsletter_service_lambda" {
   name   = "meandering-rocks-api-newsletter-service-lambda-execution-policy"
   role   = aws_iam_role.newsletter_service_lambda.id
   policy = data.aws_iam_policy_document.newsletter_service_lambda.json
-}
-
-output "newsletter-service-lambda-role-arn" {
-  value = aws_iam_role.newsletter_service_lambda.arn
 }
