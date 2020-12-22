@@ -140,6 +140,8 @@ resource "aws_iam_role_policy" "codebuild" {
   policy = data.aws_iam_policy_document.codebuild_base.json
 }
 
+
+
 data "aws_iam_policy_document" "cloudfront" {
   statement {
     sid = "cloudfront"
@@ -163,6 +165,42 @@ resource "aws_iam_policy" "cloudfront" {
 resource "aws_iam_role_policy_attachment" "cloudfront" {
   role       = aws_iam_role.codebuild.name
   policy_arn = aws_iam_policy.cloudfront.arn
+}
+
+resource "aws_cloudwatch_log_group" "build_production" {
+  name = "meandering-rocks-build-production"
+
+  tags = {
+    project     = "meandering.rocks"
+    environment = "production"
+    component   = "build"
+  }
+}
+
+data "aws_iam_policy_document" "build_logs_production" {
+  statement {
+    sid = "cloudwatchLogs"
+    actions = [
+      "logs:CreateLogGroup",
+      "logs:CreateLogStream",
+      "logs:PutLogEvents"
+    ]
+    resources = [
+      aws_cloudwatch_log_group.build_production.arn,
+      "${aws_cloudwatch_log_group.build_production.arn}:*"
+    ]
+  }
+
+}
+
+resource "aws_iam_policy" "build_logs_production" {
+  name   = "meandering-rocks-cloudwatch-build-logs-policy-production"
+  policy = data.aws_iam_policy_document.build_logs_production.json
+}
+
+resource "aws_iam_role_policy_attachment" "build_logs_production" {
+  role       = aws_iam_role.codebuild.name
+  policy_arn = aws_iam_policy.build_logs_production.arn
 }
 
 resource "aws_codebuild_project" "production" {
@@ -200,8 +238,8 @@ resource "aws_codebuild_project" "production" {
 
   logs_config {
     cloudwatch_logs {
-      group_name  = "log-group"
-      stream_name = "log-stream"
+      group_name  = aws_cloudwatch_log_group.build_production.name
+      stream_name = "codebuild"
     }
   }
 

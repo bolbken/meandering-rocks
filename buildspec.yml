@@ -1,15 +1,14 @@
 version: 0.2
 env:
-  shell: bash
   variables:
-    - PATH: "$PATH:$HOME/bin"
-phases:
+    PATH: "$PATH:$HOME/bin"
 
+phases:
   install:
     runtime-versions:
       nodejs: 12
     commands:
-      - 'sudo chmod +x utils -R'
+      - 'chmod +x utils -R'
       - 'export STAGE=$(utils/branch-to-stage.sh config.json)'
       - 'apt-get -y update && apt-get install zip -y'
       - 'npm install -g yarn gatsby serverless json dotenv-cli'

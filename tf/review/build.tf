@@ -165,6 +165,42 @@ resource "aws_iam_role_policy_attachment" "cloudfront" {
   policy_arn = aws_iam_policy.cloudfront.arn
 }
 
+resource "aws_cloudwatch_log_group" "build_review" {
+  name = "meandering-rocks-build-review"
+
+  tags = {
+    project     = "meandering.rocks"
+    environment = "review"
+    component   = "build"
+  }
+}
+
+data "aws_iam_policy_document" "build_logs_review" {
+  statement {
+    sid = "cloudwatchLogs"
+    actions = [
+      "logs:CreateLogGroup",
+      "logs:CreateLogStream",
+      "logs:PutLogEvents"
+    ]
+    resources = [
+      aws_cloudwatch_log_group.build_review.arn,
+      "${aws_cloudwatch_log_group.build_review.arn}:*"
+    ]
+  }
+
+}
+
+resource "aws_iam_policy" "build_logs_review" {
+  name   = "meandering-rocks-cloudwatch-build-logs-policy-review"
+  policy = data.aws_iam_policy_document.build_logs_review.json
+}
+
+resource "aws_iam_role_policy_attachment" "build_logs_review" {
+  role       = aws_iam_role.codebuild.name
+  policy_arn = aws_iam_policy.build_logs_review.arn
+}
+
 resource "aws_codebuild_project" "review" {
 
   name          = "meandering-rocks-build-review"
@@ -200,8 +236,8 @@ resource "aws_codebuild_project" "review" {
 
   logs_config {
     cloudwatch_logs {
-      group_name  = "log-group"
-      stream_name = "log-stream"
+      group_name  = aws_cloudwatch_log_group.build_review.name
+      stream_name = "codebuild"
     }
   }
 
