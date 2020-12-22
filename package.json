@@ -31,10 +31,14 @@
     "diff": "lerna diff",
     "test": "lerna run test",
     "test:since-review": "lerna run test --since review",
-    "test:since-dev": "lerna run test --since dev",
+    "test:since-master": "lerna run test --since master",
     "new-version": "lerna version --conventional-commits --yes",
+    "build": "lerna run build",
+    "build:since-review": "lerna run build --since review",
+    "build:since-master": "lerna run build --since master",
     "deploy": "lerna run deploy",
-    "deploy:since-review": "lerna run deploy --since review"
+    "deploy:since-review": "lerna run deploy --since review",
+    "deploy:since-master": "lerna run deploy --since master"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",

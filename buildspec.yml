@@ -1,28 +1,29 @@
 version: 0.2
 env:
-  variables:
-    PATH: "$PATH:$HOME/bin"
-
+  exported-variables:
+    - STAGE
+        
 phases:
   install:
     runtime-versions:
       nodejs: 12
     commands:
-      - 'chmod +x utils -R'
-      - 'export STAGE=$(utils/branch-to-stage.sh config.json)'
+      - 'wget -O /usr/local/bin/tfenv https://github.com/cloudposse/tfenv/releases/download/0.4.0/tfenv_linux_amd64'
+      - 'chmod +x /usr/local/bin/tfenv'
+      - 'chmod a+rx utils -R'
       - 'apt-get -y update && apt-get install zip -y'
       - 'npm install -g yarn gatsby serverless json dotenv-cli'
-      - 'sudo wget https://github.com/cloudposse/tfenv/releases/download/0.4.0/tfenv_linux_amd64 > $HOME/bin/tfenv && chmod +x $HOME/bin/tfenv'
+      - 'STAGE=$(utils/branch-to-stage.sh config.json)'
+      - 'echo $STAGE'
       - 'aws s3 cp s3://meandering-rocks-configuration/env/.env.$STAGE .env.$STAGE'
       - 'yarn install'
-
   pre_build:
     commands:
-      - 'yarn run test'
+      - 'yarn run test:since-$(git branch --show-current)'
 
   build:
     commands:
-      - 'yarn run build'
+      - 'yarn run build:since-$(git branch --show-current)'
       - 'echo "Running terraform plan for common environment resources." \
             && cd tf/common && dotenv -e ../../.env.$STAGE tfenv terraform plan -out=tfplan-common \
             $$ cd ../..'
@@ -38,12 +39,11 @@ phases:
       - 'echo "Running terraform apply for $STAGE environment resources." \
             && cd tf/$STAGE && dotenv -e ../../.env.$STAGE tfenv terraform apply tfplan-$STAGE -auto-approve'
       - 'terraform output -json > output.json $$ cd ../..'
-      - 'yarn run deploy'
+      - 'yarn run deploy:since-$(git branch --show-current)'
       - 'echo "TBD: Tag and release a new version if its on review branch"'
       - 'echo "TBD: Save some artifacts or something"'
+
 cache:
   paths:
-    - 'web/.cache/*'
-    - 'web/public/*'
-    - 'api/services/newsletter/.webpack/*'
-    - 'api/services/photos/.webpack/*'
+    - /usr/local/lib
+    - /usr/bin
