@@ -1,9 +1,9 @@
-import React from "react"
-import { graphql } from "gatsby"
+import React from 'react'
+import { graphql } from 'gatsby'
 
-import Layout from "../components/layout"
-import SEO from "../components/seo"
-import MasonryGallery from "../components/gallery/MasonryGallery"
+import Layout from '../components/layout'
+import SEO from '../components/seo'
+import MasonryGallery from '../components/gallery/MasonryGallery'
 
 const GalleryTest = ({ data, location }) => {
   const { fillPhotos } = data.googlePhotosAlbum
@@ -12,17 +12,19 @@ const GalleryTest = ({ data, location }) => {
     <Layout location={location}>
       <SEO title="Gallery" />
       <h1>GalleryTest</h1>
-      {fillPhotos.map(photo => {
-        return (
-          <div id={photo.id}>
-            <h1>{photo.filename}</h1>
-            <img
-              src={photo.photo.childImageSharp.fluid.tracedSVG}
-              alt={photo.description || photo.filename}
-            />
-          </div>
-        )
-      })}
+      {typeof fillPhotos !== 'undefined'
+        ? fillPhotos.map((photo) => {
+            return (
+              <div id={photo.id}>
+                <h1>{photo.filename}</h1>
+                <img
+                  src={photo.photo.childImageSharp.fluid.tracedSVG}
+                  alt={photo.description || photo.filename}
+                />
+              </div>
+            )
+          })
+        : null}
     </Layout>
   )
 }

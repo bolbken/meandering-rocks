@@ -21,7 +21,7 @@ module.exports = {
       email: `contact@meandering.rocks`,
     },
     description: `Pictures and stories accross the USA.`,
-    siteUrl: process.env.WEB_TARGET_ADDRESS,
+    siteUrl: targetAddress.toString(),
     size: {
       maxWidth: maxContentWidthPx,
     },

@@ -10,8 +10,10 @@ phases:
     commands:
       - 'wget -O /usr/local/bin/tfenv https://github.com/cloudposse/tfenv/releases/download/0.4.0/tfenv_linux_amd64'
       - 'chmod +x /usr/local/bin/tfenv'
+      - 'curl -fsSL https://apt.releases.hashicorp.com/gpg | apt-key add -'
+      - 'apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main"'
       - 'chmod a+rx utils -R'
-      - 'apt-get -y update && apt-get install zip -y'
+      - 'apt-get -y update && apt-get install zip terraform -y'
       - 'npm install -g yarn gatsby serverless json dotenv-cli'
       - 'STAGE=$(utils/branch-to-stage.sh config.json)'
       - 'echo $STAGE'
@@ -23,22 +25,22 @@ phases:
 
   build:
     commands:
-      - 'yarn run build:since-$(git branch --show-current)'
-      - 'echo "Running terraform plan for common environment resources." \
-            && cd tf/common && dotenv -e ../../.env.$STAGE tfenv terraform plan -out=tfplan-common \
-            $$ cd ../..'
-      - 'echo "Running terraform plan for $STAGE environment resources." \
-            && cd tf/$STAGE && dotenv -e ../.env.$STAGE tfenv terraform plan -out=tfplan-$STAGE \
-            $$ cd ../..'
+      - 'yarn run build'
+      - 'echo "Running terraform plan for common environment resources."'
+      - 'dotenv -e ../../.env.$STAGE tfenv terraform -chdir=tf/common plan -out=tfplan-common'
+      - 'echo "Running terraform plan for $STAGE environment resources."'
+      - 'dotenv -e ../.env.$STAGE tfenv terraform  -chdir=tf/$STAGE plan -out=tfplan-$STAGE'
 
   post_build:
     commands:
-      - 'echo "Running terraform apply for common environment resources." \
-            && cd tf/common && dotenv -e ../../.env.$STAGE tfenv terraform apply tfplan-common -auto-approve'
-      - 'terraform output -json > output.json $$ cd ../..'
-      - 'echo "Running terraform apply for $STAGE environment resources." \
-            && cd tf/$STAGE && dotenv -e ../../.env.$STAGE tfenv terraform apply tfplan-$STAGE -auto-approve'
-      - 'terraform output -json > output.json $$ cd ../..'
+      - 'echo "Running terraform apply for common environment resources."'
+      - 'cd tf/common'
+      - 'dotenv -e ../../.env.$STAGE tfenv terraform apply tfplan-common -input=false -auto-approve'
+      - 'terraform output -json > output.json && cd ../..'
+      - 'echo "Running terraform apply for $STAGE environment resources."'
+      - 'cd tf/$STAGE'
+      - 'dotenv -e ../../.env.$STAGE tfenv terraform apply tfplan-$STAGE -input=false -auto-approve'
+      - 'terraform output -json > output.json && cd ../..'
       - 'yarn run deploy:since-$(git branch --show-current)'
       - 'echo "TBD: Tag and release a new version if its on review branch"'
       - 'echo "TBD: Save some artifacts or something"'

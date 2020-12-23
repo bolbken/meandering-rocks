@@ -1,6 +1,6 @@
 import AWS from 'aws-sdk'
 import config from './config'
-import gitBranchStage from './utils/gitBranchStage'
+import branchToStage from '../../../utils/branch-to-stage'
 
 let dbConfig = {
   region: process.env.IS_OFFLINE ? 'localhost' : config.aws.region,
@@ -16,7 +16,7 @@ const defaultSchema = {
   subscriptionSchema: {
     TableName: `${
       process.env.AWS_DYNAMODB_NEWSLETTER_SUBSCRIPTION_TABLE_NAME
-    }-${gitBranchStage()}`,
+    }-${branchToStage()}`,
     KeySchema: [{ AttributeName: 'email', KeyType: 'HASH' }],
     AttributeDefinitions: [{ AttributeName: 'email', AttributeType: 'S' }],
     ProvisionedThroughput: {

@@ -66,12 +66,12 @@ provider:
   stage: ${opt:stage, 'dev'}
   region: ${opt:region, 'us-east-1'}
   timeout: 10
-  role: ${file(../../../tf/common/output.json):newsletter_service_lambda_role_arn}
+  role: ${file(../../../utils/tf-output.js):newsletter_service_lambda_role_arn}
   apiGateway:
     restApiId:
-      '${file(../../../tf/common/output.json):api_gateway_id, 12345}'
+      '${file(../../../utils/tf-output.js):api_gateway_id, 12345}'
     restApiRootResourceId:
-      '${file(../../../tf/common/output.json):api_gateway_resource_id, 67890}'
+      '${file(../../../utils/tf-output.js):api_gateway_resource_id, 67890}'
     metrics: false
   apiKeys:
     - ${env:API_KEY_NAME_TARGET_BROWSER}-${opt:stage, 'dev'}

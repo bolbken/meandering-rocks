@@ -1,7 +1,7 @@
 import { exec } from 'child_process'
-import config from '../../../config.json'
+import config from '../config.json'
 
-export default function gitBranchStage() {
+export default function branchToStage() {
   let branch
   exec('git branch --show-current', (err, stdout, stderr) => {
     if (err) {
@@ -13,6 +13,6 @@ export default function gitBranchStage() {
   if (config.git_branch_stage[branch]) {
     return config.git_branch_stage[branch]
   } else {
-    return config.git_branch_stage.dev
+    return branch
   }
 }

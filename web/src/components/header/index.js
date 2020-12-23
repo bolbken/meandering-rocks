@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from "react"
+import React, { useState, useEffect } from 'react'
 
-import Dock from "./Dock"
-import Title from "./Title"
-import OutsideHeaderClickWatcher from "./OutsideHeaderClickWatcher"
+import Dock from './Dock'
+import Title from './Title'
+import OutsideHeaderClickWatcher from './OutsideHeaderClickWatcher'
 
 const Header = () => {
   const [open, setOpen] = useState(false)
@@ -11,13 +11,16 @@ const Header = () => {
   const SCROLL_UP_BUFFER = 5
 
   useEffect(() => {
-    const onScroll = e => {
+    const onScroll = (e) => {
       setScrollTop(e.target.documentElement.scrollTop)
       setScrolling(e.target.documentElement.scrollTop > scrollTop)
     }
-    window.addEventListener("scroll", onScroll)
-
-    return () => window.removeEventListener("scroll", onScroll)
+    if (typeof window !== 'undefined') {
+      window.addEventListener('scroll', onScroll)
+      return () => window.removeEventListener('scroll', onScroll)
+    } else {
+      return
+    }
   }, [scrollTop])
 
   // useEffect(() => {

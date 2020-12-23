@@ -1,11 +1,11 @@
-import React, { useState, useCallback } from "react"
-import Gallery from "react-photo-gallery"
-import Carousel, { Modal, ModalGateway } from "react-images"
+import React, { useState, useCallback } from 'react'
+import Gallery from 'react-photo-gallery'
+import Carousel, { Modal, ModalGateway } from 'react-images'
 
-import useGooglePhotoAlbum from "../../hooks/useGooglePhotoAlbum"
-import { useContentWidth } from "../../hooks/useContentSize"
-import HoverTiltImage from "./HoverTiltImage"
-import styles from "../../styles/main.scss"
+import useGooglePhotoAlbum from '../../hooks/useGooglePhotoAlbum'
+import { useContentWidth } from '../../hooks/useContentSize'
+import HoverTiltImage from './HoverTiltImage'
+import styles from '../../styles/main.scss'
 
 const MasonryGallery = ({ albumName, fillPhotos }) => {
   const [photos, loading] = useGooglePhotoAlbum(
@@ -44,7 +44,7 @@ const MasonryGallery = ({ albumName, fillPhotos }) => {
           top={top}
           onClick={openLightbox}
           className={
-            loading ? "HoverTiltImage-loading" : "HoverTiltImage-loaded"
+            loading ? 'HoverTiltImage-loading' : 'HoverTiltImage-loaded'
           }
         />
       )
@@ -61,10 +61,14 @@ const MasonryGallery = ({ albumName, fillPhotos }) => {
           <Modal onClose={closeLightbox}>
             <Carousel
               currentIndex={currentImage}
-              views={photos.map(x => ({
-                source: x.srcUrl || x.src,
-                caption: x.alt,
-              }))}
+              views={
+                typeof photos !== 'undefined'
+                  ? photos.map((x) => ({
+                      source: x.srcUrl || x.src,
+                      caption: x.alt,
+                    }))
+                  : null
+              }
             />
           </Modal>
         ) : null}

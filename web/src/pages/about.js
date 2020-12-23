@@ -1,12 +1,12 @@
-import React, { useEffect, useState } from "react"
-import { graphql } from "gatsby"
-import Image from "gatsby-image"
-import { Parallax } from "react-scroll-parallax"
-import classNames from "classnames"
+import React, { useEffect, useState } from 'react'
+import { graphql } from 'gatsby'
+import Image from 'gatsby-image'
+import { Parallax } from 'react-scroll-parallax'
+import classNames from 'classnames'
 
-import sassVar from "../styles/main.scss"
-import Layout from "../components/layout"
-import SEO from "../components/seo"
+import sassVar from '../styles/main.scss'
+import Layout from '../components/layout'
+import SEO from '../components/seo'
 
 const About = ({ data, location }) => {
   const siteTitle = data.site.siteMetadata.title
@@ -16,11 +16,11 @@ const About = ({ data, location }) => {
   const ICON_CYCLE_MILLI = 3000
   const [currentIcon, setCurrentIcon] = useState(0)
   const [previousIcon, setPreviousIcon] = useState(0)
-  const iconActiveClassnamesAtIndex = index => {
+  const iconActiveClassnamesAtIndex = (index) => {
     return classNames({
-      "About__Hero__icon-current": index === currentIcon,
-      "About__Hero__icon-previous": index === previousIcon,
-      "About__Hero__icon-hidden":
+      'About__Hero__icon-current': index === currentIcon,
+      'About__Hero__icon-previous': index === previousIcon,
+      'About__Hero__icon-hidden':
         index !== currentIcon && index !== previousIcon,
     })
   }
@@ -41,7 +41,10 @@ const About = ({ data, location }) => {
 
   // Code pertaining to the switch to parallax scrolling
   const MIN_WIDTH_PX_PARALLAX = parseInt(sassVar.breakpointMinWidthPxLarge)
-  const enableParallax = window.innerWidth > MIN_WIDTH_PX_PARALLAX
+  let enableParallax = false
+  if (typeof window !== 'undefined') {
+    enableParallax = window.innerWidth > MIN_WIDTH_PX_PARALLAX
+  }
   const parallaxProps = {
     aboutBlurb: {
       bri: {
@@ -64,7 +67,7 @@ const About = ({ data, location }) => {
       },
     },
   }
-  const parallaxEnabledProps = blurbSubject => {
+  const parallaxEnabledProps = (blurbSubject) => {
     if (enableParallax) {
       return parallaxProps.aboutBlurb[blurbSubject]
     } else {
@@ -90,7 +93,7 @@ const About = ({ data, location }) => {
             <Image
               fluid={data.questionMarkIcon.childImageSharp.fluid}
               alt="question-mark-icon"
-              imgStyle={{ objectFit: "contain" }}
+              imgStyle={{ objectFit: 'contain' }}
             />
           </div>
           <div
@@ -101,12 +104,12 @@ const About = ({ data, location }) => {
             <Image
               fluid={data.rockHandIcon.childImageSharp.fluid}
               alt="rock-hand-emoji"
-              imgStyle={{ objectFit: "contain" }}
+              imgStyle={{ objectFit: 'contain' }}
             />
             <Image
               fluid={data.thinkingFaceIcon.childImageSharp.fluid}
               alt="thinking-face-emoji"
-              imgStyle={{ objectFit: "contain" }}
+              imgStyle={{ objectFit: 'contain' }}
             />
           </div>
           <div
@@ -117,12 +120,12 @@ const About = ({ data, location }) => {
             <Image
               fluid={data.rockIcon.childImageSharp.fluid}
               alt="rock-emoji"
-              imgStyle={{ objectFit: "contain" }}
+              imgStyle={{ objectFit: 'contain' }}
             />
             <Image
               fluid={data.greenCheckIcon.childImageSharp.fluid}
               alt="green-check-emoji"
-              imgStyle={{ objectFit: "contain" }}
+              imgStyle={{ objectFit: 'contain' }}
             />
           </div>
         </div>
@@ -135,23 +138,23 @@ const About = ({ data, location }) => {
           <li>...etc</li>
         </ul>
         <p>
-          We, <a href={"#bri-about"}>Bri</a> and <a href={"#ben-about"}>Ben</a>,
+          We, <a href={'#bri-about'}>Bri</a> and <a href={'#ben-about'}>Ben</a>,
           hope this project will serve as a life journal to look back on, stay
           in touch with our friends and family and, if luck with have it, make
           some new friends along the way.
         </p>
       </div>
-      <div id={"bri-about"} className={`About__beforePhoto`} />
+      <div id={'bri-about'} className={`About__beforePhoto`} />
       <Image
         fluid={data.briAboutPhoto.childImageSharp.fluid}
-        alt={"bri-about"}
-        className={`About__photo-left${enableParallax ? "-parallax" : ""}`}
+        alt={'bri-about'}
+        className={`About__photo-left${enableParallax ? '-parallax' : ''}`}
         // imgStyle={enableParallax ? { objectFit: "contain" } : null}
       />
-      <Parallax {...parallaxEnabledProps("bri")}>
+      <Parallax {...parallaxEnabledProps('bri')}>
         <div
           className={`About__blurb ${
-            enableParallax ? "About__blurb-parallax-right" : ""
+            enableParallax ? 'About__blurb-parallax-right' : ''
           }`}
         >
           <p>
@@ -165,17 +168,17 @@ const About = ({ data, location }) => {
           </p>
         </div>
       </Parallax>
-      <div id={"ben-about"} className={`About__beforePhoto`} />
+      <div id={'ben-about'} className={`About__beforePhoto`} />
       <Image
         fluid={data.benAboutPhoto.childImageSharp.fluid}
-        alt={"ben-about"}
-        className={`About__photo-right${enableParallax ? "-parallax" : ""}`}
+        alt={'ben-about'}
+        className={`About__photo-right${enableParallax ? '-parallax' : ''}`}
         // imgStyle={enableParallax ? { objectFit: "contain" } : null}
       />
-      <Parallax {...parallaxEnabledProps("ben")}>
+      <Parallax {...parallaxEnabledProps('ben')}>
         <div
           className={`About__blurb ${
-            enableParallax ? "About__blurb-parallax-left" : ""
+            enableParallax ? 'About__blurb-parallax-left' : ''
           }`}
         >
           <p>
@@ -191,16 +194,16 @@ const About = ({ data, location }) => {
           </p>
         </div>
       </Parallax>
-      <div id={"cats-about"} className={`About__beforePhoto`} />
+      <div id={'cats-about'} className={`About__beforePhoto`} />
       <Image
         fluid={data.catsAboutPhoto.childImageSharp.fluid}
         alt="tes-and-cali-about"
-        className={`About__photo-center${enableParallax ? "-parallax" : ""}`}
+        className={`About__photo-center${enableParallax ? '-parallax' : ''}`}
       />
-      <Parallax {...parallaxEnabledProps("cali")}>
+      <Parallax {...parallaxEnabledProps('cali')}>
         <div
           className={`About__blurb ${
-            enableParallax ? "About__blurb-parallax-right" : ""
+            enableParallax ? 'About__blurb-parallax-right' : ''
           }`}
         >
           <p>
@@ -216,16 +219,16 @@ const About = ({ data, location }) => {
           </p>
         </div>
       </Parallax>
-      <Parallax {...parallaxEnabledProps("tes")}>
+      <Parallax {...parallaxEnabledProps('tes')}>
         <div
           className={`About__blurb ${
-            enableParallax ? "About__blurb-parallax-left" : ""
+            enableParallax ? 'About__blurb-parallax-left' : ''
           }`}
         >
           <p>
             <em>
               Tes <small>Bottom</small>
-            </em>{" "}
+            </em>{' '}
             is the cat that wants to be your friend, especially if you have
             cheddar cheese. She is a american shorthair with siamese coloring
             and couldn't be more of a clutz. <br />
@@ -234,16 +237,16 @@ const About = ({ data, location }) => {
           </p>
         </div>
       </Parallax>
-      <div id={"vehicles-about"} className={`About__beforePhoto`} />
+      <div id={'vehicles-about'} className={`About__beforePhoto`} />
       <Image
         fluid={data.vehiclesAboutPhoto.childImageSharp.fluid}
         alt="dwayne-and-celeste-about"
-        className={`About__photo-center${enableParallax ? "-parallax" : ""}`}
+        className={`About__photo-center${enableParallax ? '-parallax' : ''}`}
       />
-      <Parallax {...parallaxEnabledProps("dwayne")}>
+      <Parallax {...parallaxEnabledProps('dwayne')}>
         <div
           className={`About__blurb ${
-            enableParallax ? "About__blurb-parallax-right" : ""
+            enableParallax ? 'About__blurb-parallax-right' : ''
           }`}
         >
           <p>
@@ -259,10 +262,10 @@ const About = ({ data, location }) => {
           </p>
         </div>
       </Parallax>
-      <Parallax {...parallaxEnabledProps("celeste")}>
+      <Parallax {...parallaxEnabledProps('celeste')}>
         <div
           className={`About__blurb ${
-            enableParallax ? "About__blurb-parallax-left" : ""
+            enableParallax ? 'About__blurb-parallax-left' : ''
           }`}
         >
           <p>

@@ -17,6 +17,8 @@ jspm_packages
 *.tfstate
 *.tfstate.backup
 *.tfstate.lock.info
+*.tfplan*
+*.tfoutput*
 #   Directories
 **/.terraform/
 # .tfvars files
