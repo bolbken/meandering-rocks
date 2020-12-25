@@ -203,6 +203,28 @@ resource "aws_iam_role_policy_attachment" "build_logs_production" {
   policy_arn = aws_iam_policy.build_logs_production.arn
 }
 
+data "aws_iam_policy_document" "build_kms_keys" {
+  statement {
+    sid     = "kmsDecrypt"
+    actions = ["kms:Decrypt", "kms:DescribeKey"]
+    resources = [
+      data.terraform_remote_state.common.outputs.kms_arn,
+      "arn:aws:kms:us-east-1:310674449483:key/68a6d54c-be86-4cda-93aa-6604a191413c"
+    ]
+  }
+
+}
+
+resource "aws_iam_policy" "build_kms_keys" {
+  name   = "meandering-rocks-codebuild-kms-keys-policy-production"
+  policy = data.aws_iam_policy_document.build_kms_keys.json
+}
+
+resource "aws_iam_role_policy_attachment" "build_kms_keys" {
+  role       = aws_iam_role.codebuild.name
+  policy_arn = aws_iam_policy.build_kms_keys.arn
+}
+
 resource "aws_codebuild_project" "production" {
 
   name          = "meandering-rocks-build-production"

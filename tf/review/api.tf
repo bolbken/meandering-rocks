@@ -29,7 +29,7 @@ resource "aws_api_gateway_domain_name" "review" {
 data "aws_iam_policy_document" "redirect_service_lambda" {
   statement {
     sid       = "kmsDecrypt"
-    actions   = ["kms:Decrypt"]
+    actions   = ["kms:Decrypt", "kms:DescribeKey"]
     resources = [data.terraform_remote_state.common.outputs.kms_arn]
   }
 

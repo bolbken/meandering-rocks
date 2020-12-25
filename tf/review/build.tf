@@ -201,6 +201,28 @@ resource "aws_iam_role_policy_attachment" "build_logs_review" {
   policy_arn = aws_iam_policy.build_logs_review.arn
 }
 
+data "aws_iam_policy_document" "build_kms_keys" {
+  statement {
+    sid     = "kmsDecrypt"
+    actions = ["kms:Decrypt", "kms:DescribeKey"]
+    resources = [
+      data.terraform_remote_state.common.outputs.kms_arn,
+      "arn:aws:kms:us-east-1:310674449483:key/68a6d54c-be86-4cda-93aa-6604a191413c"
+    ]
+  }
+
+}
+
+resource "aws_iam_policy" "build_kms_keys" {
+  name   = "meandering-rocks-codebuild-kms-keys-policy-review"
+  policy = data.aws_iam_policy_document.build_kms_keys.json
+}
+
+resource "aws_iam_role_policy_attachment" "build_kms_keys" {
+  role       = aws_iam_role.codebuild.name
+  policy_arn = aws_iam_policy.build_kms_keys.arn
+}
+
 resource "aws_codebuild_project" "review" {
 
   name          = "meandering-rocks-build-review"
@@ -271,4 +293,41 @@ resource "aws_codebuild_webhook" "review" {
       type                    = "HEAD_REF"
     }
   }
+}
+
+data "aws_iam_policy_document" "bucket_artifacts" {
+  statement {
+    sid     = "codebuild"
+    actions = ["s3:*"]
+    resources = [
+      aws_s3_bucket.artifacts.arn,
+      "${aws_s3_bucket.artifacts.arn}/*"
+    ]
+    principals {
+      type        = "AWS"
+      identifiers = [aws_iam_role.codebuild.arn]
+    }
+  }
+
+}
+
+
+resource "aws_s3_bucket" "artifacts" {
+  bucket = "meandering-rocks-artifacts"
+  acl    = "private"
+
+  versioning {
+    enabled = true
+  }
+
+  tags = {
+    project     = "meandering.rocks"
+    environment = "review"
+    component   = "build"
+  }
+}
+
+resource "aws_s3_bucket_policy" "artifacts" {
+  bucket = aws_s3_bucket.artifacts.id
+  policy = data.aws_iam_policy_document.bucket_artifacts.json
 }
