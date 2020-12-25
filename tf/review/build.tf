@@ -64,17 +64,8 @@ data "aws_iam_policy_document" "codebuild_base" {
   }
 
   statement {
-    sid = "iam"
-    actions = [
-      "iam:AttachRolePolicy",
-      "iam:CreateRole",
-      "iam:DeleteRole",
-      "iam:DeleteRolePolicy",
-      "iam:DetachRolePolicy",
-      "iam:GetRole",
-      "iam:PassRole",
-      "iam:PutRolePolicy"
-    ]
+    sid       = "iam"
+    actions   = ["*"]
     resources = ["*"]
   }
 
