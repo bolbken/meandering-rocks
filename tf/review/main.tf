@@ -1,8 +1,9 @@
 terraform {
   backend "s3" {
-    bucket = "meandering-rocks-configuration"
-    key    = "terraform/review/.tfstate"
-    region = "us-east-1"
+    bucket     = "meandering-rocks-configuration"
+    key        = "terraform/review/.tfstate"
+    region     = "us-east-1"
+    kms_key_id = "effdbfaf-9a81-48ce-ac1f-0ca69f79871b"
   }
 }
 
