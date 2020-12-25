@@ -3,13 +3,15 @@ env:
   shell: bash
   exported-variables:
     - STAGE
+    - GIT_BRANCH
         
 phases:
   install:
     runtime-versions:
       nodejs: 12
     commands:
-      - 'git checkout $(echo $CODEBUILD_WEBHOOK_TRIGGER | sed "s|.*/||")'
+      - 'GIT_BRANCH=$(echo $CODEBUILD_WEBHOOK_TRIGGER | sed "s|.*/||")'
+      - 'git checkout $GIT_BRANCH'
       - 'wget -O /usr/local/bin/tfenv https://github.com/cloudposse/tfenv/releases/download/0.4.0/tfenv_linux_amd64'
       - 'chmod +x /usr/local/bin/tfenv'
       - 'curl -fsSL https://apt.releases.hashicorp.com/gpg | apt-key add -'
@@ -21,7 +23,7 @@ phases:
       - 'apt-get install zip terraform yarn -y'
       - 'yarn global add json dotenv-cli --prefix /usr/local'
       - 'export STAGE=$(utils/branch-to-stage.sh config.json)'
-      - 'echo $STAGE'
+      - 'echo "Code building for branch: $GIT_BRANCH  :  corresponds to stage  :  $STAGE'
       - 'aws s3 cp s3://meandering-rocks-configuration/env/.env.$STAGE .env.$STAGE'
       - 'yarn install'
   pre_build:
