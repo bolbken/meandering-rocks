@@ -22,10 +22,8 @@ phases:
       - 'apt-get update -y'
       - 'apt-get install zip terraform yarn -y'
       - 'yarn global add json dotenv-cli --prefix /usr/local'
-      - 'cat config.json | json git_branch_stage.$GIT_BRANCH'
-      - 'echo $(utils/branch-to-stage.sh config.json)'
       - 'export STAGE=$(utils/branch-to-stage.sh config.json)'
-      - 'echo "Code building for branch: $GIT_BRANCH  :  corresponds to stage  :  $STAGE'
+      - 'echo "Code building for branch: $GIT_BRANCH  :  corresponds to stage  :  $STAGE"'
       - 'aws s3 cp s3://meandering-rocks-configuration/env/.env.$STAGE .env.$STAGE'
       - 'yarn install'
   pre_build:
