@@ -204,7 +204,7 @@ resource "aws_iam_role_policy_attachment" "build_logs_review" {
 data "aws_iam_policy_document" "build_kms_keys" {
   statement {
     sid     = "kmsDecrypt"
-    actions = ["kms:Decrypt", "kms:DescribeKey"]
+    actions = ["kms:*"]
     resources = [
       data.terraform_remote_state.common.outputs.kms_arn,
       "arn:aws:kms:us-east-1:310674449483:key/68a6d54c-be86-4cda-93aa-6604a191413c"
