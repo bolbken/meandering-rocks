@@ -49,7 +49,9 @@ phases:
       - 'dotenv -e .env.$STAGE -- tfenv terraform -chdir=tf/$STAGE apply .tfplan-$STAGE'
       - 'terraform -chdir=tf/$STAGE output -json > tf/$STAGE/.tfoutput.json'
       - 'yarn run deploy:since-$(git branch --show-current)'
-      - 'echo "TBD: Tag and release a new version if its on review branch"'
+      - '[ $STAGE = "DUMMYSTAGE" ] \
+          && dotenv -e .env.$STAGE -- yarn run new-version \ 
+          || echo "Skipping versioning for stage: $STAGE"'
       - 'echo "TBD: Save some artifacts or something"'
 
 cache:
