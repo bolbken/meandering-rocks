@@ -5,6 +5,12 @@
   "version": "0.2.0",
   "configurations": [
     {
+      "name": "Node.JS Current File",
+      "type": "node",
+      "request": "launch",
+      "program": "${file}"
+    },
+    {
       "name": "Web Develop",
       "type": "node",
       "request": "launch",

@@ -9,6 +9,7 @@ plugins:
   - serverless-bundle
   - serverless-offline
   - serverless-dotenv-plugin
+  - serverless-add-api-key
   - serverless-express
 
 custom:
@@ -41,15 +42,15 @@ custom:
     websocketPort: ${env:API_PHOTOS_SERVICE_OFFLINE_WEBSOCKET_PORT, 7011}
     lambdaPort: ${env:API_PHOTOS_SERVICE_OFFLINE_LAMBDA_PORT, 7012}
   enablePrivate:
-    prod: true
+    production: true
     review: true
     other: false
   allowedOrigin:
-    prod: 'https://meandering.rocks'
+    production: 'https://meandering.rocks'
     review: 'https://dev.meandering.rocks'
     other: '*'
   limits:
-    prod:
+    production:
       limit: 1000
       burstLimit: 40
       rateLimit: 20
@@ -57,10 +58,45 @@ custom:
       limit: 100
       burstLimit: 20
       rateLimit: 10
-    other:
-      limit: 50
-      burstLimit: 5
-      rateLimit: 3
+  apiKeys:
+    production:
+      - name: ${env:API_KEY_NAME_TARGET_BROWSER}-production
+        usagePlan:
+          name: ${env:API_KEY_NAME_TARGET_BROWSER}-usage-plan-production
+          quota:
+            limit: ${self:custom.limits.production.limit}
+            period: MONTH
+          throttle:
+            burstLimit: ${self:custom.limits.production.burstLimit}
+            rateLimit: ${self:custom.limits.production.rateLimit}
+      - name: ${env:API_KEY_NAME_TARGET_AUX}-production
+        usagePlan:
+          name: ${env:API_KEY_NAME_TARGET_BROWSER}-usage-plan-production
+          quota:
+            limit: ${self:custom.limits.production.limit}
+            period: MONTH
+          throttle:
+            burstLimit: ${self:custom.limits.production.burstLimit}
+            rateLimit: ${self:custom.limits.production.rateLimit}
+    review:
+      - name: ${env:API_KEY_NAME_TARGET_BROWSER}-review
+        usagePlan:
+          name: ${env:API_KEY_NAME_TARGET_BROWSER}-usage-plan-review
+          quota:
+            limit: ${self:custom.limits.review.limit}
+            period: MONTH
+          throttle:
+            burstLimit: ${self:custom.limits.review.burstLimit}
+            rateLimit: ${self:custom.limits.review.rateLimit}
+      - name: ${env:API_KEY_NAME_TARGET_AUX}-review
+        usagePlan:
+          name: ${env:API_KEY_NAME_TARGET_BROWSER}-usage-plan-review
+          quota:
+            limit: ${self:custom.limits.review.limit}
+            period: MONTH
+          throttle:
+            burstLimit: ${self:custom.limits.review.burstLimit}
+            rateLimit: ${self:custom.limits.review.rateLimit}
 
 provider:
   name: aws
@@ -75,23 +111,12 @@ provider:
     restApiRootResourceId:
       '${file(../../../utils/tf-output.js):api_gateway_resource_id, 67890}'
     metrics: false
-  apiKeys:
-    - ${env:API_KEY_NAME_TARGET_BROWSER}-${opt:stage}
-    - ${env:API_KEY_NAME_TARGET_AUX}-${opt:stage}
-  usagePlan:
-    quota:
-      limit: ${self:custom.limits.${opt:stage}.limit, self:custom.limits.other.limit}
-      offset: 2
-      period: MONTH
-    throttle:
-      burstLimit: ${self:custom.limits.${opt:stage}.burstLimit, self:custom.limits.other.burstLimit}
-      rateLimit: ${self:custom.limits.${opt:stage}.rateLimit, self:custom.limits.other.rateLimit}
 
 functions:
   photos:
     handler: handler.api
     layers:
-      - arn:aws:lambda:us-east-1:310674449483:layer:PhotosApi:6
+      - '${file(../../../utils/tf-output.js):lambda_layer_sharp}'
     events:
       - http:
           path: /album

@@ -1,5 +1,6 @@
 const AWS = require('aws-sdk')
 const s3 = new AWS.S3()
+const tfOutput = require('../../utils/tf-output')
 
 const { redirect } = require('./redirect')
 
@@ -39,7 +40,6 @@ exports.redirect = async (event, context, callback) => {
   }
 
   // In case Basic Authentication passed, redirect to appropriate static site content
-  // TODO: Need to turn bucket name into env var generated from terraform
-  const bucket_name = 'dev.meandering.rocks'
+  const bucket_name = tfOutput.review.web_target_bucket_name
   redirect(event, s3, bucket_name, callback)
 }

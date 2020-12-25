@@ -6,7 +6,6 @@ const params = {
 }
 
 export const list = (event, context, callback) => {
-  // fetch all todos from the database
   dynamoDb.scan(params, (error, result) => {
     // handle potential errors
     if (error) {
@@ -14,7 +13,7 @@ export const list = (event, context, callback) => {
       callback(null, {
         statusCode: error.statusCode || 501,
         headers: { 'Content-Type': 'text/plain' },
-        body: "Couldn't fetch the todos.",
+        body: "Couldn't fetch the subscriptions.",
       })
       return
     }

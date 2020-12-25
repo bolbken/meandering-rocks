@@ -18,7 +18,3 @@ data "terraform_remote_state" "common" {
     region = "us-east-1"
   }
 }
-
-locals {
-  target_address = "https://meandering.rocks"
-}

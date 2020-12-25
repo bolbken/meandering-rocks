@@ -5,6 +5,7 @@ require('dotenv').config({
   // env file is at root of monorepo
   path: `../.env.${activeEnv}`,
 })
+const tfOutput = require('../utils/tf-output')
 
 // Config variables
 const targetAddress = new URL(
@@ -45,7 +46,7 @@ module.exports = {
     {
       resolve: `gatsby-plugin-s3`,
       options: {
-        bucketName: process.env.WEB_TARGET_BUCKET_NAME || 'fake-bucket',
+        bucketName: tfOutput[activeEnv].web_target_bucket_name || 'fake-bucket',
         region: process.env.AWS_REGION || 'us-east-1',
         protocol: targetAddress.protocol.slice(0, -1),
         hostname: targetAddress.hostname,

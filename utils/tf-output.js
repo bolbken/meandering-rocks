@@ -30,16 +30,38 @@ async function writeOutputFile(dirPath, writePath) {
   }
 }
 
-async function terraform_output(environment, key) {
+function terraform_output(environment, key) {
   const dirPath = path.resolve(__dirname, '../tf', environment)
   const filePath = path.resolve(dirPath, outputFileName)
-  if (!outputFileExists()) {
-    await writeOutputFile(dirPath, filePath)
+  try {
+    if (!outputFileExists()) {
+      writeOutputFile(dirPath, filePath)
+    }
+
+    // Poll for the file until its there...
+    let isFileRead = false
+    let isTimeOut = false
+    let output
+    setTimeout(() => {
+      isTimeOut = true
+    }, 2000)
+    // BLOCKING ... force SYNC
+    while (!isFileRead && !isTimeOut) {
+      try {
+        output = readOutputFile(filePath)
+        isFileRead = true
+      } catch (err) {
+        //NO OP
+      }
+    }
+
+    return output[key].value
+  } catch (err) {
+    return null
   }
-  const output = readOutputFile(filePath)
-  return output[key]
 }
 
+// Common Environment Resources
 module.exports.api_gateway_id = terraform_output('common', 'api_gateway_id')
 module.exports.api_gateway_resource_id = terraform_output(
   'common',
@@ -54,3 +76,21 @@ module.exports.newsletter_service_lambda_role_arn = terraform_output(
   'newsletter_service_lambda_role_arn'
 )
 module.exports.kms_arn = terraform_output('common', 'kms_arn')
+
+module.exports.lambda_layer_sharp = terraform_output(
+  'common',
+  'lambda_layer_sharp'
+)
+
+// Review Environment Resources
+module.exports.review = {
+  web_target_bucket_name: terraform_output('review', 'web_target_bucket_name'),
+}
+
+// Production Environment Resources
+module.exports.production = {
+  web_target_bucket_name: terraform_output(
+    'production',
+    'web_target_bucket_name'
+  ),
+}

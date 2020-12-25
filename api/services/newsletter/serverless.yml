@@ -9,6 +9,7 @@ plugins:
   - serverless-dotenv-plugin
   - serverless-bundle
   - serverless-dynamodb-local
+  - serverless-add-api-key
   - serverless-offline
 
 custom:
@@ -39,15 +40,15 @@ custom:
           - table: ${env:API_NEWSLETTER_SERVICE_DYNAMODB_TABLE_NAME}-${opt:stage, 'dev'}
             sources: [./utils/seed.json]
   enablePrivate:
-    prod: true
+    production: true
     review: true
     other: false
   allowedOrigin:
-    prod: 'https://meandering.rocks'
+    production: 'https://meandering.rocks'
     review: 'https://dev.meandering.rocks'
     other: '*'
   limits:
-    prod:
+    production:
       limit: 100
       burstLimit: 20
       rateLimit: 10
@@ -55,10 +56,45 @@ custom:
       limit: 10
       burstLimit: 2
       rateLimit: 1
-    other:
-      limit: 5
-      burstLimit: 2
-      rateLimit: 1
+  apiKeys:
+    production:
+      - name: ${env:API_KEY_NAME_TARGET_BROWSER}-production
+        usagePlan:
+          name: ${env:API_KEY_NAME_TARGET_BROWSER}-usage-plan-production
+          quota:
+            limit: ${self:custom.limits.production.limit}
+            period: MONTH
+          throttle:
+            burstLimit: ${self:custom.limits.production.burstLimit}
+            rateLimit: ${self:custom.limits.production.rateLimit}
+      - name: ${env:API_KEY_NAME_TARGET_AUX}-production
+        usagePlan:
+          name: ${env:API_KEY_NAME_TARGET_BROWSER}-usage-plan-production
+          quota:
+            limit: ${self:custom.limits.production.limit}
+            period: MONTH
+          throttle:
+            burstLimit: ${self:custom.limits.production.burstLimit}
+            rateLimit: ${self:custom.limits.production.rateLimit}
+    review:
+      - name: ${env:API_KEY_NAME_TARGET_BROWSER}-review
+        usagePlan:
+          name: ${env:API_KEY_NAME_TARGET_BROWSER}-usage-plan-review
+          quota:
+            limit: ${self:custom.limits.review.limit}
+            period: MONTH
+          throttle:
+            burstLimit: ${self:custom.limits.review.burstLimit}
+            rateLimit: ${self:custom.limits.review.rateLimit}
+      - name: ${env:API_KEY_NAME_TARGET_AUX}-review
+        usagePlan:
+          name: ${env:API_KEY_NAME_TARGET_BROWSER}-usage-plan-review
+          quota:
+            limit: ${self:custom.limits.review.limit}
+            period: MONTH
+          throttle:
+            burstLimit: ${self:custom.limits.review.burstLimit}
+            rateLimit: ${self:custom.limits.review.rateLimit}
 
 provider:
   name: aws
@@ -73,9 +109,6 @@ provider:
     restApiRootResourceId:
       '${file(../../../utils/tf-output.js):api_gateway_resource_id, 67890}'
     metrics: false
-  apiKeys:
-    - ${env:API_KEY_NAME_TARGET_BROWSER}-${opt:stage, 'dev'}
-    - ${env:API_KEY_NAME_TARGET_AUX}-${opt:stage, 'dev'}
   usagePlan:
     quota:
       limit: ${self:custom.limits.${opt:stage, 'dev'}.limit, self:custom.limits.other.limit}

@@ -34,9 +34,9 @@
     "test:since-master": "lerna run test",
     "new-version": "lerna version --conventional-commits --yes",
     "build": "lerna run build",
-    "deploy": "lerna run deploy",
-    "deploy:since-review": "lerna run deploy --since review",
-    "deploy:since-master": "lerna run deploy"
+    "deploy": "lerna run deploy --stream",
+    "deploy:since-review": "lerna run deploy --since review --stream",
+    "deploy:since-master": "lerna run deploy --stream"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",

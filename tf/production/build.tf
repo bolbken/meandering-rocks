@@ -221,16 +221,7 @@ resource "aws_codebuild_project" "production" {
     image_pull_credentials_type = "CODEBUILD"
 
     environment_variable {
-      name  = "TARGET_ADDRESS"
-      value = local.target_address
-    }
-
-    environment_variable {
-      name  = "TARGET_BUCKET_NAME"
-      value = aws_s3_bucket.production.id
-    }
-
-    environment_variable {
+      # TF Output
       name  = "CLOUDFRONT_DISTRIBUTION"
       value = aws_cloudfront_distribution.production.id
     }

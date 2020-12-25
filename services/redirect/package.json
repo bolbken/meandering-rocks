@@ -12,14 +12,13 @@
   "scripts": {
     "develop": "echo \"WARNING: no development mode specified\"",
     "test": "echo \"WARNING: no tests specified\"",
-    "build": "serverless package --stage $(../utils/sls-deploy-git-stage.sh ../config.json)",
-    "deploy": "serverless deploy --stage $(../utils/sls-deploy-git-stage.sh ../config.json)"
+    "build": "serverless package --stage $(../../utils/branch-to-stage.sh ../../config.json)",
+    "deploy": "serverless deploy --stage $(../../utils/branch-to-stage.sh ../../config.json)"
   },
   "author": "Ben Kolb (@bolbken)",
   "devDependencies": {
     "aws-sdk": "^2.803.0",
-    "serverless": "^2.15.0",
-    "serverless-dotenv-plugin": "^3.1.0"
+    "serverless": "^2.15.0"
   },
   "dependencies": {}
 }
