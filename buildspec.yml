@@ -9,8 +9,7 @@ phases:
     runtime-versions:
       nodejs: 12
     commands:
-      - 'printenv'
-      - 'git checkout master'
+      - 'git checkout $(echo $CODEBUILD_WEBHOOK_TRIGGER | sed "s|.*/||")'
       - 'wget -O /usr/local/bin/tfenv https://github.com/cloudposse/tfenv/releases/download/0.4.0/tfenv_linux_amd64'
       - 'chmod +x /usr/local/bin/tfenv'
       - 'curl -fsSL https://apt.releases.hashicorp.com/gpg | apt-key add -'
@@ -21,7 +20,6 @@ phases:
       - 'apt-get update -y'
       - 'apt-get install zip terraform yarn -y'
       - 'yarn global add json dotenv-cli --prefix /usr/local'
-      - 'echo $(git branch --show-current)'
       - 'export STAGE=$(utils/branch-to-stage.sh config.json)'
       - 'echo $STAGE'
       - 'aws s3 cp s3://meandering-rocks-configuration/env/.env.$STAGE .env.$STAGE'
