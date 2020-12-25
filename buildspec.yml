@@ -33,9 +33,11 @@ phases:
   build:
     commands:
       - 'yarn run build:tf-required'
-      - 'echo "Running terraform plan for common environment resources."'
+      - 'echo "Terraform planning environment resources for stage: common"'
+      - 'terraform -chdir=tf/common init'
       - 'dotenv -e .env.$STAGE -- tfenv terraform -chdir=tf/common plan -out=.tfplan-common'
-      - 'echo "Running terraform plan for $STAGE environment resources."'
+      - 'echo "Terraform planning environment resources for stage: $STAGE"'
+      - 'terraform -chdir=tf/$STAGE init'
       - 'dotenv -e .env.$STAGE -- tfenv terraform  -chdir=tf/$STAGE plan -out=.tfplan-$STAGE'
 
   post_build:
