@@ -205,7 +205,7 @@ resource "aws_codebuild_project" "review" {
 
   name          = "meandering-rocks-build-review"
   description   = "Build the source code of meandering-rocks review branch and deploy to stage."
-  build_timeout = "5"
+  build_timeout = "20"
   service_role  = aws_iam_role.codebuild.arn
 
   artifacts {
