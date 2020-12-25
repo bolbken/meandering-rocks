@@ -207,7 +207,7 @@ resource "aws_codebuild_project" "production" {
 
   name          = "meandering-rocks-build-production"
   description   = "Build the source code of meandering-rocks master branch and deploy to production."
-  build_timeout = "20"
+  build_timeout = "30"
   service_role  = aws_iam_role.codebuild.arn
 
   artifacts {
