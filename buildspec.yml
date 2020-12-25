@@ -8,13 +8,17 @@ phases:
     runtime-versions:
       nodejs: 12
     commands:
+      - 'echo $PATH'
       - 'wget -O /usr/local/bin/tfenv https://github.com/cloudposse/tfenv/releases/download/0.4.0/tfenv_linux_amd64'
       - 'chmod +x /usr/local/bin/tfenv'
       - 'curl -fsSL https://apt.releases.hashicorp.com/gpg | apt-key add -'
+      - 'curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -'
+      - 'echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list'
       - 'apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main"'
       - 'chmod a+rx utils -R'
-      - 'apt-get -y update && apt-get install zip terraform -y'
-      - 'npm install -g yarn json dotenv-cli'
+      - 'apt-get update -y'
+      - 'apt-get install zip terraform yarn -y'
+      - 'yarn global add json dotenv-cli --prefix /usr/local'
       - 'STAGE=$(utils/branch-to-stage.sh config.json)'
       - 'echo $STAGE'
       - 'aws s3 cp s3://meandering-rocks-configuration/env/.env.$STAGE .env.$STAGE'
