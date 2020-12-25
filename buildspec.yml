@@ -22,7 +22,7 @@ phases:
       - 'apt-get update -y'
       - 'apt-get install zip terraform yarn -y'
       - 'yarn global add json dotenv-cli --prefix /usr/local'
-      - 'echo cat config.json | json git_branch_stage.$GIT_BRANCH'
+      - 'cat config.json | json git_branch_stage.$GIT_BRANCH'
       - 'echo $(utils/branch-to-stage.sh config.json)'
       - 'export STAGE=$(utils/branch-to-stage.sh config.json)'
       - 'echo "Code building for branch: $GIT_BRANCH  :  corresponds to stage  :  $STAGE'
