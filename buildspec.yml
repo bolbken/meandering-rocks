@@ -34,7 +34,7 @@ phases:
     commands:
       - 'yarn run build:tf-required'
       - 'cd web'
-      - 'gatsby build'
+      - 'yarn run build'
       - 'cd ..'
       - 'echo "Terraform planning environment resources for stage: common"'
       - 'terraform -chdir=tf/common init'
