@@ -1,96 +1,96 @@
-const util = require('util')
-const fs = require('fs')
+const { promises: fs, constants: fsConstants, readFileSync } = require('fs')
 const path = require('path')
+const util = require('util')
 const exec = util.promisify(require('child_process').exec)
 
-const outputFileName = '.tfoutput.json'
+const tfDir = path.resolve(__dirname, '../tf/')
+const tfOutputFileName = '.tfoutput.json'
 
-function outputFileExists(filePath) {
+async function subDirs(parentDir) {
+  const dir = await fs.readdir(parentDir, { withFileTypes: true })
+  const subDirs = dir
+    .filter((entity) => entity.isDirectory())
+    .map((entity) => entity.name)
+  return subDirs
+}
+
+async function outputFileExists(filePath) {
   let flag = true
   try {
-    fs.accessSync(filePath, fs.constants.F_OK)
+    await fs.access(filePath, fsConstants.F_OK)
   } catch (err) {
     flag = false
   }
   return flag
 }
 
-function readOutputFile(filePath) {
-  const outputFile = fs.readFileSync(filePath, 'utf-8')
+async function readOutputFile(filePath) {
+  const outputFile = await fs.readFile(filePath, 'utf-8')
   return JSON.parse(outputFile)
 }
 
+function flattenOutputValues(output) {
+  return Object.fromEntries(
+    Object.entries(output).map(([key, obj]) => {
+      return [key, obj.value]
+    })
+  )
+}
+
 async function writeOutputFile(dirPath, writePath) {
-  const { stdout, stderr } = await exec(
+  const { stderr } = await exec(
     `terraform -chdir=${dirPath}/ output -json > ${writePath}`
   )
   if (stderr) {
     console.error('Failed to retrieve terraform output key')
     throw err
   }
+  const outputFile = await readOutputFile(writePath)
+  return outputFile
 }
 
-function terraform_output(environment, key) {
-  const dirPath = path.resolve(__dirname, '../tf', environment)
-  const filePath = path.resolve(dirPath, outputFileName)
-  try {
-    if (!outputFileExists()) {
-      writeOutputFile(dirPath, filePath)
-    }
+async function getTfOutputs(tfDir) {
+  /*
+  1. Attempt to read json files if they exist
+  2. Catch by Writing the json files if they don't exist
+  3. Finally read the json output files
+  3. return the envs output from the file
+  */
 
-    // Poll for the file until its there...
-    let isFileRead = false
-    let isTimeOut = false
-    let output
-    setTimeout(() => {
-      isTimeOut = true
-    }, 2000)
-    // BLOCKING ... force SYNC
-    while (!isFileRead && !isTimeOut) {
+  const tfEnvs = await subDirs(tfDir)
+  const outputPromises = tfEnvs.map(async (env) => {
+    const tfDirPath = path.resolve(tfDir, env)
+    const outputFilePath = path.resolve(tfDirPath.toString(), tfOutputFileName)
+    let tfOutput
+    try {
+      tfOutput = await readOutputFile(outputFilePath)
+    } catch (err) {
       try {
-        output = readOutputFile(filePath)
-        isFileRead = true
+        tfOutput = await writeOutputFile(tfDirPath, outputFilePath)
       } catch (err) {
-        //NO OP
+        console.log(err)
+        throw err
       }
     }
+    return [env, flattenOutputValues(tfOutput)]
+  })
+  let outputs = await Promise.all(outputPromises)
 
-    return output[key].value
+  return Object.fromEntries(outputs)
+}
+
+function readOutputJsonSync(environment, outputKey) {
+  try {
+    const outputFilePath = path.resolve(tfDir, environment, tfOutputFileName)
+    const outputFile = readFileSync(outputFilePath, 'utf-8')
+
+    return flattenOutputValues(JSON.parse(outputFile))[outputKey]
   } catch (err) {
-    return null
+    throw err
   }
 }
 
-// Common Environment Resources
-module.exports.api_gateway_id = terraform_output('common', 'api_gateway_id')
-module.exports.api_gateway_resource_id = terraform_output(
-  'common',
-  'api_gateway_resource_id'
-)
-module.exports.photos_service_lambda_role_arn = terraform_output(
-  'common',
-  'photos_service_lambda_role_arn'
-)
-module.exports.newsletter_service_lambda_role_arn = terraform_output(
-  'common',
-  'newsletter_service_lambda_role_arn'
-)
-module.exports.kms_arn = terraform_output('common', 'kms_arn')
-
-module.exports.lambda_layer_sharp = terraform_output(
-  'common',
-  'lambda_layer_sharp'
-)
-
-// Review Environment Resources
-module.exports.review = {
-  web_target_bucket_name: terraform_output('review', 'web_target_bucket_name'),
-}
-
-// Production Environment Resources
-module.exports.production = {
-  web_target_bucket_name: terraform_output(
-    'production',
-    'web_target_bucket_name'
-  ),
+module.exports = {
+  read: getTfOutputs(tfDir),
+  readSync: readOutputJsonSync,
 }

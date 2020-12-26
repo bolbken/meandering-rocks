@@ -1,10 +1,11 @@
 // Environment setup
 const activeEnv = process.env.BUILD_ENV || process.env.NODE_ENV || 'development'
-console.log(`Using environment config: '${activeEnv}'`)
+console.log(`Gatsby configuring for stage: '${activeEnv}'`)
 require('dotenv').config({
   // env file is at root of monorepo
   path: `../.env.${activeEnv}`,
 })
+console.log('Gatsby process.env:   \n', JSON.stringify(process.env, null, 2))
 const tfOutput = require('../utils/tf-output')
 
 // Config variables
@@ -30,12 +31,20 @@ module.exports = {
       photos: {
         baseUrl: process.env.API_BASE_URL || 'http://localhost',
         port: process.env.API_PHOTOS_SERVICE_OFFLINE_HTTP_PORT || '443',
-        pathPrefix: process.env.NODE_ENV == 'development' ? '/development' : '',
+        pathPrefix:
+          process.env.BUILD_ENV !== 'development' ||
+          process.env.NODE_ENV !== 'development'
+            ? ''
+            : '/development',
       },
       newsletter: {
         baseUrl: process.env.API_BASE_URL || 'http://localhost',
         port: process.env.API_NEWSLETTER_SERVICE_OFFLINE_HTTP_PORT || '443',
-        pathPrefix: process.env.NODE_ENV == 'development' ? '/development' : '',
+        pathPrefix:
+          process.env.BUILD_ENV !== 'development' ||
+          process.env.NODE_ENV !== 'development'
+            ? ''
+            : '/development',
       },
     },
   },
@@ -46,7 +55,9 @@ module.exports = {
     {
       resolve: `gatsby-plugin-s3`,
       options: {
-        bucketName: tfOutput[activeEnv].web_target_bucket_name || 'fake-bucket',
+        bucketName:
+          tfOutput.readSync(activeEnv, 'web_target_bucket_name') ||
+          'fake-bucket',
         region: process.env.AWS_REGION || 'us-east-1',
         protocol: targetAddress.protocol.slice(0, -1),
         hostname: targetAddress.hostname,

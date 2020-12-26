@@ -1,14 +1,15 @@
 import { GoogleOAuth2 } from 'serverless-headless-google-oauth'
 import tokenStore from './token'
 import { decryptSecret } from './aws-utils'
+import branchToStage from '../../../utils/branch-to-stage'
 
 const oAuthConfig = {
   scope: ['https://www.googleapis.com/auth/photoslibrary.readonly'],
   oauth: {
     clientId: process.env.API_PHOTOS_SERVICE_GOOGLE_OAUTH_CLIENT_ID,
     callbackURL: process.env.IS_OFFLINE
-      ? 'http://localhost:5000/dev/callback'
-      : 'https://api.meandering.rocks/callback',
+      ? `http://localhost:${process.env.API_PHOTOS_SERVICE_OFFLINE_HTTP_PORT}/${branchToStage}/callback`
+      : `${process.env.API_BASE_URL}/callback`,
   },
   userCredentials: {
     email: process.env.API_PHOTOS_SERVICE_GOOGLE_OAUTH_EMAIL,

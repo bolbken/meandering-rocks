@@ -2,7 +2,7 @@ import AWS from 'aws-sdk'
 
 const dynamoDb = new AWS.DynamoDB.DocumentClient()
 const params = {
-  TableName: process.env.DYNAMODB_TABLE,
+  TableName: process.env.API_NEWSLETTER_SERVICE_DYNAMODB_TABLE_NAME,
 }
 
 export const list = (event, context, callback) => {

@@ -6,7 +6,7 @@ let dbConfig = {
   region: process.env.IS_OFFLINE ? 'localhost' : config.aws.region,
 }
 if (process.env.IS_OFFLINE) {
-  dbConfig.endpoint = `http://localhost:${process.env.AWS_DYNAMODB_LOCAL_PORT}`
+  dbConfig.endpoint = `http://localhost:${process.env.API_NEWSLETTER_SERVICE_DYNAMODB_PORT}`
 }
 
 const dynamodb = new AWS.DynamoDB(dbConfig)
@@ -15,7 +15,7 @@ const docClient = new AWS.DynamoDB.DocumentClient(dbConfig)
 const defaultSchema = {
   subscriptionSchema: {
     TableName: `${
-      process.env.AWS_DYNAMODB_NEWSLETTER_SUBSCRIPTION_TABLE_NAME
+      process.env.API_NEWSLETTER_SERVICE_DYNAMODB_TABLE_NAME
     }-${branchToStage()}`,
     KeySchema: [{ AttributeName: 'email', KeyType: 'HASH' }],
     AttributeDefinitions: [{ AttributeName: 'email', AttributeType: 'S' }],

@@ -19,9 +19,9 @@ custom:
     include:
       - API_KEY_NAME_TARGET_BROWSER
       - API_KEY_NAME_TARGET_AUX
-      - API_PHOTOS_SERVICE_OFFLINE_HTTP_PORT=7010
-      - API_PHOTOS_SERVICE_OFFLINE_WEBSOCKET_PORT=7011
-      - API_PHOTOS_SERVICE_OFFLINE_LAMBDA_PORT=7012
+      - API_PHOTOS_SERVICE_OFFLINE_HTTP_PORT
+      - API_PHOTOS_SERVICE_OFFLINE_WEBSOCKET_PORT
+      - API_PHOTOS_SERVICE_OFFLINE_LAMBDA_PORT
       - API_PHOTOS_SERVICE_GOOGLE_OAUTH_CLIENT_ID
       - API_PHOTOS_SERVICE_GOOGLE_OAUTH_CLIENT_SECRET
       - API_PHOTOS_SERVICE_GOOGLE_OAUTH_EMAIL
@@ -104,19 +104,19 @@ provider:
   stage: ${opt:stage, 'dev'}
   region: ${opt:region, 'us-east-1'}
   timeout: 10
-  role: ${file(../../../utils/tf-output.js):photos_service_lambda_role_arn}
+  role: ${file(../../../utils/tf-output.js):read.common.photos_service_lambda_role_arn}
   apiGateway:
     restApiId:
-      '${file(../../../utils/tf-output.js):api_gateway_id, 12345}'
+      '${file(../../../utils/tf-output.js):read.common.api_gateway_id, 12345}'
     restApiRootResourceId:
-      '${file(../../../utils/tf-output.js):api_gateway_resource_id, 67890}'
+      '${file(../../../utils/tf-output.js):read.common.api_gateway_resource_id, 67890}'
     metrics: false
 
 functions:
   photos:
     handler: handler.api
     layers:
-      - '${file(../../../utils/tf-output.js):lambda_layer_sharp}'
+      - '${file(../../../utils/tf-output.js):read.common.lambda_layer_sharp}'
     events:
       - http:
           path: /album

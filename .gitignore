@@ -24,8 +24,9 @@ jspm_packages
 # .tfvars files
 *.tfvars
 
-# Environment Files
+# Environment Files/Dirs
 **/*.env*
+**/.env*/
 
 # Other Artifact Files
 **/*.log

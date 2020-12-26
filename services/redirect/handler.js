@@ -40,6 +40,6 @@ exports.redirect = async (event, context, callback) => {
   }
 
   // In case Basic Authentication passed, redirect to appropriate static site content
-  const bucket_name = tfOutput.review.web_target_bucket_name
+  const bucket_name = tfOutput.readSync('review', 'web_target_bucket_name')
   redirect(event, s3, bucket_name, callback)
 }

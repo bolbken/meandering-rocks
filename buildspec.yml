@@ -28,17 +28,17 @@ phases:
       - 'yarn install'
   pre_build:
     commands:
-      - 'yarn run test:since-$(git branch --show-current)'
+      - 'dotenv -e .env.$STAGE -- yarn run test:since-$(git branch --show-current)'
 
   build:
     commands:
-      - 'yarn run build:tf-required'
-      - 'cd web'
-      - 'yarn run build'
-      - 'cd ..'
+      - 'echo "Building packages required for stage: common"'
+      - 'dotenv -e .env.$STAGE -- yarn run build:tf-required-common'
       - 'echo "Terraform planning environment resources for stage: common"'
       - 'terraform -chdir=tf/common init'
       - 'dotenv -e .env.$STAGE -- tfenv terraform -chdir=tf/common plan -out=.tfplan-common'
+      - 'echo "Building packages required for stage: $STAGE"'
+      - 'dotenv -e .env.$STAGE -- yarn run build:tf-required-$STAGE'
       - 'echo "Terraform planning environment resources for stage: $STAGE"'
       - 'terraform -chdir=tf/$STAGE init'
       - 'dotenv -e .env.$STAGE -- tfenv terraform  -chdir=tf/$STAGE plan -out=.tfplan-$STAGE'
@@ -51,7 +51,7 @@ phases:
       - 'echo "Running terraform apply for $STAGE environment resources."'
       - 'dotenv -e .env.$STAGE -- tfenv terraform -chdir=tf/$STAGE apply .tfplan-$STAGE'
       - 'terraform -chdir=tf/$STAGE output -json > tf/$STAGE/.tfoutput.json'
-      - 'yarn run deploy:since-$(git branch --show-current)'
+      - 'dotenv -e .env.$STAGE -- yarn run deploy:since-$(git branch --show-current)'
       - '[ $STAGE = "DUMMYSTAGE" ] \
           && dotenv -e .env.$STAGE -- yarn run new-version \ 
           || echo "Skipping versioning for stage: $STAGE"'
