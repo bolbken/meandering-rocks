@@ -34,7 +34,7 @@
     "test:since-master": "lerna run test",
     "new-version": "lerna version --conventional-commits --create-release github --yes",
     "build": "lerna run build",
-    "build:tf-required": "lerna run --scope web --scope auth-redirect --scope *-layer build ",
+    "build:tf-required": "lerna run --scope auth-redirect --scope *-layer build ",
     "deploy": "lerna run deploy --stream",
     "deploy:since-review": "lerna run deploy --since review --stream",
     "deploy:since-master": "lerna run deploy --stream"

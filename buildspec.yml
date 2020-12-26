@@ -33,6 +33,9 @@ phases:
   build:
     commands:
       - 'yarn run build:tf-required'
+      - 'cd web'
+      - 'gatsby build'
+      - 'cd ..'
       - 'echo "Terraform planning environment resources for stage: common"'
       - 'terraform -chdir=tf/common init'
       - 'dotenv -e .env.$STAGE -- tfenv terraform -chdir=tf/common plan -out=.tfplan-common'
