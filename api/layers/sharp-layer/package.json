@@ -10,7 +10,7 @@
   "private": true,
   "scripts": {
     "test": "echo \"WARNING: no test specified\"",
-    "build": "mkdir nodejs && cp node_modules package*.json nodejs -r && zip nodejs.zip nodejs/ -r && rm -rf nodejs",
+    "build": "mkdir nodejs && cp node_modules package*.json nodejs -r && zip -q nodejs.zip nodejs/ -r && rm -rf nodejs",
     "deploy": "echo \"WARNING: no deployment specified\""
   },
   "keywords": [],
