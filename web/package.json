@@ -1,14 +1,22 @@
 {
   "name": "web",
-  "private": true,
   "description": "Source code for the Meandering.Rocks \"static\" site web page.",
   "version": "0.1.0",
-  "author": "Ben Kolb <ben@bolbken.dev>",
+  "author": "Ben Kolb (@bolbken)",
+  "homepage": "https://meandering.rocks",
+  "keywords": [
+    "climbing",
+    "blog",
+    "travel",
+    "rocks",
+    "rv"
+  ],
   "workspaces": {
     "nohoist": [
       "**"
     ]
   },
+  "private": true,
   "dependencies": {
     "classnames": "^2.2.6",
     "gatsby": "^2.24.37",
@@ -44,15 +52,6 @@
     "react-tilt": "^0.1.4"
   },
   "devDependencies": {},
-  "homepage": "https://meandering.rocks",
-  "keywords": [
-    "climbing",
-    "blog",
-    "travel",
-    "rocks",
-    "rv"
-  ],
-  "main": "n/a",
   "scripts": {
     "build": "gatsby build",
     "develop": "PORT=8000 gatsby develop",

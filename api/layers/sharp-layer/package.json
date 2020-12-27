@@ -2,6 +2,12 @@
   "name": "sharp-layer",
   "version": "0.1.0",
   "description": "An AWS lambda layer package.  Intended to provide sharp.js to connected lambdas.",
+  "keywords": [
+    "aws",
+    "lambda",
+    "sharp.js"
+  ],
+  "author": "Ben Kolb (@bolbken)",
   "workspaces": {
     "nohoist": [
       "**"
@@ -13,8 +19,6 @@
     "build": "mkdir nodejs && cp node_modules package*.json nodejs -r && zip -q nodejs.zip nodejs/ -r && rm -rf nodejs",
     "deploy": "echo \"WARNING: no deployment specified\""
   },
-  "keywords": [],
-  "author": "Ben Kolb (@bolbken)",
   "dependencies": {
     "sharp": "^0.26.3"
   }

@@ -2,6 +2,7 @@
   "name": "auth-redirect",
   "version": "0.1.0",
   "description": "Lambda function capable of enforcing 'BASIC' authentication.",
+  "author": "Ben Kolb (@bolbken)",
   "workspaces": {
     "nohoist": [
       "**"
@@ -15,7 +16,6 @@
     "build": "serverless package --stage $(../../utils/branch-to-stage.sh ../../config.json)",
     "deploy": "serverless deploy --stage $(../../utils/branch-to-stage.sh ../../config.json)"
   },
-  "author": "Ben Kolb (@bolbken)",
   "devDependencies": {
     "aws-sdk": "^2.803.0",
     "serverless": "^2.15.0"
