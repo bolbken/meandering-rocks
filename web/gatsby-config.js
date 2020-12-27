@@ -5,7 +5,6 @@ require('dotenv').config({
   // env file is at root of monorepo
   path: `../.env.${activeEnv}`,
 })
-console.log('Gatsby process.env:   \n', JSON.stringify(process.env, null, 2))
 const tfOutput = require('../utils/tf-output')
 
 // Config variables
