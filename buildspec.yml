@@ -26,6 +26,7 @@ phases:
       - 'echo "Code building for branch: $GIT_BRANCH  :  corresponds to stage  :  $STAGE"'
       - 'aws s3 cp s3://meandering-rocks-configuration/env/.env.$STAGE .env.$STAGE'
       - 'yarn install'
+      - './utils/tf-init.sh'
   pre_build:
     commands:
       - 'dotenv -e .env.$STAGE -- yarn run test:since-$(git branch --show-current)'
@@ -35,12 +36,10 @@ phases:
       - 'echo "Building packages required for stage: common"'
       - 'dotenv -e .env.$STAGE -- yarn run build:tf-required-common'
       - 'echo "Terraform planning environment resources for stage: common"'
-      - 'terraform -chdir=tf/common init'
       - 'dotenv -e .env.$STAGE -- tfenv terraform -chdir=tf/common plan -out=.tfplan-common'
       - 'echo "Building packages required for stage: $STAGE"'
       - 'dotenv -e .env.$STAGE -- yarn run build:tf-required-$STAGE'
       - 'echo "Terraform planning environment resources for stage: $STAGE"'
-      - 'terraform -chdir=tf/$STAGE init'
       - 'dotenv -e .env.$STAGE -- tfenv terraform  -chdir=tf/$STAGE plan -out=.tfplan-$STAGE'
 
   post_build:
