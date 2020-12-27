@@ -52,7 +52,20 @@ resource "aws_cloudfront_distribution" "production" {
 
   origin {
     domain_name = aws_s3_bucket.production.website_endpoint
-    origin_id   = "S3-Website-${aws_s3_bucket.production.bucket_regional_domain_name}"
+    origin_id   = "S3-Website-${aws_s3_bucket.production.website_endpoint}"
+
+    custom_origin_config {
+      http_port                = 80
+      https_port               = 443
+      origin_keepalive_timeout = 5
+      origin_protocol_policy   = "http-only"
+      origin_read_timeout      = 30
+      origin_ssl_protocols = [
+        "TLSv1",
+        "TLSv1.1",
+        "TLSv1.2",
+      ]
+    }
   }
 
   custom_error_response {
@@ -65,7 +78,7 @@ resource "aws_cloudfront_distribution" "production" {
   default_cache_behavior {
     allowed_methods  = ["GET", "HEAD"]
     cached_methods   = ["GET", "HEAD"]
-    target_origin_id = "S3-Website-${aws_s3_bucket.production.bucket_regional_domain_name}"
+    target_origin_id = "S3-Website-${aws_s3_bucket.production.website_endpoint}"
 
     forwarded_values {
       query_string = false
