@@ -1,34 +1,4 @@
 
-resource "aws_api_gateway_rest_api" "common" {
-  api_key_source = "HEADER"
-  name           = "meandering-rocks-api-gateway"
-
-  tags = {
-    project     = "meandering.rocks"
-    environment = "common"
-    component   = "api"
-  }
-}
-
-resource "aws_api_gateway_rest_api_policy" "common" {
-  rest_api_id = aws_api_gateway_rest_api.common.id
-  policy      = <<EOF
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Effect": "Allow",
-      "Principal": {
-        "AWS": "*"
-      },
-      "Action": "execute-api:Invoke",
-      "Resource": "${aws_api_gateway_rest_api.common.arn}"
-    }
-  ]
-}
-EOF
-}
-
 resource "aws_lambda_layer_version" "sharp" {
   layer_name          = "sharp-layer"
   filename            = "../../api/layers/sharp-layer/nodejs.zip"

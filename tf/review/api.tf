@@ -1,23 +1,53 @@
-locals {
-  domain_name = "api.dev.meandering.rocks"
-}
+# locals {
+#   domain_name = "api.dev.meandering.rocks"
+# }
 
-resource "aws_api_gateway_domain_name" "review" {
-  domain_name              = local.domain_name
-  regional_certificate_arn = "arn:aws:acm:us-east-1:310674449483:certificate/0e6ca20b-9e39-4fde-9289-0785248bdf9e"
-  security_policy          = "TLS_1_2"
+# resource "aws_api_gateway_domain_name" "review" {
+#   domain_name              = local.domain_name
+#   regional_certificate_arn = "arn:aws:acm:us-east-1:310674449483:certificate/0e6ca20b-9e39-4fde-9289-0785248bdf9e"
+#   security_policy          = "TLS_1_2"
 
-  endpoint_configuration {
-    types = [
-      "REGIONAL",
-    ]
-  }
+#   endpoint_configuration {
+#     types = [
+#       "REGIONAL",
+#     ]
+#   }
+
+#   tags = {
+#     "environment" = "review"
+#     "project"     = "meandering.rocks"
+#     "component"   = "api"
+#   }
+# }
+
+resource "aws_api_gateway_rest_api" "review" {
+  api_key_source = "HEADER"
+  name           = "meandering-rocks-api-gateway-review"
 
   tags = {
-    "environment" = "review"
-    "project"     = "meandering.rocks"
-    "component"   = "api"
+    project     = "meandering.rocks"
+    environment = "review"
+    component   = "api"
   }
+}
+
+resource "aws_api_gateway_rest_api_policy" "review" {
+  rest_api_id = aws_api_gateway_rest_api.review.id
+  policy      = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "*"
+      },
+      "Action": "execute-api:Invoke",
+      "Resource": "${aws_api_gateway_rest_api.review.arn}"
+    }
+  ]
+}
+EOF
 }
 
 # resource "aws_api_gateway_base_path_mapping" "review" {

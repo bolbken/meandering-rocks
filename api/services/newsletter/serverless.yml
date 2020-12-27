@@ -99,15 +99,15 @@ custom:
 provider:
   name: aws
   runtime: nodejs12.x
-  stage: ${opt:stage, 'dev'}
+  stage: ${opt:stage, 'development'}
   region: ${opt:region, 'us-east-1'}
   timeout: 10
   role: ${file(../../../utils/tf-output.js):read.common.newsletter_service_lambda_role_arn}
   apiGateway:
     restApiId:
-      '${file(../../../utils/tf-output.js):read.common.api_gateway_id, 12345}'
+      '${file(../../../utils/tf-output.js):read.${opt:stage}.api_gateway_id, 12345}'
     restApiRootResourceId:
-      '${file(../../../utils/tf-output.js):read.common.api_gateway_resource_id, 67890}'
+      '${file(../../../utils/tf-output.js):read.${opt:stage}.api_gateway_resource_id, 12345}'
     metrics: false
   usagePlan:
     quota:
