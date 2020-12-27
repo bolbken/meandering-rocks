@@ -15,7 +15,7 @@ resource "aws_api_gateway_rest_api" "production" {
 }
 
 resource "aws_api_gateway_rest_api_policy" "production" {
-  rest_api_id = aws_api_gateway_rest_api.prodcution.id
+  rest_api_id = aws_api_gateway_rest_api.production.id
   policy      = <<EOF
 {
   "Version": "2012-10-17",
