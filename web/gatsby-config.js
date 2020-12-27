@@ -27,6 +27,7 @@ module.exports = {
       maxWidth: maxContentWidthPx,
     },
     api: {
+      key: tfOutput.readSync(activeEnv, 'api_key_web') || '12345',
       photos: {
         baseUrl: process.env.API_BASE_URL || 'http://localhost',
         port: process.env.API_PHOTOS_SERVICE_OFFLINE_HTTP_PORT || '443',
@@ -45,7 +46,6 @@ module.exports = {
             ? ''
             : '/development',
       },
-      key: tfOutput.readSync(activeEnv, 'api_key_web') || '12345',
     },
   },
 

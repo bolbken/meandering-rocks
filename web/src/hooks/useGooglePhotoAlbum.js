@@ -16,12 +16,12 @@ export default function useGooglePhotoAlbum(albumName, query, fillPhotos) {
       site {
         siteMetadata {
           api {
+            key
             photos {
               baseUrl
               port
               pathPrefix
             }
-            key
           }
         }
       }
