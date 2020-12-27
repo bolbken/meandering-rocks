@@ -10,7 +10,7 @@
 
 <p align="center">
   <a href="https://meandering.rocks">
-    <img alt="site-logo" src="https://raw.githubusercontent.com/bolbken/meandering-rocks-web/master/content/assets/site-logo-0.svg" width="100" />
+    <img alt="site-logo" src="https://raw.githubusercontent.com/bolbken/meandering-rocks/master/web/content/assets/site-logo-0.svg" width="100" />
   </a>
 </p>
 <br/>
