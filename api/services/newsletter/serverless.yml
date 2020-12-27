@@ -10,6 +10,7 @@ plugins:
   - serverless-bundle
   - serverless-dynamodb-local
   - serverless-add-api-key
+  - serverless-domain-manager
   - serverless-offline
 
 custom:
@@ -95,6 +96,10 @@ custom:
           throttle:
             burstLimit: ${self:custom.limits.review.burstLimit}
             rateLimit: ${self:custom.limits.review.rateLimit}
+  customDomain:
+    basePath: ''
+    domainName: ${file(../../../utils/tf-output.js):read.${opt:stage}.api_domain, place.holder}
+    stage: ${opt:stage}
 
 provider:
   name: aws

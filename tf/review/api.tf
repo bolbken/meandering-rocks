@@ -1,24 +1,7 @@
-# locals {
-#   domain_name = "api.dev.meandering.rocks"
-# }
-
-# resource "aws_api_gateway_domain_name" "review" {
-#   domain_name              = local.domain_name
-#   regional_certificate_arn = "arn:aws:acm:us-east-1:310674449483:certificate/0e6ca20b-9e39-4fde-9289-0785248bdf9e"
-#   security_policy          = "TLS_1_2"
-
-#   endpoint_configuration {
-#     types = [
-#       "REGIONAL",
-#     ]
-#   }
-
-#   tags = {
-#     "environment" = "review"
-#     "project"     = "meandering.rocks"
-#     "component"   = "api"
-#   }
-# }
+data "aws_acm_certificate" "api_review" {
+  domain   = var.api_domain
+  statuses = ["ISSUED"]
+}
 
 resource "aws_api_gateway_rest_api" "review" {
   api_key_source = "HEADER"
@@ -28,6 +11,24 @@ resource "aws_api_gateway_rest_api" "review" {
     project     = "meandering.rocks"
     environment = "review"
     component   = "api"
+  }
+}
+
+resource "aws_api_gateway_domain_name" "review" {
+  domain_name              = data.aws_acm_certificate.api_review.domain
+  regional_certificate_arn = data.aws_acm_certificate.api_review.arn
+  security_policy          = "TLS_1_2"
+
+  endpoint_configuration {
+    types = [
+      "REGIONAL",
+    ]
+  }
+
+  tags = {
+    "environment" = "review"
+    "project"     = "meandering.rocks"
+    "component"   = "api"
   }
 }
 

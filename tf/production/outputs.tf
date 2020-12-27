@@ -17,3 +17,7 @@ output "api_gateway_id" {
 output "api_gateway_resource_id" {
   value = aws_api_gateway_rest_api.production.root_resource_id
 }
+
+output "api_domain" {
+  value = data.aws_acm_certificate.api_production.domain
+}
