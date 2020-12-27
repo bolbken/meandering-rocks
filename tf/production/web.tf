@@ -65,7 +65,7 @@ resource "aws_cloudfront_distribution" "production" {
   default_cache_behavior {
     allowed_methods  = ["GET", "HEAD"]
     cached_methods   = ["GET", "HEAD"]
-    target_origin_id = "S3-Website-${aws_s3_bucket.production.bucket_regional_domain_name}"
+    target_origin_id = "S3-Website-${aws_s3_bucket.production.website_endpoint}/."
 
     forwarded_values {
       query_string = false
