@@ -21,11 +21,13 @@ export default function useGooglePhotoAlbum(albumName, query, fillPhotos) {
               port
               pathPrefix
             }
+            key
           }
         }
       }
     }
   `)
+  const apiKey = data.data.site.siteMetadata.api.key
   const { baseUrl, port, pathPrefix } = data.site.siteMetadata.api.photos
   const queryStr = Object.keys(query)
     .map(
@@ -40,7 +42,14 @@ export default function useGooglePhotoAlbum(albumName, query, fillPhotos) {
   useEffect(() => {
     async function fetchAlbum() {
       const res = await fetch(
-        `${baseUrl}:${port}${pathPrefix}/album/${albumName}?${queryStr}`
+        `${baseUrl}:${port}${pathPrefix}/album/${albumName}?${queryStr}`,
+        {
+          method: 'GET',
+          mode: 'no-cors',
+          headers: {
+            'X-Api-Key': apiKey,
+          },
+        }
       )
       const json = await res.json()
       const googlePhotos = json.mediaItems

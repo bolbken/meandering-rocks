@@ -45,6 +45,7 @@ module.exports = {
             ? ''
             : '/development',
       },
+      key: tfOutput.readSync(activeEnv, 'api_key_web') || '12345',
     },
   },
 

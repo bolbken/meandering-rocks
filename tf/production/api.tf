@@ -51,3 +51,10 @@ resource "aws_api_gateway_domain_name" "production" {
   }
 }
 
+data "aws_api_gateway_api_key" "web" {
+  id = "2p5vgkodcf"
+}
+
+data "aws_api_gateway_api_key" "aux" {
+  id = "ukk9yc1jtl"
+}
