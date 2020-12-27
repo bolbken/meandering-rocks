@@ -51,8 +51,8 @@ resource "aws_cloudfront_distribution" "production" {
   wait_for_deployment = true
 
   origin {
-    domain_name = aws_s3_bucket.production.website_domain
-    origin_id   = "S3-Website-${aws_s3_bucket.production.bucket_regional_domain_name}"
+    domain_name = aws_s3_bucket.production.website_endpoint
+    origin_id   = "S3-Website-${aws_s3_bucket.production.website_endpoint}/."
   }
 
   custom_error_response {
