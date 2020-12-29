@@ -38,7 +38,7 @@ custom:
     seed:
       dev:
         sources:
-          - table: ${env:API_NEWSLETTER_SERVICE_DYNAMODB_TABLE_NAME}-${opt:stage, 'dev'}
+          - table: ${env:API_NEWSLETTER_SERVICE_DYNAMODB_TABLE_NAME}-${self:provider.stage}
             sources: [./utils/seed.json]
   enablePrivate:
     production: true
@@ -98,8 +98,8 @@ custom:
             rateLimit: ${self:custom.limits.review.rateLimit}
   customDomain:
     basePath: ''
-    domainName: ${file(../../../utils/tf-output.js):read.${opt:stage}.api_domain, place.holder}
-    stage: ${opt:stage}
+    domainName: ${file(../../../utils/tf-output.js):read.${self:provider.stage}.api_domain, place.holder}
+    stage: ${self:provider.stage}
 
 provider:
   name: aws
@@ -107,28 +107,28 @@ provider:
   stage: ${opt:stage, 'development'}
   region: ${opt:region, 'us-east-1'}
   timeout: 10
-  role: ${file(../../../utils/tf-output.js):read.common.newsletter_service_lambda_role_arn}
+  role: ${file(../../../utils/tf-output.js):read.common.newsletter_service_lambda_role_arn, 'arn:fake'}
   apiGateway:
     restApiId:
-      '${file(../../../utils/tf-output.js):read.${opt:stage}.api_gateway_id, 12345}'
+      ${file(../../../utils/tf-output.js):read.${self:provider.stage}.api_gateway_id, '12345'}
     restApiRootResourceId:
-      '${file(../../../utils/tf-output.js):read.${opt:stage}.api_gateway_resource_id, 12345}'
+      ${file(../../../utils/tf-output.js):read.${self:provider.stage}.api_gateway_resource_id, '12345'}
     metrics: false
   usagePlan:
     quota:
-      limit: ${self:custom.limits.${opt:stage, 'dev'}.limit, self:custom.limits.other.limit}
+      limit: ${self:custom.limits.${self:provider.stage}.limit, self:custom.limits.other.limit}
       offset: 2
       period: MONTH
     throttle:
-      burstLimit: ${self:custom.limits.${opt:stage, 'dev'}.burstLimit, self:custom.limits.other.burstLimit}
-      rateLimit: ${self:custom.limits.${opt:stage, 'dev'}.rateLimit, self:custom.limits.other.rateLimit}
+      burstLimit: ${self:custom.limits.${self:provider.stage}.burstLimit, self:custom.limits.other.burstLimit}
+      rateLimit: ${self:custom.limits.${self:provider.stage}.rateLimit, self:custom.limits.other.rateLimit}
 
 resources:
   Resources:
     subscriptionsTable:
       Type: AWS::DynamoDB::Table
       Properties:
-        TableName: ${env:API_NEWSLETTER_SERVICE_DYNAMODB_TABLE_NAME}-${opt:stage, 'dev'}
+        TableName: ${env:API_NEWSLETTER_SERVICE_DYNAMODB_TABLE_NAME}-${self:provider.stage}
         AttributeDefinitions:
           - AttributeName: email
             AttributeType: S

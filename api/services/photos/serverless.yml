@@ -100,8 +100,8 @@ custom:
             rateLimit: ${self:custom.limits.review.rateLimit}
   customDomain:
     basePath: ''
-    domainName: ${file(../../../utils/tf-output.js):read.${opt:stage}.api_domain, place.holder}
-    stage: ${opt:stage}
+    domainName: ${file(../../../utils/tf-output.js):read.${self:provider.stage}.api_domain, place.holder}
+    stage: ${self:provider.stage}
 
 provider:
   name: aws
@@ -112,9 +112,9 @@ provider:
   role: ${file(../../../utils/tf-output.js):read.common.photos_service_lambda_role_arn}
   apiGateway:
     restApiId:
-      '${file(../../../utils/tf-output.js):read.${opt:stage}.api_gateway_id, 12345}'
+      '${file(../../../utils/tf-output.js):read.${self:provider.stage}.api_gateway_id, 12345}'
     restApiRootResourceId:
-      '${file(../../../utils/tf-output.js):read.${opt:stage}.api_gateway_resource_id, 12345}'
+      '${file(../../../utils/tf-output.js):read.${self:provider.stage}.api_gateway_resource_id, 12345}'
     metrics: false
 
 functions:
@@ -126,27 +126,21 @@ functions:
       - http:
           path: /album
           method: GET
-          private: ${self:custom.enablePrivate.${opt:stage}, false}
+          private: true
           cors:
-            origin: ${self:custom.allowedOrigin.${opt:stage}, '*'}
+            origin: ${self:custom.allowedOrigin.${self:provider.stage}, '*'}
             headers:
               - Content-Type
-              - X-Amz-Date
               - X-Api-Key
-              - X-Amz-Security-Token
-              - X-Amz-User-Agent
       - http:
           path: /album/{param}
           method: GET
-          private: ${self:custom.enablePrivate.${opt:stage}, false}
+          private: true
           cors:
-            origin: ${self:custom.allowedOrigin.${opt:stage}, '*'}
+            origin: ${self:custom.allowedOrigin.${self:provider.stage}, '*'}
             headers:
               - Content-Type
-              - X-Amz-Date
               - X-Api-Key
-              - X-Amz-Security-Token
-              - X-Amz-User-Agent
       - http:
           path: /callback
           method: GET

@@ -11,7 +11,7 @@
   "main": "handler.js",
   "private": true,
   "scripts": {
-    "offline": "SLS_DEBUG=* serverless offline --stage development",
+    "offline": "SLS_DEBUG=* serverless offline --stage development --apiKey $API_KEY",
     "develop": "yarn run offline",
     "test": "echo \"WARNING: no tests specified\"",
     "build": "serverless package --stage $(../../../utils/branch-to-stage.sh ../../../config.json)",

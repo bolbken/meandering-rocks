@@ -5,6 +5,8 @@ require('dotenv').config({
   // env file is at root of monorepo
   path: `../.env.${activeEnv}`,
 })
+const apiPathPrefix =
+  process.env.BUILD_ENV !== 'development' ? '' : `/${activeEnv}`
 const tfOutput = require('../utils/tf-output')
 
 // Config variables
@@ -27,24 +29,20 @@ module.exports = {
       maxWidth: maxContentWidthPx,
     },
     api: {
-      key: tfOutput.readSync(activeEnv, 'api_key_web') || '12345',
+      key: `${
+        tfOutput.readSync(activeEnv, 'api_key_web') ||
+        process.env.API_KEY ||
+        '12345'
+      }`,
       photos: {
         baseUrl: process.env.API_BASE_URL || 'http://localhost',
         port: process.env.API_PHOTOS_SERVICE_OFFLINE_HTTP_PORT || '443',
-        pathPrefix:
-          process.env.BUILD_ENV !== 'development' ||
-          process.env.NODE_ENV !== 'development'
-            ? ''
-            : '/development',
+        pathPrefix: apiPathPrefix,
       },
       newsletter: {
         baseUrl: process.env.API_BASE_URL || 'http://localhost',
         port: process.env.API_NEWSLETTER_SERVICE_OFFLINE_HTTP_PORT || '443',
-        pathPrefix:
-          process.env.BUILD_ENV !== 'development' ||
-          process.env.NODE_ENV !== 'development'
-            ? ''
-            : '/development',
+        pathPrefix: apiPathPrefix,
       },
     },
   },

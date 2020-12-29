@@ -27,7 +27,7 @@
   },
   "homepage": "https://github.com/bolbken/meandering-rocks#readme",
   "scripts": {
-    "develop": "lerna run develop --stream",
+    "develop": "./utils/dev-prep-offline.sh; dotenv -e .env.development -- lerna run develop --stream",
     "diff": "lerna diff",
     "test": "lerna run test",
     "test:since-review": "lerna run test --since review",

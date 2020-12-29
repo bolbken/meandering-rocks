@@ -58,25 +58,35 @@ async function getTfOutputs(tfDir) {
   */
 
   const tfEnvs = await subDirs(tfDir)
-  const outputPromises = tfEnvs.map(async (env) => {
-    const tfDirPath = path.resolve(tfDir, env)
-    const outputFilePath = path.resolve(tfDirPath.toString(), tfOutputFileName)
-    let tfOutput
-    try {
-      tfOutput = await readOutputFile(outputFilePath)
-    } catch (err) {
+  try {
+    const outputPromises = tfEnvs.map(async (env) => {
+      const tfDirPath = path.resolve(tfDir, env)
+      const outputFilePath = path.resolve(
+        tfDirPath.toString(),
+        tfOutputFileName
+      )
+      let tfOutput
       try {
-        tfOutput = await writeOutputFile(tfDirPath, outputFilePath)
+        tfOutput = await readOutputFile(outputFilePath)
       } catch (err) {
-        console.log(err)
-        throw err
+        try {
+          tfOutput = await writeOutputFile(tfDirPath, outputFilePath)
+        } catch (err) {
+          throw err
+        }
       }
-    }
-    return [env, flattenOutputValues(tfOutput)]
-  })
-  let outputs = await Promise.all(outputPromises)
+      return [env, flattenOutputValues(tfOutput)]
+    })
+    let outputs = await Promise.all(outputPromises)
 
-  return Object.fromEntries(outputs)
+    return Object.fromEntries(outputs)
+  } catch (err) {
+    console.log(
+      'tf-output: Failed to read/write terraform outputs.  Resorting to returning undefined'
+    )
+    console.error(err)
+    return undefined
+  }
 }
 
 function readOutputJsonSync(environment, outputKey) {
@@ -86,7 +96,11 @@ function readOutputJsonSync(environment, outputKey) {
 
     return flattenOutputValues(JSON.parse(outputFile))[outputKey]
   } catch (err) {
-    throw err
+    console.log(
+      'tf-output: Failed to read/write terraform outputs.  Resorting to returning undefined'
+    )
+    console.error(err)
+    return undefined
   }
 }
 
