@@ -42,7 +42,7 @@ data "aws_iam_policy_document" "photos_service_lambda" {
       "s3:GetObject",
       "s3:GetObjectVersion"
     ]
-    resources = ["${data.aws_s3_bucket.configuration.arn}/api/*"]
+    resources = [data.aws_s3_bucket.configuration.arn]
   }
 }
 
