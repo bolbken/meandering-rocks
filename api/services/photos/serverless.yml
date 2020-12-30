@@ -18,6 +18,7 @@ custom:
     # Root of monorepo has .env* files
     basePath: '../../../'
     include:
+      - WEB_TARGET_ADDRESS
       - API_KEY_NAME_TARGET_BROWSER
       - API_KEY_NAME_TARGET_AUX
       - API_PHOTOS_SERVICE_OFFLINE_HTTP_PORT
@@ -47,7 +48,7 @@ custom:
     review: true
     other: false
   allowedOrigin:
-    production: 'https://meandering.rocks'
+    production: 'https://www.meandering.rocks'
     review: 'https://dev.meandering.rocks'
     other: '*'
   limits:
@@ -128,7 +129,7 @@ functions:
           method: GET
           private: true
           cors:
-            origin: ${self:custom.allowedOrigin.${self:provider.stage}, '*'}
+            origin: ${env:WEB_TARGET_ADDRESS, '*'}
             headers:
               - Content-Type
               - X-Api-Key
@@ -137,7 +138,7 @@ functions:
           method: GET
           private: true
           cors:
-            origin: ${self:custom.allowedOrigin.${self:provider.stage}, '*'}
+            origin: ${env:WEB_TARGET_ADDRESS, '*'}
             headers:
               - Content-Type
               - X-Api-Key
