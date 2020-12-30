@@ -5,10 +5,7 @@ resource "aws_lambda_layer_version" "sharp" {
   compatible_runtimes = ["nodejs12.x"]
 }
 
-
-
-
-resource "aws_kms_key" "common" {
+resource "aws_kms_key" "api" {
   description = "The meandering rocks api encrypt and decrypt key."
 }
 
@@ -32,7 +29,7 @@ data "aws_iam_policy_document" "photos_service_lambda" {
   statement {
     sid       = "kmsDecrypt"
     actions   = ["kms:Decrypt"]
-    resources = [aws_kms_key.common.arn]
+    resources = [aws_kms_key.api.arn]
   }
 
   statement {
@@ -62,9 +59,10 @@ resource "aws_iam_role_policy" "photos_service_lambda" {
 
 data "aws_iam_policy_document" "newsletter_service_lambda" {
   statement {
-    sid       = "kmsDecrypt"
-    actions   = ["kms:Decrypt"]
-    resources = [aws_kms_key.common.arn]
+    sid     = "kmsDecrypt"
+    actions = ["kms:Decrypt"]
+    # TODO This kms key needs to be used to encrypt/decrypt lambda env vars
+    resources = [aws_kms_key.api.arn]
   }
 }
 
