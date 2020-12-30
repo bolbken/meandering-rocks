@@ -23,5 +23,5 @@ output "api_domain" {
 }
 
 output "api_key_web" {
-  value = data.aws_api_gateway_api_key.web
+  value = data.aws_api_gateway_api_key.web.value
 }
