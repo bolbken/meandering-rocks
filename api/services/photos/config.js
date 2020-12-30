@@ -5,7 +5,7 @@ export default {
 
   googleOAuthToken: {
     s3BucketName: 'meandering-rocks-configuration',
-    s3BucketPath: '/api',
+    s3BucketPath: 'api',
     s3BucketFileName: 'google-oauth-token.json',
   },
 }

@@ -9,7 +9,7 @@ async function save(token) {
   const tokenStr = JSON.stringify(token)
   let isTokenSavedS3 = false
   try {
-    const s3_response = await storeJsonObjectToS3(
+    await storeJsonObjectToS3(
       s3BucketName,
       `${s3BucketPath}/${s3BucketFileName}`,
       tokenStr
@@ -44,7 +44,7 @@ async function save(token) {
     return
   }
 
-  return s3_response
+  return
 }
 
 async function retrieve() {
@@ -65,7 +65,10 @@ async function retrieve() {
 
     console.log('Falling back to pull token from s3.')
     try {
-      token = await getS3JsonAsObject(s3BucketName, s3BucketFileName)
+      token = await getS3JsonAsObject(
+        s3BucketName,
+        `${s3BucketPath}/${s3BucketFileName}`
+      )
     } catch (err) {
       console.log('Failed to retrieve token from s3.')
       console.error(err)

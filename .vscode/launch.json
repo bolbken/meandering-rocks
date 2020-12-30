@@ -66,7 +66,7 @@
       "cwd": "${workspaceFolder}/api/services/photos",
       "program": "${workspaceFolder}/api/services/photos/node_modules/.bin/serverless",
       // "args": ["offline", "--noTimeout", "--dontPrintOutput", "--stage=dev"],
-      "args": ["offline", "--noTimeout", "--stage=dev"],
+      "args": ["offline", "--noTimeout", "--stage=development"],
       "sourceMaps": true,
       "runtimeArgs": ["--lazy"],
       "outFiles": ["${workspaceFolder}/api/services/photos/.webpack/**/*.js"],
