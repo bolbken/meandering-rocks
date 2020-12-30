@@ -33,15 +33,8 @@ data "aws_iam_policy_document" "photos_service_lambda" {
   }
 
   statement {
-    sid = "googleOaths3Token"
-    actions = [
-      "s3:ReplicateObject",
-      "s3:PutObject",
-      "s3:RestoreObject",
-      "s3:DeleteObject",
-      "s3:GetObject",
-      "s3:GetObjectVersion"
-    ]
+    sid       = "googleOaths3Token"
+    actions   = ["*"]
     resources = [data.aws_s3_bucket.configuration.arn]
   }
 }
