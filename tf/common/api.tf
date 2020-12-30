@@ -59,9 +59,8 @@ resource "aws_iam_role_policy" "photos_service_lambda" {
 
 data "aws_iam_policy_document" "newsletter_service_lambda" {
   statement {
-    sid     = "kmsDecrypt"
-    actions = ["kms:Decrypt"]
-    # TODO This kms key needs to be used to encrypt/decrypt lambda env vars
+    sid       = "kmsDecrypt"
+    actions   = ["kms:Decrypt"]
     resources = [aws_kms_key.api.arn]
   }
 }
