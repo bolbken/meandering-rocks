@@ -34,8 +34,8 @@ data "aws_iam_policy_document" "photos_service_lambda" {
 
   statement {
     sid       = "googleOaths3Token"
-    actions   = ["*"]
-    resources = [aws_s3_bucket.configuration.arn]
+    actions   = ["s3:*"]
+    resources = ["${aws_s3_bucket.configuration.arn}/*"]
   }
 }
 
