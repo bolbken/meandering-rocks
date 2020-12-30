@@ -11,6 +11,6 @@ provider "aws" {
   region = "us-east-1"
 }
 
-data "aws_s3_bucket" "configuration" {
+resource "aws_s3_bucket" "configuration" {
   bucket = "meandering-rocks-configuration"
 }
