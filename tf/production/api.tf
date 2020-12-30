@@ -14,23 +14,20 @@ resource "aws_api_gateway_rest_api" "production" {
   }
 }
 
+data "aws_iam_policy_document" "api_gateway_policy" {
+  statement {
+    actions   = ["execute-api:Invoke"]
+    resources = ["execute-api:/*"]
+    principals {
+      type        = "*"
+      identifiers = ["*"]
+    }
+  }
+}
+
 resource "aws_api_gateway_rest_api_policy" "production" {
   rest_api_id = aws_api_gateway_rest_api.production.id
-  policy      = <<EOF
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Effect": "Allow",
-      "Principal": {
-        "AWS": "*"
-      },
-      "Action": "execute-api:Invoke",
-      "Resource": "${aws_api_gateway_rest_api.production.arn}"
-    }
-  ]
-}
-EOF
+  policy      = data.aws_iam_policy_document.api_gateway_policy.json
 }
 
 resource "aws_api_gateway_domain_name" "production" {

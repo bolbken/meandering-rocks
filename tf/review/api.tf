@@ -32,30 +32,21 @@ resource "aws_api_gateway_domain_name" "review" {
   }
 }
 
-resource "aws_api_gateway_rest_api_policy" "review" {
-  rest_api_id = aws_api_gateway_rest_api.review.id
-  policy      = <<EOF
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Effect": "Allow",
-      "Principal": {
-        "AWS": "*"
-      },
-      "Action": "execute-api:Invoke",
-      "Resource": "${aws_api_gateway_rest_api.review.arn}"
+data "aws_iam_policy_document" "api_gateway_policy" {
+  statement {
+    actions   = ["execute-api:Invoke"]
+    resources = ["execute-api:/*"]
+    principals {
+      type        = "*"
+      identifiers = ["*"]
     }
-  ]
-}
-EOF
+  }
 }
 
-# resource "aws_api_gateway_base_path_mapping" "review" {
-#   api_id      = data.terraform_remote_state.common.outputs.api_gateway_id
-#   domain_name = local.domain_name
-#   stage_name  = aws_api_gateway_stage.review.stage_name
-# }
+resource "aws_api_gateway_rest_api_policy" "review" {
+  rest_api_id = aws_api_gateway_rest_api.review.id
+  policy      = data.aws_iam_policy_document.api_gateway_policy.json
+}
 
 data "aws_iam_policy_document" "redirect_service_lambda" {
   statement {
