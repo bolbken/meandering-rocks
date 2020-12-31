@@ -159,14 +159,14 @@ resource "aws_lambda_function" "review_auth_redirect" {
   function_name = "meandering-rocks-web-redirect-lambda"
   role          = aws_iam_role.redirect_lambda.arn
   handler       = "handler.redirect"
+  timeout       = 10
+  runtime       = "nodejs12.x"
+  publish       = true
 
   # The filebase64sha256() function is available in Terraform 0.11.12 and later
   # For Terraform 0.11.11 and earlier, use the base64sha256() function and the file() function:
   # source_code_hash = "${base64sha256(file("lambda_function_payload.zip"))}"
   source_code_hash = filebase64sha256("../../services/redirect/.serverless/redirect.zip")
-
-  runtime = "nodejs12.x"
-  publish = true
 
   tags = {
     project     = "meandering.rocks"
