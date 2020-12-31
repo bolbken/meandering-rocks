@@ -1,6 +1,6 @@
 const AWS = require('aws-sdk')
 const s3 = new AWS.S3()
-const tfOutput = require('../../utils/tf-output')
+// const tfOutput = require('../../utils/tf-output')
 
 const { redirect } = require('./redirect')
 
@@ -15,7 +15,7 @@ exports.redirect = async (event, context, callback) => {
   for (let user in credentials) {
     const password = credentials[user]
     const auth_string =
-      'Basic ' + new Buffer(user + ':' + password).toString('base64')
+      'Basic ' + new Buffer.from(user + ':' + password).toString('base64')
     credential_strings.push(auth_string)
   }
 
@@ -40,6 +40,7 @@ exports.redirect = async (event, context, callback) => {
   }
 
   // In case Basic Authentication passed, redirect to appropriate static site content
-  const bucket_name = tfOutput.readSync('review', 'web_target_bucket_name')
+  // const bucket_name = tfOutput.readSync('review', 'web_target_bucket_name')
+  const bucket_name = 'meandering-rocks-site-review'
   redirect(event, s3, bucket_name, callback)
 }
