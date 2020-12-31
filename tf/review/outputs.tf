@@ -17,3 +17,7 @@ output "api_gateway_resource_id" {
 output "api_domain" {
   value = data.aws_acm_certificate.api_review.domain
 }
+
+output "api_key_web" {
+  value = data.aws_api_gateway_api_key.web.value
+}

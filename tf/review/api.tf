@@ -82,3 +82,11 @@ resource "aws_iam_role_policy" "newsletter_service_lambda" {
   role   = aws_iam_role.redirect_service_lambda.id
   policy = data.aws_iam_policy_document.redirect_service_lambda.json
 }
+
+data "aws_api_gateway_api_key" "web" {
+  id = "wvxsivdxwk"
+}
+
+data "aws_api_gateway_api_key" "aux" {
+  id = "dey7siocwj"
+}
