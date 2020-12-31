@@ -102,27 +102,32 @@ resource "aws_cloudfront_distribution" "review" {
   }
 }
 
-resource "aws_iam_role" "redirect_lambda" {
-  name = "meandering_rocks_web_redirect_lambda"
-
-  assume_role_policy = <<EOF
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Action": "sts:AssumeRole",
-      "Principal": {
-        "Service": [
-          "lambda.amazonaws.com",
-          "edgelambda.amazonaws.com"
-        ]
-      },
-      "Effect": "Allow",
-      "Sid": ""
+data "aws_iam_policy_document" "redirect_lambda" {
+  statement {
+    sid     = "awsServiceLambdaEdgeLambda"
+    actions = ["sts:AssumeRole"]
+    principals {
+      type = "Service"
+      identifiers = [
+        "lambda.amazonaws.com",
+        "edgelambda.amazonaws.com"
+      ]
     }
-  ]
+  }
+
+  statement {
+    sid     = "reviewSiteS3Bucket"
+    actions = ["s3:*"]
+    resources = [
+      aws_s3_bucket.review.arn,
+      "${aws_s3_bucket.review.arn}/*"
+    ]
+  }
 }
-EOF
+
+resource "aws_iam_role" "redirect_lambda" {
+  name               = "meandering_rocks_web_redirect_lambda"
+  assume_role_policy = data.aws_iam_policy_document.redirect_lambda.json
 
   tags = {
     project     = "meandering.rocks"
