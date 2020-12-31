@@ -114,15 +114,6 @@ data "aws_iam_policy_document" "redirect_lambda" {
       ]
     }
   }
-
-  statement {
-    sid     = "reviewSiteS3Bucket"
-    actions = ["s3:*"]
-    resources = [
-      aws_s3_bucket.review.arn,
-      "${aws_s3_bucket.review.arn}/*"
-    ]
-  }
 }
 
 resource "aws_iam_role" "redirect_lambda" {
@@ -138,8 +129,18 @@ resource "aws_iam_role" "redirect_lambda" {
 
 data "aws_iam_policy_document" "lambda_edge" {
   statement {
+    sid       = "getLambdaFunction"
     actions   = ["lambda:GetFunction"]
     resources = [aws_lambda_function.review_auth_redirect.qualified_arn]
+  }
+
+  statement {
+    sid     = "reviewSiteS3Bucket"
+    actions = ["s3:*"]
+    resources = [
+      aws_s3_bucket.review.arn,
+      "${aws_s3_bucket.review.arn}/*"
+    ]
   }
 }
 
