@@ -159,7 +159,7 @@ resource "aws_lambda_function" "review_auth_redirect" {
   function_name = "meandering-rocks-web-redirect-lambda"
   role          = aws_iam_role.redirect_lambda.arn
   handler       = "handler.redirect"
-  timeout       = 10
+  timeout       = 5
   runtime       = "nodejs12.x"
   publish       = true
 
