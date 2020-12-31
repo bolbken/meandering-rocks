@@ -127,32 +127,32 @@ resource "aws_iam_role" "redirect_lambda" {
   }
 }
 
-data "aws_iam_policy_document" "lambda_edge" {
-  statement {
-    sid       = "getLambdaFunction"
-    actions   = ["lambda:GetFunction"]
-    resources = [aws_lambda_function.review_auth_redirect.qualified_arn]
-  }
+# data "aws_iam_policy_document" "lambda_edge" {
+#   statement {
+#     sid       = "getLambdaFunction"
+#     actions   = ["lambda:GetFunction"]
+#     resources = [aws_lambda_function.review_auth_redirect.qualified_arn]
+#   }
 
-  statement {
-    sid     = "reviewSiteS3Bucket"
-    actions = ["s3:*"]
-    resources = [
-      aws_s3_bucket.review.arn,
-      "${aws_s3_bucket.review.arn}/*"
-    ]
-  }
-}
+#   statement {
+#     sid     = "reviewSiteS3Bucket"
+#     actions = ["s3:*"]
+#     resources = [
+#       aws_s3_bucket.review.arn,
+#       "${aws_s3_bucket.review.arn}/*"
+#     ]
+#   }
+# }
 
-resource "aws_iam_policy" "lambda_edge" {
-  name   = "meandering-rocks-web-redirect-service-lambda-edge-policy"
-  policy = data.aws_iam_policy_document.lambda_edge.json
-}
+# resource "aws_iam_policy" "lambda_edge" {
+#   name   = "meandering-rocks-web-redirect-service-lambda-edge-policy"
+#   policy = data.aws_iam_policy_document.lambda_edge.json
+# }
 
-resource "aws_iam_role_policy_attachment" "lambda_edge" {
-  role       = aws_iam_role.redirect_lambda.id
-  policy_arn = aws_iam_policy.lambda_edge.arn
-}
+# resource "aws_iam_role_policy_attachment" "lambda_edge" {
+#   role       = aws_iam_role.redirect_lambda.id
+#   policy_arn = aws_iam_policy.lambda_edge.arn
+# }
 
 resource "aws_lambda_function" "review_auth_redirect" {
   filename      = "../../services/redirect/.serverless/redirect.zip"
