@@ -14,7 +14,7 @@
     "develop": "echo \"WARNING: no development mode specified\"",
     "test": "echo \"WARNING: no tests specified\"",
     "build": "serverless package --stage $(../../utils/branch-to-stage.sh ../../config.json)",
-    "deploy": "serverless deploy --stage $(../../utils/branch-to-stage.sh ../../config.json)"
+    "deploy": "echo \"WARNING: no deployment specified. Handled by terraform.\""
   },
   "devDependencies": {
     "aws-sdk": "^2.803.0",
