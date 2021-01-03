@@ -136,6 +136,19 @@ $header-logo-height-media-map-rhythm: (
   "large": 4,
   "huge": 5
 );
+//    -Header Word
+$header-word-wing-map-scale: (
+  "small": 1.5,
+  "medium": 2,
+  "large": 2.5,
+  "huge": 3
+);
+$header-word-wing-map-width: (
+  "small": 8rem,
+  "medium": 10rem,
+  "large": 11rem,
+  "huge": 12rem
+);
 //    -Header Dock
 $header-dock-menu-button-size-rhythm: 1;
 $header-dock-nav-font-height: 1rem;

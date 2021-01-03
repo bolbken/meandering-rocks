@@ -211,6 +211,32 @@
   }
 }
 
+//    --Header Word Scale
+@mixin header-title-word-scale {
+  @each $breakpoint, $scale-val in $header-word-wing-map-scale {
+    @if $breakpoint == 'small' {
+      @include scale($scale-val);
+    } @else {
+      @include respond-to($breakpoint) {
+        @include scale($scale-val);
+      }
+    }
+  }
+}
+
+//    --Header Word width
+@mixin header-title-word-width {
+  @each $breakpoint, $width-val in $header-word-wing-map-width {
+    @if $breakpoint == 'small' {
+      width: $width-val;
+    } @else {
+      @include respond-to($breakpoint) {
+        width: $width-val;
+      }
+    }
+  }
+}
+
 //    --Header Dock
 @mixin header-dock-offset-transforms {
   @each $breakpoint, $logo-height in $header-logo-height-media-map-rhythm {
@@ -242,6 +268,16 @@
 
 @mixin header-title-and-dock-top {
   padding-top: rhythm($header-title-padding-top-rhythm);
+}
+
+@mixin header-dock-nav-clickable {
+  border: none;
+  border-radius: rhythm(1 / 8);
+  cursor: pointer;
+  padding: rhythm(1 / 4);
+  &:hover {
+    background-color: transparentize($secondary, 0.9);
+  }
 }
 
 

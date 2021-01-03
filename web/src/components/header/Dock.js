@@ -20,26 +20,30 @@ const Dock = ({ open, setOpen, scrolling }) => {
         <Link to="/about">About</Link>
       </div>
       <nav className={`Header__Dock__nav Header__Dock__nav-${isScrolling}`}>
-        <Link
-          to="/gallery"
-          className={`Header__word-left Header__Dock__nav__link-${dockState}`}
-        >
-          Gallery
-        </Link>
-        <button
-          className={`Header__Dock__menu__button-${dockState}`}
-          onClick={() => setOpen(!open)}
-        >
-          <span />
-          <span />
-          <span />
+        <div className="Header__Dock__nav__wing">
+          <Link
+            to="/gallery"
+            className={`Header__word-left Header__Dock__nav__link-${dockState}`}
+          >
+            Gallery
+          </Link>
+        </div>
+
+        <button onClick={() => setOpen(!open)}>
+          <div className={`Header__Dock__menu__icon-${dockState}`}>
+            <span />
+            <span />
+            <span />
+          </div>
         </button>
-        <Link
-          to="/about"
-          className={`Header__word-right Header__Dock__nav__link-${dockState}`}
-        >
-          About
-        </Link>
+        <div className="Header__Dock__nav__wing">
+          <Link
+            to="/about"
+            className={`Header__word-right Header__Dock__nav__link-${dockState}`}
+          >
+            About
+          </Link>
+        </div>
       </nav>
     </div>
   )

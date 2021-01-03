@@ -11,11 +11,6 @@ $header-animation-speed: 0.3s;
   justify-content: center;
 }
 
-%header-word {
-  margin: 0 0.5rem;
-  width: 13rem;
-}
-
 %header-logo {
   @include header-logo-height-respond-to("medium");
   @include header-logo-height-respond-to("large");
@@ -53,20 +48,18 @@ $header-animation-speed: 0.3s;
   max-width: $page-width - 2 * $layout-padding-sides;
   position: fixed;
   top: 0;
-  width: 100%;
+  width: calc(100% - (2 * #{$layout-padding-sides}));
   z-index: z("dock");
 }
 
 .Header__word-left {
-  @extend %header-word;
-  float: right;
   margin-left: 0;
+  margin-right: 0.5rem;
   text-align: right;
 }
 
 .Header__word-right {
-  @extend %header-word;
-  float: left;
+  margin-left: 0.5rem;
   margin-right: 0;
   text-align: left;
 }
@@ -77,7 +70,6 @@ $header-animation-speed: 0.3s;
   animation-fill-mode: forwards;
   transform: translateY(-25%);
   transition: transform $header-animation-speed ease-out;
-  // visibility: hidden;
 }
 
 .Header__word-notScrolling,
@@ -86,7 +78,6 @@ $header-animation-speed: 0.3s;
   animation-fill-mode: forwards;
   transform: translateY(0);
   transition: transform $header-animation-speed ease-out;
-  // visibility: visible;
 }
 
 .Header__Title {
@@ -102,19 +93,8 @@ $header-animation-speed: 0.3s;
 
   > .Header__word-left,
   .Header__word-right {
-    @include scale(3 / 2);
-
-    @include respond-to("medium") {
-      @include scale(4 / 2);
-    }
-
-    @include respond-to("large") {
-      @include scale(5 / 2);
-    }
-
-    @include respond-to("huge") {
-      @include scale(6 / 2);
-    }
+    @include header-title-word-scale;
+    @include header-title-word-width;
   }
 
   > a {
@@ -190,39 +170,28 @@ $header-animation-speed: 0.3s;
   color: $secondary;
   margin-bottom: rhythm(1 / 2) !important;
 
-  .Header__word-left,
-  .Header__word-right {
+  .Header__Dock__nav__wing {
     font-size: $header-dock-nav-font-height;
     height: auto;
-    width: 13rem;
+    width: 10rem;
   }
 
-  > button {
-    align-items: center;
-    align-self: center;
-    background: transparent;
-    border: none;
-    cursor: pointer;
-    display: flex;
-    flex-direction: column;
-    height: rhythm($header-dock-menu-button-size-rhythm);
-    justify-content: space-around;
-    padding-left: 2rem;
-    padding-right: 2rem;
-    width: rhythm($header-dock-menu-button-size-rhythm);
+  .Header__word-left {
+    @include header-dock-nav-clickable;
+    float: right;
   }
 
-  > button span {
-    background: $secondary;
-    border-radius: 0.5rem;
-    height: 0.125rem;
-    position: relative;
-    transform-origin: 1px;
-    transition: all $header-animation-speed linear;
-    width: rhythm(1);
+  .Header__word-right {
+    @include header-dock-nav-clickable;
+    float: left;
+  }
+
+  button {
+    @include header-dock-nav-clickable;
   }
 
   .Header__Dock__nav__link-closed {
+    display: inline-block;
     visibility: visible;
   }
 
@@ -231,7 +200,26 @@ $header-animation-speed: 0.3s;
   }
 }
 
-
+%header-dock-menu-icon {
+  align-items: center;
+  align-self: center;
+  background: transparent;
+  display: flex;
+  flex-direction: column;
+  height: rhythm($header-dock-menu-button-size-rhythm);
+  justify-content: space-around;
+  width: rhythm($header-dock-menu-button-size-rhythm);
+  
+  span {
+    background: $secondary;
+    border-radius: 0.5rem;
+    height: 0.125rem;
+    position: relative;
+    transform-origin: 1px;
+    transition: all $header-animation-speed linear;
+    width: rhythm(1);
+  }
+}
 
 // Hamburger Menu changes if Open
 //   -> span #1: transform: open ? 'rotate(45deg)' : 'rotate(0)'
@@ -239,7 +227,9 @@ $header-animation-speed: 0.3s;
 //               transform: open ? 'translateX(20px)' : 'translateX(0)'
 //   -> span #3: transform: open ? 'rotate(-45deg)' : 'rotate(0)'
 // --Header Menu Closed--
-.Header__Dock__menu__button-closed {
+.Header__Dock__menu__icon-closed {
+  @extend %header-dock-menu-icon;
+
   :first-child {
     transform: rotate(0);
   }
@@ -252,7 +242,9 @@ $header-animation-speed: 0.3s;
   }
 }
 // --Header Menu Open--
-.Header__Dock__menu__button-opened {
+.Header__Dock__menu__icon-opened {
+  @extend %header-dock-menu-icon;
+
   :first-child {
     transform: rotate(45deg) translateX(rhythm($header-dock-menu-button-size-rhythm/12)) translateY(rhythm(-1*$header-dock-menu-button-size-rhythm/12));
     

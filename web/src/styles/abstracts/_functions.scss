@@ -318,7 +318,6 @@ Wisdom: https://sass-lang.com/documentation/at-rules/function
   @return header-title-height-for-media($breakpoint) + header-dock-nav-height();
 }
 
-// Header Functions
 //    --Header Title
 @function header-title-height-for-media($breakpoint) {
   $logo-height: rhythm(map-get($header-logo-height-media-map-rhythm, $breakpoint));
