@@ -331,7 +331,7 @@ Wisdom: https://sass-lang.com/documentation/at-rules/function
   // #HACK fudge-offset... I know its a #MagicNumber
   // but the arrangement is by my eye's opinion rather than some messed up math
   // positive fudge moves nav up and vice versa
-  $fudge-offset: rhythm(1 / 2);
+  $fudge-offset: rhythm(1 / 8);
   @return rhythm($header-dock-menu-height-rhythm) + $fudge-offset;
 }
 

@@ -1,13 +1,13 @@
-import React from "react"
-import { Link } from "gatsby"
+import React from 'react'
+import { Link } from 'gatsby'
 
 const Dock = ({ open, setOpen, scrolling }) => {
-  const dockState = open ? "opened" : "closed"
-  let isScrolling = "notScrolling"
+  const dockState = open ? 'opened' : 'closed'
+  let isScrolling = 'notScrolling'
   if (open) {
-    isScrolling = "notScrolling"
+    isScrolling = 'notScrolling'
   } else if (scrolling) {
-    isScrolling = "isScrolling"
+    isScrolling = 'isScrolling'
   }
 
   return (
@@ -20,7 +20,10 @@ const Dock = ({ open, setOpen, scrolling }) => {
         <Link to="/about">About</Link>
       </div>
       <nav className={`Header__Dock__nav Header__Dock__nav-${isScrolling}`}>
-        <Link to="/gallery" className={`Header__word-left`}>
+        <Link
+          to="/gallery"
+          className={`Header__word-left Header__Dock__nav__link-${dockState}`}
+        >
           Gallery
         </Link>
         <button
@@ -31,7 +34,10 @@ const Dock = ({ open, setOpen, scrolling }) => {
           <span />
           <span />
         </button>
-        <Link to="/about" className={`Header__word-right`}>
+        <Link
+          to="/about"
+          className={`Header__word-right Header__Dock__nav__link-${dockState}`}
+        >
           About
         </Link>
       </nav>
