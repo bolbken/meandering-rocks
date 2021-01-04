@@ -3,6 +3,7 @@ title: Welcome... We did it!
 date: "2015-05-01T22:12:03.284Z"
 description: "On the road with custom built truck and trailer to climb around the USA."
 albumName: "meandering_rocks_web__post__welcome-we-did-it"
+featured: true
 ---
 
 At the dawn of 2020, Bri and I purchased a 6x12ft cargo trailer.
