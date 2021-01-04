@@ -153,16 +153,78 @@ $header-animation-speed: 0.3s;
 
 .Header__Dock__menu-closed {
   @extend %header-dock-menu;
-  // visibility: hidden;
-  // animation: visible-to-hidden $header-animation-speed ease-out;
-  // animation-fill-mode: forwards;
+  animation: visible-to-hidden $header-animation-speed ease-out;
+  animation-fill-mode: forwards;
+  visibility: hidden;
 }
 
 .Header__Dock__menu-opened {
   @extend %header-dock-menu;
-  // visibility: visible;
-  // animation: hidden-to-visible $header-animation-speed ease-out;
-  // animation-fill-mode: both;
+  animation: hidden-to-visible $header-animation-speed ease-out;
+  animation-fill-mode: both;
+  visibility: visible;
+}
+
+.Header__Dock__menu__posts, .Header__Dock__menu__pages {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+
+  h3 {
+    align-self: flex-start;
+    font-style: italic;
+    margin: 0 0 rhythm(1 / 4) rhythm(1);
+
+  }
+
+  .Header__Dock__menu__pageList, .Header__Dock__menu__postList {
+    align-self: flex-start;
+    margin: 0 rhythm(2) rhythm(1 / 2) 
+  }
+}
+
+.Header__Dock__menu__pageList {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+
+  > a {
+    @include header-dock-menu-link;
+    margin: rhythm(1 / 2);
+  }
+}
+
+.Header__Dock__menu__postList {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+
+  > .Header__Dock__menu__postLink {
+    margin: rhythm(1 / 2);
+  }
+
+  > .Header__Dock__menu__postLink .Header__Dock__menu__postLink__title {
+    @include scale(3 / 4);
+    font-weight: 700;
+  }
+
+  > .Header__Dock__menu__postLink .Header__Dock__menu__postLink__description {
+    @include scale(1 / 8);
+    animation: header-dock-menu-desc-fade-in $header-animation-speed ease-in;
+    animation-fill-mode: forwards;
+    color: lighten( $secondary , 10%);
+    font-style: italic;
+  }
+}
+
+@keyframes header-dock-menu-desc-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 .Header__Dock__nav {
@@ -186,8 +248,16 @@ $header-animation-speed: 0.3s;
     float: left;
   }
 
-  button {
+  .Header__Dock__menu__button-closed {
     @include header-dock-nav-clickable;
+    background-color: $base-light;
+    border-color: $base-light;
+  }
+
+  .Header__Dock__menu__button-opened {
+    @include header-dock-nav-clickable;
+    background-color: $primary-light;
+    border-color: $primary-light;
   }
 
   .Header__Dock__nav__link-closed {
@@ -203,7 +273,6 @@ $header-animation-speed: 0.3s;
 %header-dock-menu-icon {
   align-items: center;
   align-self: center;
-  background: transparent;
   display: flex;
   flex-direction: column;
   height: rhythm($header-dock-menu-button-size-rhythm);
@@ -230,6 +299,8 @@ $header-animation-speed: 0.3s;
 .Header__Dock__menu__icon-closed {
   @extend %header-dock-menu-icon;
 
+
+
   :first-child {
     transform: rotate(0);
   }
@@ -241,9 +312,11 @@ $header-animation-speed: 0.3s;
     transform: rotate(0);
   }
 }
+
 // --Header Menu Open--
 .Header__Dock__menu__icon-opened {
   @extend %header-dock-menu-icon;
+  
 
   :first-child {
     transform: rotate(45deg) translateX(rhythm($header-dock-menu-button-size-rhythm/12)) translateY(rhythm(-1*$header-dock-menu-button-size-rhythm/12));

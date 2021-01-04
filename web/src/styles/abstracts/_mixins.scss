@@ -280,6 +280,15 @@
   }
 }
 
+@mixin header-dock-menu-link {
+  border-radius: rhythm(1 / 8);
+  cursor: pointer;
+  padding: rhythm(1 / 4);
+  &:hover {
+    background-color: transparentize($secondary, 0.9);
+  }
+}
+
 
 // About Page Mixins
 

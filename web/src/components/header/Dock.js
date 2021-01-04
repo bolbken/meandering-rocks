@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { Link, useStaticQuery, graphql } from 'gatsby'
+import { useContentWidth } from '../../hooks/useContentSize'
 
 const Dock = ({ open, setOpen, scrolling }) => {
   const data = useStaticQuery(graphql`
@@ -21,8 +22,16 @@ const Dock = ({ open, setOpen, scrolling }) => {
           }
         }
       }
+      site {
+        siteMetadata {
+          size {
+            maxWidth
+          }
+        }
+      }
     }
   `)
+
   const featuredPosts = data.allMarkdownRemark.edges
   const [hoverOnFeaturePost, setHoverOnFeaturePost] = useState(
     Object.fromEntries(
@@ -42,6 +51,8 @@ const Dock = ({ open, setOpen, scrolling }) => {
     }
     return handler
   }
+  const isWidthForFeaturePostDescription =
+    useContentWidth() >= data.site.siteMetadata.size.maxWidth
 
   const dockState = open ? 'opened' : 'closed'
   let isScrolling = 'notScrolling'
@@ -54,30 +65,37 @@ const Dock = ({ open, setOpen, scrolling }) => {
   return (
     <div className={`Header__Dock-${dockState}-${isScrolling}`}>
       <div className={`Header__Dock__menu-${dockState}`}>
-        <div>
+        <div className="Header__Dock__menu__pages">
           <h3>Pages</h3>
-          <div className="Header__Dock__menu__pageLinks">
+          <div className="Header__Dock__menu__pageList">
             <Link to="/">Home</Link>
             <Link to="/gallery">Gallery</Link>
             <Link to="/about">About</Link>
           </div>
         </div>
-        <div>
+        <div className="Header__Dock__menu__posts">
           <h3>Featured Posts</h3>
-          <div className="Header__Dock__menu__postLinks">
-            {JSON.stringify(hoverOnFeaturePost, null, 2)}
+          <div className="Header__Dock__menu__postList">
             {featuredPosts.map((post) => {
               const { slug } = post.node.fields
               return (
                 <div
                   key={post.node.frontmatter.title}
-                  onMouseEnter={featurePostHoverHandler(slug, true)}
-                  onMouseLeave={featurePostHoverHandler(slug, false)}
+                  className="Header__Dock__menu__postLink"
                 >
                   <Link to={slug}>
-                    <div>{post.node.frontmatter.title}</div>
-                    {hoverOnFeaturePost[slug] ? (
-                      <div>{post.node.frontmatter.description}</div>
+                    <div
+                      className="Header__Dock__menu__postLink__title"
+                      onMouseEnter={featurePostHoverHandler(slug, true)}
+                      onMouseLeave={featurePostHoverHandler(slug, false)}
+                    >
+                      {post.node.frontmatter.title}
+                    </div>
+                    {hoverOnFeaturePost[slug] &&
+                    isWidthForFeaturePostDescription ? (
+                      <div className="Header__Dock__menu__postLink__description">
+                        {post.node.frontmatter.description}
+                      </div>
                     ) : null}
                   </Link>
                 </div>
@@ -96,7 +114,10 @@ const Dock = ({ open, setOpen, scrolling }) => {
           </Link>
         </div>
 
-        <button onClick={() => setOpen(!open)}>
+        <button
+          onClick={() => setOpen(!open)}
+          className={`Header__Dock__menu__button-${dockState}`}
+        >
           <div className={`Header__Dock__menu__icon-${dockState}`}>
             <span />
             <span />
