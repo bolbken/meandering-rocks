@@ -1,7 +1,11 @@
+@use '../abstracts/variables';
+@use '../abstracts/functions';
+
 .Footer {
   align-content: center;
   display: flex;
   justify-content: space-between;
+  padding-top: rhythm(2);
 
   .Footer__left {
     align-content: center;
@@ -14,10 +18,25 @@
     display: flex;
     justify-content: flex-end;
   }
+
+  a {
+    align-self: center;
+    border-radius: 50%;
+    box-shadow: none;
+    cursor: pointer;
+    margin: rhythm(1 / 8);
+    padding: rhythm(1 / 4);
+
+    &:hover {
+      background-color: transparentize($primary, 0.9);
+    }
+  }
 }
 
-.Footer__LinkedImage-socialIcon {
-  align-self: center;
-  box-shadow: none;
-  margin: 0 0.2rem;
+.Footer__svg-icon {
+  color: $primary;
+  height: rhythm(1);
+  padding: 0 1px 1px;
+  vertical-align: middle;
+  width: rhythm(1)
 }

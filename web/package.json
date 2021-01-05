@@ -18,6 +18,7 @@
   },
   "private": true,
   "dependencies": {
+    "@react-icons/all-files": "^4.1.0",
     "classnames": "^2.2.6",
     "gatsby": "^2.24.37",
     "gatsby-image": "^2.4.14",

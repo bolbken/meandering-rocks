@@ -3113,6 +3113,11 @@
     prop-types "^15.6.1"
     react-lifecycles-compat "^3.0.4"
 
+"@react-icons/all-files@^4.1.0":
+  version "4.1.0"
+  resolved "https://registry.yarnpkg.com/@react-icons/all-files/-/all-files-4.1.0.tgz#477284873a0821928224b6fc84c62d2534d6650b"
+  integrity sha512-hxBI2UOuVaI3O/BhQfhtb4kcGn9ft12RWAFVMUeNjqqhLsHvFtzIkFaptBJpFDANTKoDfdVoHTKZDlwKCACbMQ==
+
 "@serverless-chrome/lambda@^1.0.0-57.2":
   version "1.0.0-57.2"
   resolved "https://registry.yarnpkg.com/@serverless-chrome/lambda/-/lambda-1.0.0-57.2.tgz#da08f82f5c6916833844df6bcea73c6f77583b3a"

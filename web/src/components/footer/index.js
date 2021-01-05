@@ -1,7 +1,10 @@
-import React from "react"
-import { useStaticQuery, graphql } from "gatsby"
+import React from 'react'
+import { Link, useStaticQuery, graphql } from 'gatsby'
+import Image from 'gatsby-image'
+import { IoLogoGithub } from '@react-icons/all-files/io5/IoLogoGithub'
+import { IoLogoInstagram } from '@react-icons/all-files/io5/IoLogoInstagram'
 
-import LinkedImage from "../linkedImage"
+import LinkedImage from '../linkedImage'
 
 const Footer = () => {
   const data = useStaticQuery(graphql`
@@ -20,94 +23,55 @@ const Footer = () => {
           }
         }
       }
-      instagramIcon: file(absolutePath: { regex: "/Instagram_1.png/" }) {
-        childImageSharp {
-          fixed(width: 36, height: 36) {
-            ...GatsbyImageSharpFixed
-          }
-        }
-      }
-      youtubeIcon: file(absolutePath: { regex: "/Youtube_1.png/" }) {
-        childImageSharp {
-          fixed(width: 36, height: 36) {
-            ...GatsbyImageSharpFixed
-          }
-        }
-      }
-      githubIcon: file(absolutePath: { regex: "/Github_1.png/" }) {
-        childImageSharp {
-          fixed(width: 36, height: 36) {
-            ...GatsbyImageSharpFixed
-          }
-        }
-      }
     }
   `)
 
   return (
     <footer>
-      <div className={`Footer`}>
-        <div className={`Footer__left`}>
-          <LinkedImage
-            link={{
-              to: "mailto:ben@meandering.rocks",
-              className: `Footer__LinkedImage-socialIcon`,
-            }}
-            image={{
-              fixed: data.benProfPic.childImageSharp.fixed,
-              alt: "ben-icon-0",
-              className: `imageProfilePictureCircle`,
-              imgStyle: {
+      <div className="Footer">
+        <div className="Footer__left">
+          <a href="mailto:ben@meandering.rocks">
+            <Image
+              fixed={data.benProfPic.childImageSharp.fixed}
+              alt="ben-icon"
+              className="Footer__img-profilePic"
+              style={{
                 borderRadius: `50%`,
-              },
-            }}
-          />
-          <LinkedImage
-            link={{
-              to: "https://www.instagram.com/bolbken/",
-              className: `Footer__LinkedImage-socialIcon`,
-            }}
-            image={{
-              fixed: data.instagramIcon.childImageSharp.fixed,
-              alt: "instagram-icon",
-            }}
-          />
-          <LinkedImage
-            link={{
-              to: "https://github.com/bolbken",
-              className: `Footer__LinkedImage-socialIcon`,
-            }}
-            image={{
-              fixed: data.githubIcon.childImageSharp.fixed,
-              alt: "github-icon",
-            }}
-          />
+              }}
+            />
+          </a>
+          <a
+            href="https://www.instagram.com/bolbken/"
+            className="Footer__a-socialIcon"
+          >
+            <div>
+              <IoLogoInstagram
+                alt="instagram-icon"
+                className="Footer__svg-icon"
+              />
+            </div>
+          </a>
+          <a href="https://github.com/bolbken">
+            <IoLogoGithub alt="github-icon" className="Footer__svg-icon" />
+          </a>
         </div>
-        <div className={`Footer__right`}>
-          <LinkedImage
-            link={{
-              to: "https://www.instagram.com/notthecheesebri/",
-              className: `Footer__LinkedImage-socialIcon`,
-            }}
-            image={{
-              fixed: data.instagramIcon.childImageSharp.fixed,
-              alt: "instagram-icon",
-            }}
-          />
-          <LinkedImage
-            link={{
-              to: "mailto:bri@meandering.rocks",
-              className: `Footer__LinkedImage-socialIcon`,
-            }}
-            image={{
-              fixed: data.briProfPic.childImageSharp.fixed,
-              alt: "bri-icon",
-              className: `imageProfilePictureCircle`,
-              imgStyle: {
+        <div className="Footer__right">
+          <a href="https://www.instagram.com/notthecheesebri/">
+            <IoLogoInstagram
+              alt="instagram-icon"
+              className="Footer__svg-icon"
+            />
+          </a>
+          <a href="mailto:bri@meandering.rocks">
+            <Image
+              fixed={data.briProfPic.childImageSharp.fixed}
+              alt="bri-icon"
+              className="Footer__img-profilePic"
+              style={{
                 borderRadius: `50%`,
-              },
-            }}
-          />
+              }}
+            />
+          </a>
         </div>
       </div>
       <div>
