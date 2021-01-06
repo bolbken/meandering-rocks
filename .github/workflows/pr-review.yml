@@ -63,7 +63,11 @@ jobs:
       run: 'dotenv -e .env.$STAGE -- yarn run test:since-$GIT_BRANCH'
 
     - name: 'Terraform planning environment resources for stage: common'
-      run: 'dotenv -e .env.$STAGE -- tfenv terraform -chdir=tf/common plan'
+      run: |
+        yarn run build:tf-required-common
+        dotenv -e .env.$STAGE -- tfenv terraform -chdir=tf/common plan
 
     - name: 'Terraform planning environment resources for stage: review'
-      run: 'dotenv -e .env.$STAGE -- tfenv terraform  -chdir=tf/$STAGE plan'
+      run: |
+        yarn run build:tf-required-$STAGE
+        dotenv -e .env.$STAGE -- tfenv terraform  -chdir=tf/$STAGE plan
