@@ -50,9 +50,8 @@ phases:
       - 'echo "Running terraform apply for $STAGE environment resources."'
       - 'dotenv -e .env.$STAGE -- tfenv terraform -chdir=tf/$STAGE apply .tfplan-$STAGE'
       - 'terraform -chdir=tf/$STAGE output -json > tf/$STAGE/.tfoutput.json'
-      # TODO:  The below deploy code should switch on whether the build is from a pr or from commits to rev/master
       - 'dotenv -e .env.$STAGE -- yarn run deploy'
-      - '[ $STAGE = "DUMMYSTAGE" ] \
+      - '[ $STAGE = "review" ] \
           && dotenv -e .env.$STAGE -- yarn run new-version \ 
           || echo "Skipping versioning for stage: $STAGE"'
       - 'echo "TBD: Save some artifacts or something"'

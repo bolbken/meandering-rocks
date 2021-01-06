@@ -2,6 +2,7 @@
 # meandering-rocks
 
 [![serverless](http://public.serverless.com/badges/v3.svg)](http://www.serverless.com)
+[![lerna](https://img.shields.io/badge/maintained%20with-lerna-cc00ff.svg)](https://lerna.js.org/)
 [![Build Status](https://codebuild.us-east-1.amazonaws.com/badges?uuid=eyJlbmNyeXB0ZWREYXRhIjoiY1VVam1XQjVNaktDVEpUU25PR1ViTGlXQmRCZXJGNCs4VGx4elpiNkRobDVpUC9ha2hpWmR5a054TWhBLzJzdWhEeHR3THlhWnVGandodDd6NlNwRUxnPSIsIml2UGFyYW1ldGVyU3BlYyI6Ik03cndyMlZCSHhocWQzOUoiLCJtYXRlcmlhbFNldFNlcmlhbCI6MX0%3D&branch=master)](https://console.aws.amazon.com/codesuite/codebuild/310674449483/projects/meandering-rocks-build-production/history?region=us-east-1)
 [![APACHE-2.0 licensed](https://img.shields.io/github/license/bolbken/meandering-rocks)](https://raw.githubusercontent.com/bolbken/meandering-rocks/master/LICENSE)
 [![Meandering Rocks Website](https://img.shields.io/website?down_color=lightgrey&down_message=offline&up_color=green&up_message=online&url=https%3A%2F%2Fmeandering.rocks)](https://meandering.rocks)
