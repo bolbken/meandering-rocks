@@ -30,7 +30,7 @@
     "develop": "./utils/dev-prep-offline.sh; dotenv -e .env.development -- lerna run develop --stream",
     "diff": "lerna diff",
     "test": "lerna run test",
-    "test:since-review": "lerna run test --since review",
+    "test:since-review": "lerna run test",
     "test:since-master": "lerna run test",
     "new-version": "lerna version --conventional-commits --create-release github --yes",
     "build": "lerna run build",

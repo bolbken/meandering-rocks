@@ -16,7 +16,11 @@ jobs:
       GIT_BRANCH: review
 
     steps:
-    - uses: actions/checkout@v2
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Fetch git history for all tags and branches
+      run: git fetch
 
     - name: Use Node.js 12.x
       uses: actions/setup-node@v1
