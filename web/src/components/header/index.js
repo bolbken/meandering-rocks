@@ -6,14 +6,28 @@ import OutsideHeaderClickWatcher from './OutsideHeaderClickWatcher'
 
 const Header = () => {
   const [open, setOpen] = useState(false)
+
+  const scrollBufferRuningAvgCount = 30
+  const [viewTops, setViewTops] = useState(
+    Array.from({ length: scrollBufferRuningAvgCount }, () => 0)
+  )
   const [scrolling, setScrolling] = useState(false)
-  const [scrollTop, setScrollTop] = useState(0)
-  const SCROLL_UP_BUFFER = 5
 
   useEffect(() => {
+    const average = (arr) => {
+      const sum = arr.reduce((a, b) => a + b, 0)
+      return sum / arr.length || 0
+    }
+
     const onScroll = (e) => {
-      setScrollTop(e.target.documentElement.scrollTop)
-      setScrolling(e.target.documentElement.scrollTop > scrollTop)
+      const currentViewTop = e.target.documentElement.scrollTop
+      setViewTops((viewTops) => {
+        viewTops.shift()
+        viewTops.push(currentViewTop)
+        return viewTops
+      })
+
+      setScrolling(average(viewTops) < currentViewTop)
     }
     if (typeof window !== 'undefined') {
       window.addEventListener('scroll', onScroll)
@@ -21,11 +35,7 @@ const Header = () => {
     } else {
       return
     }
-  }, [scrollTop])
-
-  // useEffect(() => {
-  //   console.log(scrollTop)
-  // }, [scrollTop])
+  }, [viewTops, setViewTops, setScrolling])
 
   return (
     <header className={`Header`}>
