@@ -64,20 +64,12 @@ $header-animation-speed: 0.3s;
   text-align: left;
 }
 
-.Header__word-isScrolling,
-.Header__Dock__nav-isScrolling {
-  animation: visible-to-hidden $header-animation-speed ease-out;
-  animation-fill-mode: forwards;
-  transform: translateY(-25%);
-  transition: transform $header-animation-speed ease-out;
+.Header__word-isScrolling { 
+  @include header-scrolling-animation-hide;
 }
 
-.Header__word-notScrolling,
-.Header__Dock__nav-notScrolling {
-  animation: hidden-to-visible $header-animation-speed ease-out;
-  animation-fill-mode: forwards;
-  transform: translateY(0);
-  transition: transform $header-animation-speed ease-out;
+.Header__word-notScrolling {
+  @include header-scrolling-animation-show;
 }
 
 .Header__Title {
@@ -125,19 +117,19 @@ $header-animation-speed: 0.3s;
   width: 25px;
 }
 
-.Header__Dock-closed-isScrolling {
+.Header__Dock-isScrolling {
   @extend %header-dock;
   @include header-dock-offset-transforms();
   background-color: transparent;
 }
 
-.Header__Dock-closed-notScrolling {
+.Header__Dock-notScrolling {
   @extend %header-dock;
   @include header-dock-offset-transforms();
   background-color: $base-light;
 }
 
-.Header__Dock-opened-isScrolling, .Header__Dock-opened-notScrolling {
+.Header__Dock-opened {
   @extend %header-dock;
   background-color: $primary-light;
   transform: translateY(0);
@@ -227,15 +219,30 @@ $header-animation-speed: 0.3s;
   }
 }
 
+%header-dock-nav-wing {
+  font-size: $header-dock-nav-font-height;
+  height: auto;
+  width: 10rem;
+}
+
 .Header__Dock__nav {
   @extend %centered;
   color: $secondary;
   margin-bottom: rhythm(1 / 2) !important;
 
-  .Header__Dock__nav__wing {
-    font-size: $header-dock-nav-font-height;
-    height: auto;
-    width: 10rem;
+  .Header__Dock__nav__wing-notScrolling {
+    @extend %header-dock-nav-wing;
+    @include header-scrolling-animation-show;
+  }
+
+  .Header__Dock__nav__wing-isScrolling {
+    @extend %header-dock-nav-wing;
+    @include header-scrolling-animation-hide;
+  }
+
+  .Header__Dock__nav__wing-opened {
+    @extend %header-dock-nav-wing;
+    visibility: hidden;
   }
 
   .Header__word-left {
@@ -248,25 +255,24 @@ $header-animation-speed: 0.3s;
     float: left;
   }
 
-  .Header__Dock__menu__button-closed {
+  .Header__Dock__menu__button-notScrolling {
+    @include header-scrolling-animation-show;
     @include header-dock-nav-clickable;
     background-color: $base-light;
     border-color: $base-light;
+  }
+
+  .Header__Dock__menu__button-isScrolling {
+    @include header-scrolling-animation-hide;
+    @include header-dock-nav-clickable;
+    background-color: transparent;
+    border-color: transparent;
   }
 
   .Header__Dock__menu__button-opened {
     @include header-dock-nav-clickable;
     background-color: $primary-light;
     border-color: $primary-light;
-  }
-
-  .Header__Dock__nav__link-closed {
-    display: inline-block;
-    visibility: visible;
-  }
-
-  .Header__Dock__nav__link-opened {
-    visibility: hidden;
   }
 }
 

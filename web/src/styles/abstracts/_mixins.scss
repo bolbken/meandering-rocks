@@ -204,6 +204,20 @@
 
 
 // Header Mixins
+//    --Header scrolling animation combo
+@mixin header-scrolling-animation-hide {
+  animation: visible-to-hidden $header-animation-speed ease-out;
+  animation-fill-mode: forwards;
+  transform: translateY(-25%);
+  transition: transform $header-animation-speed ease-out;
+}
+@mixin header-scrolling-animation-show {
+  animation: hidden-to-visible $header-animation-speed ease-out;
+  animation-fill-mode: forwards;
+  transform: translateY(0);
+  transition: transform $header-animation-speed ease-out;
+}
+
 //    --Header Title
 @mixin header-logo-height-respond-to($breakpoint) {
   @include respond-to($breakpoint) {

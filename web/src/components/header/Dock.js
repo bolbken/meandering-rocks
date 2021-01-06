@@ -55,15 +55,15 @@ const Dock = ({ open, setOpen, scrolling }) => {
     useContentWidth() >= data.site.siteMetadata.size.maxWidth
 
   const dockState = open ? 'opened' : 'closed'
-  let isScrolling = 'notScrolling'
+  let navState = 'notScrolling'
   if (open) {
-    isScrolling = 'notScrolling'
+    navState = 'opened'
   } else if (scrolling) {
-    isScrolling = 'isScrolling'
+    navState = 'isScrolling'
   }
 
   return (
-    <div className={`Header__Dock-${dockState}-${isScrolling}`}>
+    <div className={`Header__Dock-${navState}`}>
       <div className={`Header__Dock__menu-${dockState}`}>
         <div className="Header__Dock__menu__pages">
           <h3>Pages</h3>
@@ -104,19 +104,15 @@ const Dock = ({ open, setOpen, scrolling }) => {
           </div>
         </div>
       </div>
-      <nav className={`Header__Dock__nav Header__Dock__nav-${isScrolling}`}>
-        <div className="Header__Dock__nav__wing">
-          <Link
-            to="/gallery"
-            className={`Header__word-left Header__Dock__nav__link-${dockState}`}
-          >
+      <nav className={`Header__Dock__nav`}>
+        <div className={`Header__Dock__nav__wing-${navState}`}>
+          <Link to="/gallery" className="Header__word-left">
             Gallery
           </Link>
         </div>
-
         <button
           onClick={() => setOpen(!open)}
-          className={`Header__Dock__menu__button-${dockState}`}
+          className={`Header__Dock__menu__button-${navState}`}
         >
           <div className={`Header__Dock__menu__icon-${dockState}`}>
             <span />
@@ -124,11 +120,8 @@ const Dock = ({ open, setOpen, scrolling }) => {
             <span />
           </div>
         </button>
-        <div className="Header__Dock__nav__wing">
-          <Link
-            to="/about"
-            className={`Header__word-right Header__Dock__nav__link-${dockState}`}
-          >
+        <div className={`Header__Dock__nav__wing-${navState}`}>
+          <Link to="/about" className="Header__word-right">
             About
           </Link>
         </div>
