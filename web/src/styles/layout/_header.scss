@@ -315,7 +315,9 @@ $header-animation-speed: 0.3s;
 .Header__Dock__menu__icon-closed {
   @extend %header-dock-menu-icon;
 
-
+  &:focus {
+    outline: none;
+  }
 
   :first-child {
     transform: rotate(0);
@@ -333,6 +335,9 @@ $header-animation-speed: 0.3s;
 .Header__Dock__menu__icon-opened {
   @extend %header-dock-menu-icon;
   
+  &:focus {
+    outline: none;
+  }
 
   :first-child {
     transform: rotate(45deg) translateX(rhythm($header-dock-menu-button-size-rhythm/12)) translateY(rhythm(-1*$header-dock-menu-button-size-rhythm/12));
