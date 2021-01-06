@@ -34,6 +34,7 @@ jobs:
         aws-secret-access-key: ${{ secrets.MEANDERING_ROCKS_REVIEW_AWS_SECRET_ACCESS_KEY }}
         aws-region: us-east-1
         role-to-assume: ${{ secrets.MEANDERING_ROCKS_REVIEW_AWS_ROLE_TO_ASSUME }}
+        role-duration-seconds: 3000
 
     - name: Install Terraform
       uses: hashicorp/setup-terraform@v1
