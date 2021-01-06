@@ -39,8 +39,13 @@ jobs:
     - name: Make utils scripts executable
       run: chmod a+rx utils -R
 
-    - name: Install global depedencies
-      run: npm install -g yarn json dotenv-cli
+    - name: Install global/cli depedencies
+      run: |
+        npm install -g yarn json dotenv-cli
+        mkdir -p $HOME/.local/bin
+        wget -O $HOME/.local/bin/tfenv https://github.com/cloudposse/tfenv/releases/download/0.4.0/tfenv_linux_amd64
+        chmod +x $HOME/.local/bin/tfenv
+        echo "$HOME/.local/bin" >> $GITHUB_PATH
 
     - name: Install package dependencies
       run: yarn install
@@ -50,3 +55,9 @@ jobs:
 
     - name: Test packages
       run: 'dotenv -e .env.$STAGE -- yarn run test:since-$GIT_BRANCH'
+
+    - name: 'Terraform planning environment resources for stage: common'
+      run: 'dotenv -e .env.$STAGE -- tfenv terraform -chdir=tf/common plan'
+
+    - name: 'Terraform planning environment resources for stage: review'
+      run: 'dotenv -e .env.$STAGE -- tfenv terraform  -chdir=tf/$STAGE plan'
