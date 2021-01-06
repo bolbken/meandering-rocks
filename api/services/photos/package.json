@@ -1,6 +1,6 @@
 {
   "name": "photos",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Serverless api for retrieving photos from the Google Photos API.",
   "author": "Ben Kolb (@bolbken)",
   "workspaces": {

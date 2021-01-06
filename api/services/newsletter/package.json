@@ -1,6 +1,6 @@
 {
   "name": "newsletter",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Serverless api for handling subscriptions and publishing of the meandering.rocks email newsletter.",
   "author": "Ben Kolb (@bolbken)",
   "workspaces": {
