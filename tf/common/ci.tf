@@ -16,7 +16,7 @@ data "aws_iam_policy_document" "github_actions_cicd" {
       "s3:GetObject",
       "s3:GetObjectVersion"
     ]
-    resources = ["${aws_s3_bucket.configuration.arn}/env/*"]
+    resources = ["${aws_s3_bucket.configuration.arn}/*"]
   }
 }
 
