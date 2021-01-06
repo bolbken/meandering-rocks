@@ -66,7 +66,6 @@ const Dock = ({ open, setOpen, scrolling }) => {
     <div className={`Header__Dock-${navState}`}>
       <div className={`Header__Dock__menu-${dockState}`}>
         <div className="Header__Dock__menu__pages">
-          <h3>Pages</h3>
           <div className="Header__Dock__menu__pageList">
             <Link to="/">Home</Link>
             <Link to="/gallery">Gallery</Link>

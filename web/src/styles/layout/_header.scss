@@ -157,6 +157,10 @@ $header-animation-speed: 0.3s;
   visibility: visible;
 }
 
+%header-dock-menu-list {
+  margin: 0 rhythm(2) rhythm(1 / 2);
+}
+
 .Header__Dock__menu__posts, .Header__Dock__menu__pages {
   display: flex;
   flex-direction: column;
@@ -169,9 +173,15 @@ $header-animation-speed: 0.3s;
 
   }
 
-  .Header__Dock__menu__pageList, .Header__Dock__menu__postList {
+  .Header__Dock__menu__pageList {
+    @extend %header-dock-menu-list;
+    align-self: center;
+    
+  }
+
+  .Header__Dock__menu__postList {
+    @extend %header-dock-menu-list;
     align-self: flex-start;
-    margin: 0 rhythm(2) rhythm(1 / 2) 
   }
 }
 
