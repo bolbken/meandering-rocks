@@ -50,8 +50,8 @@ phases:
       - 'echo "Running terraform apply for $STAGE environment resources."'
       - 'dotenv -e .env.$STAGE -- tfenv terraform -chdir=tf/$STAGE apply .tfplan-$STAGE'
       - 'terraform -chdir=tf/$STAGE output -json > tf/$STAGE/.tfoutput.json'
-      - 'dotenv -e .env.$STAGE -- ./utils/new-version.sh'
       - 'dotenv -e .env.$STAGE -- yarn run deploy'
+      - 'dotenv -e .env.$STAGE -- ./utils/new-version.sh'
 
 cache:
   paths:
