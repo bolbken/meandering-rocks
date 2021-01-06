@@ -1,0 +1,52 @@
+# This workflow will do a clean install of node dependencies, build the source code and run tests across different versions of node
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
+
+name: Node.js CI
+
+on:
+  pull_request:
+    branches: [ review ]
+
+jobs:
+  test:
+
+    runs-on: ubuntu-latest
+    env:
+      STAGE: review
+      GIT_BRANCH: review
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Use Node.js 12.x
+      uses: actions/setup-node@v1
+      with:
+        node-version: '12.x'
+
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.MEANDERING_ROCKS_REVIEW_AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.MEANDERING_ROCKS_REVIEW_AWS_SECRET_ACCESS_KEY }}
+        aws-region: us-east-1
+
+    - name: Install Terraform
+      uses: hashicorp/setup-terraform@v1
+
+    - name: Copy .env.review file into repository
+      run: 'aws s3 cp s3://meandering-rocks-configuration/env/.env.$STAGE .env.$STAGE'
+    
+    - name: Make utils scripts executable
+      run: chmod a+rx utils -R
+
+    - name: Install global depedencies
+      run: npm install -g yarn json dotenv-cli
+
+    - name: Install package dependencies
+      run: yarn install
+
+    - name: Initialize Terraform Environments
+      run: './utils/tf-init.sh'
+
+    - name: Test packages
+      run: 'dotenv -e .env.$STAGE -- yarn run test:since-$GIT_BRANCH'
