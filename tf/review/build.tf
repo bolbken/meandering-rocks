@@ -1,9 +1,17 @@
 data "aws_iam_policy_document" "codebuild_role" {
   statement {
-    actions = ["sts:AssumeRole"]
+    actions = [
+      "sts:AssumeRole",
+      "sts:TagSession"
+    ]
     principals {
       type        = "Service"
       identifiers = ["codebuild.amazonaws.com"]
+    }
+
+    principals {
+      type        = "AWS"
+      identifiers = [aws_iam_user.github_actions_ci.arn]
     }
   }
 }
