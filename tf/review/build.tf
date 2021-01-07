@@ -265,7 +265,7 @@ resource "aws_codebuild_project" "review" {
   source {
     type            = "GITHUB"
     location        = "https://github.com/bolbken/meandering-rocks.git"
-    git_clone_depth = 1
+    git_clone_depth = 25
   }
 
   source_version = "review"
