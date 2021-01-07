@@ -156,10 +156,8 @@ module.exports = {
         name: `Meandering Rocks Blog`,
         short_name: `Meandering Rocks`,
         start_url: `/`,
-        // background_color: `#ffffff`,
-        // theme_color: `#663399`,
-        // display: `minimal-ui`,
         icon: `content/assets/site-logo.svg`,
+        cache_busting_mode: 'none',
       },
     },
     `gatsby-plugin-react-helmet`,
@@ -169,8 +167,14 @@ module.exports = {
         includePaths: ['src/styles'],
       },
     },
-    // this (optional) plugin enables Progressive Web App + Offline functionality
-    // To learn more, visit: https://gatsby.dev/offline
-    // `gatsby-plugin-offline`,
+    {
+      resolve: `gatsby-plugin-offline`,
+      options: {
+        precachePages: [`/about/`, `/gallery/`],
+        workboxConfig: {
+          globPatterns: ['**/*site-logo*'],
+        },
+      },
+    },
   ],
 }
