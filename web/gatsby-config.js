@@ -55,11 +55,19 @@ module.exports = {
         trackingIds: [process.env.WEB_GOOGLE_ANALYTICS_TRACKING_ID || ''],
         // This object is used for configuration specific to this plugin
         pluginConfig: {
-          head: false,
+          head: true,
           respectDNT: true,
           // Avoids sending pageview hits from custom paths
           // exclude: ['/preview/**', '/do-not-track/me/too/'],
         },
+      },
+    },
+    {
+      resolve: `gatsby-plugin-hotjar`,
+      options: {
+        includeInDevelopment: false,
+        id: process.env.WEB_HOTJAR_ANALYTICS_ID || '',
+        sv: process.env.WEB_HOTJAR_ANALYTICS_SNIPPET_VERSION || 6,
       },
     },
     'gatsby-source-google-photos',
