@@ -32,7 +32,7 @@
     "test": "lerna run test",
     "test:since-review": "lerna run test",
     "test:since-master": "lerna run test",
-    "new-version": "lerna version --amend --conventional-commits --create-release github --yes",
+    "new-version": "lerna version --conventional-commits --create-release github --yes",
     "build": "lerna run build",
     "build:tf-required-common": "lerna run --scope *-layer build",
     "build:tf-required-review": "lerna run --scope auth-redirect build",
