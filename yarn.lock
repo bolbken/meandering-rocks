@@ -1237,11 +1237,6 @@
     unique-filename "^1.1.1"
     which "^1.3.1"
 
-"@forivall/wyt@^2.0.2":
-  version "2.0.2"
-  resolved "https://registry.yarnpkg.com/@forivall/wyt/-/wyt-2.0.2.tgz#2516bfe7cecb21605447dfb37039ab3eea16dab3"
-  integrity sha512-P5WLG9xdDf5cwzdZPLycrubCwStc1xlSnG1U4FVvCoK1owEClCJU9bK/BU2eD6VeUQy8naK00yt6YbVJqZHWPg==
-
 "@graphql-tools/batch-execute@^7.0.0":
   version "7.0.0"
   resolved "https://registry.yarnpkg.com/@graphql-tools/batch-execute/-/batch-execute-7.0.0.tgz#e79d11bd5b39f29172f6ec2eafa71103c6a6c85b"
@@ -10081,13 +10076,13 @@ gatsby-plugin-feed@^2.5.11:
     lodash.merge "^4.6.2"
     rss "^1.2.2"
 
-gatsby-plugin-google-analytics@^2.3.13:
-  version "2.7.0"
-  resolved "https://registry.yarnpkg.com/gatsby-plugin-google-analytics/-/gatsby-plugin-google-analytics-2.7.0.tgz#93b061ac3d98130bea21905fcfdb1f57803be0a4"
-  integrity sha512-MJir2U3Dk9waATUl60XS1WhHtWQnRTWEm9qwhTEmP83phTsts2WXNhgDgqE/OZ6B0pZn6cSb4zVY86x2zDch0g==
+gatsby-plugin-google-gtag@^2.6.0:
+  version "2.6.0"
+  resolved "https://registry.yarnpkg.com/gatsby-plugin-google-gtag/-/gatsby-plugin-google-gtag-2.6.0.tgz#7ab997e81b3ce705de27fb3f3e408e88e2ec8a25"
+  integrity sha512-bH7BW/u6JdmlerLg2LRi+rC84ZhGS/NWEo6mvdDUGoppNoKfhN+6ybO4RnkjP0PFfyeFdV53XkjmwnoN9bFXIQ==
   dependencies:
     "@babel/runtime" "^7.12.5"
-    minimatch "3.0.4"
+    minimatch "^3.0.4"
 
 gatsby-plugin-manifest@^2.4.22:
   version "2.8.0"
@@ -10353,7 +10348,7 @@ gatsby-remark-smartypants@^2.3.10:
     retext-smartypants "^3.0.3"
     unist-util-visit "^1.4.1"
 
-gatsby-source-filesystem@^2.3.24, gatsby-source-filesystem@^2.5.0, gatsby-source-filesystem@^2.7.0:
+gatsby-source-filesystem@^2.3.24, gatsby-source-filesystem@^2.5.0:
   version "2.7.0"
   resolved "https://registry.yarnpkg.com/gatsby-source-filesystem/-/gatsby-source-filesystem-2.7.0.tgz#09da0ecfb85a6527858029d38b7bc2c68c9a91a3"
   integrity sha512-SpIwHe89LLwgwNUEcHaRCe3J5+7ODgdJLh/PhJdSpmEzeHQRtLAfInNuoTMs8pJ53W+1HI/ph3/HXSAPddi/VA==
@@ -10371,19 +10366,6 @@ gatsby-source-filesystem@^2.3.24, gatsby-source-filesystem@^2.5.0, gatsby-source
     progress "^2.0.3"
     valid-url "^1.0.9"
     xstate "^4.14.0"
-
-gatsby-source-google-docs@^2.0.0-beta.18:
-  version "2.0.0-beta.40"
-  resolved "https://registry.yarnpkg.com/gatsby-source-google-docs/-/gatsby-source-google-docs-2.0.0-beta.40.tgz#ba842d8f301a7628d7e15b8caffba6cf90c6aa99"
-  integrity sha512-AfwSkYkRVl6C1rn3XUVhW36CY3RwWOYh64S8AEqhTMKFvxcw9sTny6YazWBseWjKZVUdXD/AZlOw9dt6vCcvqw==
-  dependencies:
-    "@forivall/wyt" "^2.0.2"
-    gatsby-source-filesystem "^2.7.0"
-    google-oauth2-env-vars "^1.2.0"
-    googleapis "66.0.0"
-    json2md "^1.9.1"
-    lodash "^4.17.20"
-    yamljs "^0.3.0"
 
 gatsby-source-google-photos@^2.3.0:
   version "2.4.1"
@@ -11134,14 +11116,6 @@ googleapis-common@^4.4.0, googleapis-common@^4.4.1:
     url-template "^2.0.8"
     uuid "^8.0.0"
 
-googleapis@66.0.0, googleapis@^66.0.0:
-  version "66.0.0"
-  resolved "https://registry.yarnpkg.com/googleapis/-/googleapis-66.0.0.tgz#008062d06b13954bd3a0425c17e8f8396e884957"
-  integrity sha512-jdEleRoyo/AeJZjKGC7Z2mHgochn2vR2JKqey6kydRkIBmCZxoQKLisRR4H8CRYZeEd6+c8Ns/LzS1S7qUjoFw==
-  dependencies:
-    google-auth-library "^6.0.0"
-    googleapis-common "^4.4.1"
-
 googleapis@^60.0.1:
   version "60.0.1"
   resolved "https://registry.yarnpkg.com/googleapis/-/googleapis-60.0.1.tgz#f0614cbf798e1308ef6e7dd6b7cbf3c464692975"
@@ -11149,6 +11123,14 @@ googleapis@^60.0.1:
   dependencies:
     google-auth-library "^6.0.0"
     googleapis-common "^4.4.0"
+
+googleapis@^66.0.0:
+  version "66.0.0"
+  resolved "https://registry.yarnpkg.com/googleapis/-/googleapis-66.0.0.tgz#008062d06b13954bd3a0425c17e8f8396e884957"
+  integrity sha512-jdEleRoyo/AeJZjKGC7Z2mHgochn2vR2JKqey6kydRkIBmCZxoQKLisRR4H8CRYZeEd6+c8Ns/LzS1S7qUjoFw==
+  dependencies:
+    google-auth-library "^6.0.0"
+    googleapis-common "^4.4.1"
 
 googlephotos@^0.3.3:
   version "0.3.3"
@@ -12191,11 +12173,6 @@ indent-string@^4.0.0:
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/indent-string/-/indent-string-4.0.0.tgz#624f8f4497d619b2d9768531d58f4122854d7251"
   integrity sha512-EdDDZu4A2OyIK7Lr/2zG+w5jmbuk1DVBnEwREQvBzspBJkCEbRa8GxU1lghYcaGJCnRWibjDXlq779X1/y5xwg==
-
-indento@^1.1.7:
-  version "1.1.13"
-  resolved "https://registry.yarnpkg.com/indento/-/indento-1.1.13.tgz#751331b327c04740eeb7be40c5606e6e255c9e36"
-  integrity sha512-YZWk3mreBEM7sBPddsiQnW9Z8SGg/gNpFfscJq00HCDS7pxcQWWWMSVKJU7YkTRyDu1Zv2s8zaK8gQWKmCXHlg==
 
 indexes-of@^1.0.1:
   version "1.0.1"
@@ -13650,13 +13627,6 @@ json-stringify-safe@^5.0.1, json-stringify-safe@~5.0.1:
   version "5.0.1"
   resolved "https://registry.yarnpkg.com/json-stringify-safe/-/json-stringify-safe-5.0.1.tgz#1296a2d58fd45f19a0f6ce01d65701e2c735b6eb"
   integrity sha1-Epai1Y/UXxmg9s4B1lcB4sc1tus=
-
-json2md@^1.9.1:
-  version "1.9.1"
-  resolved "https://registry.yarnpkg.com/json2md/-/json2md-1.9.1.tgz#d9117fbe0aec8656c936edcc36a251b6e2a7a017"
-  integrity sha512-vfeMh6/fGDQCzEqb6j/vxm0CCs4xxaDAFKkSwJVCZT4ofQ7f9vumFPYoRJaJj56UuCu8i+kr96gkg6e4DNYwCg==
-  dependencies:
-    indento "^1.1.7"
 
 json3@^3.3.2:
   version "3.3.3"

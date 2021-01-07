@@ -48,6 +48,20 @@ module.exports = {
   },
 
   plugins: [
+    {
+      resolve: `gatsby-plugin-google-gtag`,
+      options: {
+        // You can add multiple tracking ids and a pageview event will be fired for all of them.
+        trackingIds: [process.env.WEB_GOOGLE_ANALYTICS_TRACKING_ID || ''],
+        // This object is used for configuration specific to this plugin
+        pluginConfig: {
+          head: false,
+          respectDNT: true,
+          // Avoids sending pageview hits from custom paths
+          // exclude: ['/preview/**', '/do-not-track/me/too/'],
+        },
+      },
+    },
     'gatsby-source-google-photos',
     'gatsby-remark-embed-video',
     {
