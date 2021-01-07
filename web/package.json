@@ -53,7 +53,7 @@
     "react-tilt": "^0.1.4"
   },
   "scripts": {
-    "build": "gatsby build",
+    "build": "gatsby build --verbose",
     "develop": "PORT=8000 gatsby develop",
     "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,md,scss}\"",
     "start": "gatsby build && gatsby serve",
