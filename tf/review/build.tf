@@ -291,6 +291,11 @@ resource "aws_codebuild_webhook" "review" {
       pattern                 = "^refs/heads/review$"
       type                    = "HEAD_REF"
     }
+    filter {
+      exclude_matched_pattern = true
+      pattern                 = "chore\\(release\\)"
+      type                    = "COMMIT_MESSAGE"
+    }
   }
 }
 
