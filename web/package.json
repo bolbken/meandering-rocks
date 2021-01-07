@@ -1,7 +1,7 @@
 {
   "name": "web",
   "description": "Source code for the Meandering.Rocks \"static\" site web page.",
-  "version": "1.0.2",
+  "version": "1.1.0",
   "author": "Ben Kolb (@bolbken)",
   "homepage": "https://meandering.rocks",
   "keywords": [
