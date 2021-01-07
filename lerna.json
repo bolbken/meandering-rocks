@@ -6,12 +6,14 @@
     "services/*",
     "web"
   ],
-  "version": "1.0.0",
+  "version": "1.0.1",
   "npmClient": "yarn",
   "useWorkspaces": true,
   "command": {
     "version": {
-      "ignoreChanges": ["*.md"],
+      "ignoreChanges": [
+        "*.md"
+      ],
       "message": "chore(release): publish release"
     }
   }

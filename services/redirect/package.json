@@ -1,6 +1,6 @@
 {
   "name": "auth-redirect",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Lambda function capable of enforcing 'BASIC' authentication.",
   "author": "Ben Kolb (@bolbken)",
   "workspaces": {
@@ -19,6 +19,5 @@
   "devDependencies": {
     "aws-sdk": "^2.803.0",
     "serverless": "^2.15.0"
-  },
-  "dependencies": {}
+  }
 }
